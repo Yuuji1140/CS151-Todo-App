@@ -6,7 +6,7 @@
 Everyday tasks are difficult to manage. Most current applications are feature-bloated, hidden behind a paywall or lack flexibility. Out aim is to create a complete, simple and easy to use GUI application to track todo items, their frequency and due date and allow grouping into various lists and sorting them in meaningful ways.
 
 # Assumptions / Intended Usage 
-# **TODO**
+#                    **TODO**
 
 # High-Level Solution:
 A Java desktop application with a user-friendly GUI integrated with a backend capable of long-term data storage, retrieval and manipulation. The frontend will be simple, intuitive and slightly customizable by allowing users to define views of their todo’s. We will utilize the Model-View-Controller model to allow for modularity and scaling. 
@@ -22,4 +22,4 @@ Group items into lists capable of filters/sorting.
 Show status of items: active, overdue, complete, etc
 
 # Operations: 
-# **TODO**
+#                   **TODO**
