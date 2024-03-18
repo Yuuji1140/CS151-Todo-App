@@ -3,7 +3,7 @@
 ### Team Members: Hike Yegiyan, Viet Nguyen, Trevor Mathisen
 
 # Problem/Issue to Resolve:
-Everyday tasks are difficult to manage. Most current applications are feature-bloated, hidden behind a paywall or lack flexibility. Out aim is to create a complete, simple and easy to use GUI application to track todo items, their frequency and due date and allow grouping into various lists and sorting them in meaningful ways.
+Everyday tasks are difficult to manage. Most current applications are feature-bloated, hidden behind a paywall or lack flexibility. Our aim is to create a complete, simple and easy to use GUI application to track todo items, their frequency and due date and allow grouping into various lists and sorting them in meaningful ways.
 
 # Assumptions 
 We have the assumption that users have a basic understanding of how to operate a desktop application but may not be technically inclined. This suggest our application's design to be relatively simple and straightforward. We will also assume they have access to a personal computer with Java installed and anticipate most users will use Windows, macOS, or Linux operating systems. The nature of a Todo-app implies usage of the application on a daily basis for **personal** task management. We also assume as of now that the user data will be stored locally on their machine rather than on the cloud.
