@@ -5,8 +5,11 @@
 # Problem/Issue to Resolve:
 Everyday tasks are difficult to manage. Most current applications are feature-bloated, hidden behind a paywall or lack flexibility. Out aim is to create a complete, simple and easy to use GUI application to track todo items, their frequency and due date and allow grouping into various lists and sorting them in meaningful ways.
 
-# Assumptions / Intended Usage 
-#                    **TODO**
+# Assumptions 
+We have the assumption that users have a basic understanding of how to operate a desktop application but may not be technically inclined. This suggest our application's design to be relatively simple and straightforward. We will also assume they have access to a personal computer with Java installed and anticipate most users will use Windows, macOS, or Linux operating systems. The nature of a Todo-app implies usage of the application on a daily basis for **personal** task management. We also assume as of now that the user data will be stored locally on their machine rather than on the cloud.
+
+# Intended Usage
+Usage of the application will consist of managing daily tasks which includes creating, updating, and tracking to-do items with specific due dates and/or frequencies, with the ability to group tasks together into lists based on categories. Users can sort tasks by due date, priority, or custom filters, as well as mark tasks as active, overdue, or complete. Each task will have some customizability, such as having a description, timer, or icon. The user may also have the option to view analytics and insights regarding their task management habits, such as completed tasks over time, most active categories, or time spent on tasks. 
 
 # High-Level Solution:
 A Java desktop application with a user-friendly GUI integrated with a backend capable of long-term data storage, retrieval and manipulation. The frontend will be simple, intuitive and slightly customizable by allowing users to define views of their todo’s. We will utilize the Model-View-Controller model to allow for modularity and scaling. 
