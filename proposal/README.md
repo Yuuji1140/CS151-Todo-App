@@ -14,15 +14,21 @@ Usage of the application will consist of managing daily tasks which include crea
 # High-Level Solution:
 A Java desktop application with a user-friendly GUI integrated with a backend capable of long-term data storage, retrieval, and manipulation. The front-end will be simple, intuitive, and slightly customizable by allowing users to define views of their todo’s. We will utilize the Model-View-Controller model to allow for modularity and scaling. 
 
-The Model component will be comprised of mostly backend components such as the todo items themselves, their associations, and any associated disk management to persist the model. The View component will be the Java GUI and all associated visual elements to handle user interactions. The Controller component will be all methods within the GUI to interact with the Model, such as creating new todo items, setting saved filters to display the Model in a custom way, or grouping todo’s into a list. 
+The Model component will reside in the backend and components include the todo items themselves, their associations, and any associated disk management to persist the model. The View component will be the Java GUI and all associated visual elements to handle user interactions. The Controller component will be all methods within the GUI to interact with the Model, such as creating new todo items, setting saved filters to display the Model in a custom way, or grouping todo’s into a list. 
+
+The Model will be a stand-alone program which accepts connections from any number of front-end Viewer/Controllers. This will allow the backend to live on a server or central machine and have other users connect to this instance. 
 
 
 # Functionality:
+User Management
 Persistent storage
 Create, Read, Update, Delete individual items
-For each item (todo, list), store a name, frequency, description, and due date.
+For each item (todo, list), store a name, frequency, description, and due date
 Group items into lists capable of filters/sorting.
 Show the status of items: active, overdue, complete, etc
+Allow custom filters to be saved by users
+Produce simple reports of tasks completed, to put on a resume for example
+Utilize cutting edge UI elements to allow users drag-and-drop functionality
 
 # Operations: 
 ### Individuals
@@ -31,7 +37,9 @@ Show the status of items: active, overdue, complete, etc
 - Update Todo items: Users can edit the name of the task, its description, frequency, and due date
 - Delete Todo items: Offer an option for the user to remove unwanted todo items from the list
 - Filter and sort Todo items: Users can filter and sort items based on criteria such as status, frequency, and due date
+- Save Filter: Users can save a filter to easily reproduce the filter
 - Create a new list: Allow separate lists to be created to group todo items based on different categories
 - Read lists: Present all created lists and todo items within each list to users
 - Update lists: Users can rename and change how a list is filtered/sorted
 - Delete lists: Remove entire lists along with all associated todo items
+- Completion Reports: Users can get completion reports for any list or filter which includes all tasks associated and completed.
