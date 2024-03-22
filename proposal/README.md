@@ -1,45 +1,38 @@
-# Project Title: Todo-App
-## Team 6 
+# Project Title: Warehouse Management App (WaMa)
+## Team 6
 ### Team Members: Hike Yegiyan, Viet Nguyen, Trevor Mathisen
 
 # Problem/Issue to Resolve:
-Everyday tasks are difficult to manage. Most current applications are feature-bloated, hidden behind a paywall, or lack flexibility. We aim to create a complete, simple, and easy-to-use GUI application to track todo items, their frequency, and due dates and allow grouping into various lists and sorting them in meaningful ways.
+Managing a Warehouse can be complex and time-consuming. We aim to create a user-friendly Java GUI application that allows employees to manage inventory, process orders, and track shipments while enabling customers to view their inventory, create orders, and monitor shipments. 
 
-# Assumptions 
-We have the assumption that users have a basic understanding of how to operate a desktop application but may not be technically inclined, suggesting our application's design to be relatively simple and straightforward. We also assume they have access to a personal computer with Java installed and use either Windows, macOS, or a Linux operating system. Given that our application is a Todo app, it is designed for daily personal task management, which suggests frequent usage. Currently, we plan for user data to be stored locally on their machines, rather than on the cloud and thus don't assume the user will require internet access after initially downloading the application. We also assume the user can read English as we most likely won't have any further localization.
+# Assumptions
+We assume users have a basic understanding of how to operate a desktop application and are familiar with warehouse management concepts. We also assume they have access to a company provided workstation which is configured to run Java applications and access the backend. The app will have daily use by warehouse employees and customers. We assume that the application will be connected to a central backend for real-time data storage and retrieval, requiring users to have LAN or VPN access to our network. We also assume the user can read English as we most likely won't have any further localization.
 
 # Intended Usage
-Usage of the application will consist of managing daily tasks which include creating, updating, and tracking to-do items with specific due dates and/or frequencies, with the ability to group tasks into lists based on categories. Users can sort tasks by due date, priority, or custom filters, as well as mark tasks as active, overdue, or complete. Each task will have some customizability, such as having a description, timer, or icon. The user may also have the option to view analytics and insights regarding their task management habits, such as completed tasks over time, most active categories, or time spent on tasks. 
+Employees will use the application to manage inventory, process customer requests, process orders, and track shipments. They can login to the system to view and update inventory levels, create and fulfill orders, and manage shipments. Customers can login to view their inventory levels, create new orders to increase inventory, and track the status of their shipments to their end-users/consumers. The application will provide real-time data and insights to help users make informed decisions and optimize warehouse operations.
 
 # High-Level Solution:
-A Java desktop application with a user-friendly GUI integrated with a backend capable of long-term data storage, retrieval, and manipulation. The front-end will be simple, intuitive, and slightly customizable by allowing users to define views of their todo’s. We will utilize the Model-View-Controller model to allow for modularity and scaling. 
+A Java desktop application with a user-friendly GUI integrated with a backend capable of real-time data creation, retrieval, update and delation. The front-end will be intuitive, straight-forward and designed to aide warehouse management processes. We will utilize the Model-View-Controller (MVC) pattern to ensure modularity and scalability.
 
-The Model component will reside in the backend and components include the todo items themselves, their associations, and any associated disk management to persist the model. The View component will be the Java GUI and all associated visual elements to handle user interactions. The Controller component will be all methods within the GUI to interact with the Model, such as creating new todo items, setting saved filters to display the Model in a custom way, or grouping todo’s into a list. 
-
-The Model will be a stand-alone program which accepts connections from any number of front-end Viewer/Controllers. This will allow the backend to live on a server or central machine and have other users connect to this instance. 
-
+The Model component will reside in the backend and include entities such as products, orders, shipments, employees, and customers. The Model will interact with a database or filesystem for persistent data storage. The View component will be the Java GUI and all associated visual elements to handle user interactions. The Controller component will handle the communication between the View and the Model, processing user inputs and updating the View based on changes in the Model. This will allow further scaling in future iterations by allowing the Model to transition to various RDBM (Relational Database Management) systems, a distributed control approach (see: microservices) and further scaling of connected users. The application will follow a client-server architecture, with multiple client instances (Java GUI) connecting to a single server instance (backend). This architecture allows for centralized data management and enables multiple users to access the system concurrently.
 
 # Functionality:
-User Management
-Persistent storage
-Create, Read, Update, Delete individual items
-For each item (todo, list), store a name, frequency, description, and due date
-Group items into lists capable of filters/sorting.
-Show the status of items: active, overdue, complete, etc
-Allow custom filters to be saved by users
-Produce simple reports of tasks completed, to put on a resume for example
-Utilize cutting edge UI elements to allow users drag-and-drop functionality
+- User Management: Employee and customer login, authentication, and role-based access control
+- Authorization: Manage access to various actions based on access level
+- Inventory Management: Add, view, update, and delete products; track inventory levels; set reorder points
+- Order Management: Create, view, update, and delete orders; process orders; generate invoices
+- Shipment Management: Create, view, update, and delete shipments; track shipment status; generate shipping labels
+- Reporting and Analytics: Generate reports on inventory levels, order history, and shipment status
+- Real-time Updates: Reflect changes made by one user in real-time for all connected users
 
-# Operations: 
-### Individuals
-- Create a new Todo item: Allow users to add tasks, along with a description, its frequency (daily, weekly, monthly, annually, etc.), and due date
-- Read Todo items: Display an organized list of todo items
-- Update Todo items: Users can edit the name of the task, its description, frequency, and due date
-- Delete Todo items: Offer an option for the user to remove unwanted todo items from the list
-- Filter and sort Todo items: Users can filter and sort items based on criteria such as status, frequency, and due date
-- Save Filter: Users can save a filter to easily reproduce the filter
-- Create a new list: Allow separate lists to be created to group todo items based on different categories
-- Read lists: Present all created lists and todo items within each list to users
-- Update lists: Users can rename and change how a list is filtered/sorted
-- Delete lists: Remove entire lists along with all associated todo items
-- Completion Reports: Users can get completion reports for any list or filter which includes all tasks associated and completed.
+# Operations:
+- Employee Login: Employees can securely login to the system using their credentials
+- Customer Login: Customers can securely login to the system using their credentials
+- Manage Products: Employees can add, view, update, and delete products in the inventory
+- Manage Inventory: Employees can update inventory levels, set reorder points, and view low-stock alerts
+- Create Order: Customers can create new orders by selecting products and quantities
+- Process Order: Employees can view, edit, and process customer orders
+- Create Shipment: Employees can create shipments for processed orders
+- Track Shipment: Customers and employees can track the status of shipments
+- Generate Reports: Employees can generate reports on inventory, orders, and shipments
+- Real-time Updates: Changes made by one user are immediately visible to all connected users
