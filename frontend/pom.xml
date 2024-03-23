@@ -1,0 +1,11 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.wama</groupId>
+        <artifactId>CS151-WaMa</artifactId>
+        <version>0.1-trevor</version>
+    </parent>
+    <artifactId>frontend</artifactId>
+
+
+</project>
