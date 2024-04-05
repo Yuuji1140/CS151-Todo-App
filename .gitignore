@@ -11,3 +11,4 @@ target/
 !sqlite-jdbc-3.45.2.0.jar
 .settings/
 jars/
+/wama.iml
