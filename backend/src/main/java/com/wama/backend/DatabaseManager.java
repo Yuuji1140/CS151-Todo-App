@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DatabaseManager extends LogClass {
+public class DatabaseManager extends com.wama.LogClass {
     private static final String DB_URL = "jdbc:sqlite:database.db";
     private static final String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE)";
     private static final String CREATE_USER_PASSWORDS_TABLE = "CREATE TABLE IF NOT EXISTS UserPasswords (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER UNIQUE, password TEXT, FOREIGN KEY (user_id) REFERENCES Users(id))";

@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 
 
-public class SSLFactory extends LogClass {
+public class SSLFactory extends com.wama.LogClass {
     private SSLServerSocketFactory serverSocketFactory;
     private static final String KEYSTORE_FILE;
     private static final String KEYSTORE_PASSWORD;

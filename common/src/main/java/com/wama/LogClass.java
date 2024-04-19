@@ -1,4 +1,4 @@
-package com.wama.backend;
+package com.wama;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

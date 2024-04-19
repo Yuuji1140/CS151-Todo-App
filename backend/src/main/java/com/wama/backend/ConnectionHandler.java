@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Map;
 
-public class ConnectionHandler extends LogClass implements Runnable {
+public class ConnectionHandler extends com.wama.LogClass implements Runnable {
     private final Socket socket;
     private final Map<String, Endpoint> endpoints;
 

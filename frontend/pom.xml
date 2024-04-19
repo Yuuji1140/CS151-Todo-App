@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.wama</groupId>
         <artifactId>CS151-WaMa</artifactId>
-        <version>0.1-trevor</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>frontend</artifactId>
 

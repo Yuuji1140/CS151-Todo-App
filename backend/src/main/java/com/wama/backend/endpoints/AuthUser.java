@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.UUID;
 
-public class AuthUser extends com.wama.backend.LogClass implements Endpoint {
+public class AuthUser extends com.wama.LogClass implements Endpoint {
 
     public boolean validateParameters(Map<String, String> parameters) {
         if (parameters == null)

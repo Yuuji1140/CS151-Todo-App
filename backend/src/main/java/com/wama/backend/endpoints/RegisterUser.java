@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterUser extends com.wama.backend.LogClass implements Endpoint {
+public class RegisterUser extends com.wama.LogClass implements Endpoint {
     public boolean validateParameters(Map<String, String> parameters) {
         if (parameters == null) {
             error("Parameters are null");
