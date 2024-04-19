@@ -4,25 +4,33 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DatabaseManager {
+public class DatabaseManager extends LogClass {
     private static final String DB_URL = "jdbc:sqlite:database.db";
-    private static final String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT)";
-    private static final String CREATE_USER_PASSWORDS_TABLE = "CREATE TABLE IF NOT EXISTS UserPasswords (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, password TEXT, FOREIGN KEY (user_id) REFERENCES Users(id))";
+    private static final String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE)";
+    private static final String CREATE_USER_PASSWORDS_TABLE = "CREATE TABLE IF NOT EXISTS UserPasswords (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER UNIQUE, password TEXT, FOREIGN KEY (user_id) REFERENCES Users(id))";
 
     static {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             System.out.println("SQLite JDBC driver not found.");
-            e.printStackTrace();
+            error("SQLite JDBC driver not found." , e);
         }
     }
 
     // TODO: Sanitize inputs methods
 
     public static void createDatabase() {
+
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
+            // Query number of tables. if > 1, database already exists
+            DatabaseMetaData dbm = conn.getMetaData();
+            ResultSet tables = dbm.getTables(null, null, "Users", null);
+            if (tables.next()) {
+                System.out.println("Database already exists.");
+                return;
+            }
             stmt.execute(CREATE_USERS_TABLE);
             stmt.execute(CREATE_USER_PASSWORDS_TABLE);
             System.out.println("Database created successfully.");
@@ -31,18 +39,20 @@ public class DatabaseManager {
         }
     }
 
-    public static void insertRecord(String tableName, String[] columns, String[] values) {
+    public static boolean insertRecord(String tableName, String[] columns, String[] values) {
         String insertQuery = "INSERT INTO " + tableName + " (" + String.join(", ", columns) + ") VALUES ('" + String.join("', '", values) + "')";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
             stmt.execute(insertQuery);
             System.out.println("Record inserted successfully.");
+            return true;
         } catch (SQLException e) {
             System.out.println("Error inserting record: " + e.getMessage());
+            return false;
         }
     }
 
-    public static ArrayList selectRecords(String tableName, String[] columns, String condition) {
+    public static ArrayList<HashMap<String, String>> selectRecords(String tableName, String[] columns, String condition) {
         ArrayList<HashMap<String, String>> return_list = new ArrayList<>();
 
         String selectQuery = "SELECT " + String.join(", ", columns) + " FROM " + tableName;
