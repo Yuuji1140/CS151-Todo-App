@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DatabaseManager {
+public class DatabaseManager extends LogClass {
     private static final String DB_URL = "jdbc:sqlite:database.db";
     private static final String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, email TEXT UNIQUE)";
     private static final String CREATE_USER_PASSWORDS_TABLE = "CREATE TABLE IF NOT EXISTS UserPasswords (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER UNIQUE, password TEXT, FOREIGN KEY (user_id) REFERENCES Users(id))";
@@ -14,7 +14,7 @@ public class DatabaseManager {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             System.out.println("SQLite JDBC driver not found.");
-            e.printStackTrace();
+            error("SQLite JDBC driver not found." , e);
         }
     }
 
@@ -52,7 +52,7 @@ public class DatabaseManager {
         }
     }
 
-    public static ArrayList selectRecords(String tableName, String[] columns, String condition) {
+    public static ArrayList<HashMap<String, String>> selectRecords(String tableName, String[] columns, String condition) {
         ArrayList<HashMap<String, String>> return_list = new ArrayList<>();
 
         String selectQuery = "SELECT " + String.join(", ", columns) + " FROM " + tableName;

@@ -1,20 +1,22 @@
-package com.wama.backend;
+package com.wama.backend.endpoints;
 
-import java.io.IOException;
+import com.wama.backend.DatabaseManager;
+import com.wama.backend.HttpStatus;
+
+
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-public class RegisterUser implements Endpoint {
+public class RegisterUser extends com.wama.backend.LogClass implements Endpoint {
     public boolean validateParameters(Map<String, String> parameters) {
         if (parameters == null) {
-            System.out.println("Parameters are null");
+            error("Parameters are null");
             return false;
         }
         if (!parameters.containsKey("username") && !parameters.containsKey("email") && !parameters.containsKey("password")) {
-            System.out.println("Parameters are missing");
+            error("Parameters are missing");
             return false;
         }
         String username = parameters.get("username");
@@ -22,40 +24,36 @@ public class RegisterUser implements Endpoint {
         String password = parameters.get("password");
 
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            System.out.println("Parameters are empty");
-            System.out.println("Username: " + parameters.get("username"));
-            System.out.println("Email: " + parameters.get("email"));
-            System.out.println("Password: " + parameters.get("password"));
+            debug("Parameters are empty");
+            debug("Username: " + username);
+            debug("Email: " + email);
+            debug("Password: " + password);
             return false;
         }
         return true;
     }
 
-    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) throws IOException {
+    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
         return HttpStatus.BAD_REQUEST;
     }
 
-    public HttpStatus handlePostRequest(Map<String, String> parameters, OutputStream outputStream) throws IOException {
-        System.out.println("Registering user");
+    public HttpStatus handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
+        info("Registering user");
         if (validateParameters(parameters)) {
             String username = parameters.get("username");
             String email = parameters.get("email");
             String password = parameters.get("password");
             int userID;
-            System.out.println("Registering user with username: " + username + " and email: " + email);
-            boolean success;
+            debug("Registering user with username: " + username + " and email: " + email);
             try {
                 DatabaseManager.insertRecord("Users", new String[]{"username", "email"}, new String[]{username, email});
-                ArrayList user = DatabaseManager.selectRecords("Users", new String[]{"id"}, "username='" + username + "'");
-                userID = Integer.parseInt(((HashMap) user.get(0)).get("id").toString());
-                success = true;
+                ArrayList<HashMap<String, String>> user = DatabaseManager.selectRecords("Users", new String[]{"id"}, "username='" + username + "'");
+                assert user != null;
+                userID = Integer.parseInt(user.get(0).get("id"));
             } catch (Exception e) {
                 if (e.getMessage().contains("UNIQUE constraint failed"))
                     return HttpStatus.CONFLICT;
-                System.out.println("Error registering user: " + e.getMessage());
-                return HttpStatus.INTERNAL_SERVER_ERROR;
-            }
-            if (!success) {
+                error("Error registering user: " + e.getMessage(), e);
                 return HttpStatus.INTERNAL_SERVER_ERROR;
             }
             try {
@@ -65,7 +63,7 @@ public class RegisterUser implements Endpoint {
             } catch (Exception e) {
                 return HttpStatus.INTERNAL_SERVER_ERROR;
             }
-            System.out.println("User registered successfully");
+            info("User " + username + "registered successfully");
             return HttpStatus.OK;
         } else {
             return HttpStatus.BAD_REQUEST;
