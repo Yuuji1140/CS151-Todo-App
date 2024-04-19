@@ -3,18 +3,22 @@ package com.wama;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.wama.backend.DatabaseManager;
 
 public class Customer extends User {
     private String company;
     private String email;
 
-    public Customer(String username, String password) {
-        super(username, password);
+    public Customer(String username, String password, String email, String authToken) {
+        super(username, UserType.EMPLOYEE, email, authToken);
+        if (authToken != null) {
+            debug("Employee " + username + " logged in with token");
+        } else {
+            debug("Creating blank employee object for " + username);
+        }
     }
 
     // Implement login
-    @Override
+    //@Override
     public boolean login() {
         String[] columns = {"id", "password"};
         String condition = "username = ?";
@@ -24,9 +28,9 @@ public class Customer extends User {
             return false;
         }
         String hashedPassword = users.get(0).get("password");
-        if (hashedPassword.equals(this.getPassword())) {
-            this.id = Integer.parseInt(users.get(0).get("id"));
-        }
+//        if (hashedPassword.equals(this.getPassword())) {
+//            this.id = Integer.parseInt(users.get(0).get("id"));
+//        }
 
         return false;
     }

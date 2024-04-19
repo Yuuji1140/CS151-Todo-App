@@ -16,6 +16,7 @@ public class SSLFactory extends com.wama.LogClass {
     static {
         KEYSTORE_FILE = "keystore.jks";
         KEYSTORE_PASSWORD = "password";
+        warn("Using default keystore.jks and password");
     }
 
     private SSLFactory() {
@@ -37,6 +38,7 @@ public class SSLFactory extends com.wama.LogClass {
 
     private static final class InstanceHolder {
         // My IDE yelled at me for having double-checked locking and instead created this Holder for me
+        // https://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
 
         // Can only be created once, by nature of Java class loading
         private static final SSLFactory instance = new SSLFactory();

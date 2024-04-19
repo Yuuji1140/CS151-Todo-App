@@ -1,8 +1,11 @@
 package com.wama.backend.endpoints;
 
+import com.wama.DatabaseManager;
+import com.wama.User;
 import com.wama.backend.HttpStatus;
 
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,31 +14,50 @@ public class AuthUser extends com.wama.LogClass implements Endpoint {
     public boolean validateParameters(Map<String, String> parameters) {
         if (parameters == null)
             return false;
-        if (parameters.containsKey("username") && parameters.containsKey("password"))
-            return !parameters.get("username").isEmpty() && !parameters.get("password").isEmpty();
+        if (parameters.containsKey("username")
+                && parameters.containsKey("password")
+                && parameters.containsKey("type"))
+            return !parameters.get("username").isEmpty()
+                    && !parameters.get("password").isEmpty()
+                    && !parameters.get("type").isEmpty();
         return false;
     }
+    // Use default not implemented response
+//    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
+//        return HttpStatus.BAD_REQUEST;
+//    }
 
-    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
-        return HttpStatus.BAD_REQUEST;
-    }
-
-    public HttpStatus handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
+    public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
         // TODO: Actual authentication logic
         String username = parameters.get("username");
         String password = parameters.get("password");
+        String type = parameters.get("type");
         if (username != null && password != null) {
+            HashMap<String, String> arguments = new HashMap<>();
             info("Authenticating user with username: " + username);
-                        // Here, you can check the provided credentials against a database or other storage
-            // For now, let's assume the credentials are valid
-            String userId = UUID.randomUUID().toString();
-
-            debug("User authenticated successfully. User ID: " + userId);
-
-            return HttpStatus.OK;
+            User.UserType userType = type.equals("Customer") ? User.UserType.CUSTOMER : User.UserType.EMPLOYEE;
+            User user;
+            // Lookup email from username
+            if (userType == User.UserType.CUSTOMER) {
+                user = new com.wama.Customer(username, password, "", "");
+            } else {
+                user = new com.wama.Employee(username, password, "", "");
+            }
+            User loggedInUser = user.loginUser(password);
+            if (loggedInUser != null) {
+                arguments.put("authToken", user.getAuthToken());
+                arguments.put("id", user.getId());
+                arguments.put("username", user.getUsername());
+                arguments.put("email", user.getEmail());
+                arguments.put("type", type);
+                return new HttpResponse(HttpStatus.OK, arguments);
+            } else {
+                error("Failed to authenticate user with username: " + username);
+                return new HttpResponse(HttpStatus.UNAUTHORIZED, arguments);
+            }
         } else {
             error("Invalid parameters provided for authentication.");
-            return HttpStatus.BAD_REQUEST;
+            return new HttpResponse(HttpStatus.BAD_REQUEST, new HashMap<>());
         }
     }
 }

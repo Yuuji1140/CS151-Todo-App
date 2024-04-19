@@ -3,6 +3,7 @@ package com.wama.backend;
 import com.wama.backend.endpoints.AuthUser;
 import com.wama.backend.endpoints.Endpoint;
 import com.wama.backend.endpoints.RegisterUser;
+import com.wama.DatabaseManager;
 
 import java.net.ServerSocket;
 import java.net.Socket;

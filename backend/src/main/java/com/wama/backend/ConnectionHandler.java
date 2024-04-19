@@ -3,6 +3,7 @@ package com.wama.backend;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wama.backend.endpoints.Endpoint;
+import com.wama.backend.endpoints.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,8 +39,8 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
                     Map<String, String> parameters = extractJsonParameters(requestBody);
 
                     if (endpointHandler.validateParameters(parameters)) {
-                        HttpStatus status = handleRequest(method, endpointHandler, parameters, outputStream);
-                        sendResponse(outputStream, status, status.getMessage() + "\n");
+                        HttpResponse status = handleRequest(method, endpointHandler, parameters, outputStream);
+                        sendResponse(outputStream, status.getStatus(), status + "\n");
                     } else {
                         sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid parameters\n");
                     }
@@ -73,14 +74,14 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
         return gson.fromJson(requestBody, new TypeToken<Map<String, String>>() {}.getType());
     }
 
-    private HttpStatus handleRequest(METHODS method, Endpoint endpointHandler, Map<String, String> parameters, OutputStream outputStream) {
+    private HttpResponse handleRequest(METHODS method, Endpoint endpointHandler, Map<String, String> parameters, OutputStream outputStream) {
         switch (method) {
             case GET:
                 return endpointHandler.handleGetRequest(parameters, outputStream);
             case POST:
                 return endpointHandler.handlePostRequest(parameters, outputStream);
             default:
-                return HttpStatus.METHOD_NOT_ALLOWED;
+                return new HttpResponse(HttpStatus.METHOD_NOT_ALLOWED, null);
         }
     }
 
