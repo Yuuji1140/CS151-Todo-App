@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wama.backend.endpoints.Endpoint;
 import com.wama.backend.endpoints.HttpResponse;
+import com.wama.backend.endpoints.HttpStatus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
 
     @Override
     public void run() {
+        // https://www.javatpoint.com/java-socket-getinputstream-method
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              OutputStream outputStream = socket.getOutputStream()) {
             info("Connection established with " + socket.getInetAddress().getHostAddress());
@@ -38,6 +40,7 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
                     String requestBody = readRequestBody(reader);
                     Map<String, String> parameters = extractJsonParameters(requestBody);
 
+                    // Validate parameters before handling request (Interface allows for Endpoint validation)
                     if (endpointHandler.validateParameters(parameters)) {
                         HttpResponse status = handleRequest(method, endpointHandler, parameters, outputStream);
                         sendResponse(outputStream, status.getStatus(), status + "\n");
@@ -111,16 +114,14 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
         outputStream.write(response.getBytes());
         outputStream.flush();
     }
-}
 
-enum METHODS {
-    GET("GET"),
-    POST("POST"),
-    INVALID("INVALID");
+    private enum METHODS {
+        GET("GET"),
+        POST("POST"),
+        INVALID("INVALID");
 
-    METHODS(String method) {
-        assert this.name().equals(method); // Do something to keep IDE happy
+        METHODS(String method) {
+            assert this.name().equals(method); // Do something to keep IDE happy
+        }
     }
-
-
 }

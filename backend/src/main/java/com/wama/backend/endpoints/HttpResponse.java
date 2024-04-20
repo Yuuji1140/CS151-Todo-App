@@ -1,7 +1,5 @@
 package com.wama.backend.endpoints;
 
-import com.wama.backend.HttpStatus;
-
 import java.util.Map;
 
 public class HttpResponse {

@@ -1,7 +1,6 @@
 package com.wama.backend.endpoints;
 
 import com.wama.User;
-import com.wama.backend.HttpStatus;
 
 
 import java.io.OutputStream;

@@ -1,13 +1,10 @@
 package com.wama.backend.endpoints;
 
-import com.wama.DatabaseManager;
 import com.wama.User;
-import com.wama.backend.HttpStatus;
 
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class AuthUser extends com.wama.LogClass implements Endpoint {
 
@@ -22,6 +19,7 @@ public class AuthUser extends com.wama.LogClass implements Endpoint {
                     && !parameters.get("type").isEmpty();
         return false;
     }
+
     // Use default not implemented response
 //    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
 //        return HttpStatus.BAD_REQUEST;

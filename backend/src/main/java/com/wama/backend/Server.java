@@ -14,7 +14,6 @@ public class Server extends com.wama.LogClass {
     private static final int PORT;
     private static final Map<String, Endpoint> endpoints;
 
-
     static {
         // Register endpoints
         PORT = 9876;
@@ -25,17 +24,26 @@ public class Server extends com.wama.LogClass {
     }
 
     public static void main(String[] args) {
+        /*
+         The main loop of the server. It listens for incoming connections and creates a new ConnectionHandler
+         for each connection in a new thread. Each ConnectionHandler reads the request, extracts the endpoint and
+         parameters, validates parameters, calls the appropriate Endpoint, and responds to the user.
+         */
         info("Starting server on port " + PORT + "...");
-
-
+        // TODO: Will putting this in an out while true: loop allow for the server to restart on failure?
+        //       would need to look into retry counts and reasons to fail.
         try (ServerSocket serverSocket = SSLFactory.getInstance().createSSLServerSocket(PORT)) {
             info("Server started successfully on port " + PORT + ".");
 
+            // We can handle requests now.
             while (serverSocket.isBound()) {
                 Socket socket = serverSocket.accept();
                 ConnectionHandler connectionHandler = new ConnectionHandler(socket, endpoints);
                 new Thread(connectionHandler).start();
+                // There is no need to join the thread
             }
+            // TODO: Ensure we don't need a shutdown type hook to close the server on failure
+            //       I think isBound() is enough.
         } catch (Exception e) {
             error("An error occurred while starting the server", e);
         }
