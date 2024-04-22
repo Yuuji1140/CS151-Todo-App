@@ -28,31 +28,38 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              OutputStream outputStream = socket.getOutputStream()) {
             info("Connection established with " + socket.getInetAddress().getHostAddress());
+
             String request = reader.readLine();
-
-            if (request != null) {
-                String[] requestParts = request.split(" ");
-                METHODS method = parseMethod(requestParts[0]);
-                String endpoint = requestParts[1];
-
-                Endpoint endpointHandler = endpoints.get(endpoint);
-                if (endpointHandler != null) {
-                    String requestBody = readRequestBody(reader);
-                    Map<String, String> parameters = extractJsonParameters(requestBody);
-
-                    // Validate parameters before handling request (Interface allows for Endpoint validation)
-                    if (endpointHandler.validateParameters(parameters)) {
-                        HttpResponse status = handleRequest(method, endpointHandler, parameters, outputStream);
-                        sendResponse(outputStream, status.getStatus(), status + "\n");
-                    } else {
-                        sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid parameters\n");
-                    }
-                } else {
-                    sendResponse(outputStream, HttpStatus.NOT_FOUND, "Endpoint not found\n");
-                }
-            } else {
-                sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid request\n");
+            if (request == null) {
+                sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid request\\n");
+                return;
             }
+
+            String[] requestParts = request.split(" ");
+            if (requestParts.length < 2) {
+                sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid request\\n");
+                return;
+            }
+
+            METHODS method = parseMethod(requestParts[0]);
+            String endpoint = requestParts[1];
+            Endpoint endpointHandler = endpoints.get(endpoint);
+
+            if (endpointHandler == null) {
+                sendResponse(outputStream, HttpStatus.NOT_FOUND, "Endpoint not found\\n");
+                return;
+            }
+
+            String requestBody = readRequestBody(reader);
+            Map<String, String> parameters = extractJsonParameters(requestBody);
+
+            if (!endpointHandler.validParameters(parameters)) {
+                sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid parameters\\n");
+                return;
+            }
+
+            HttpResponse status = handleRequest(method, endpointHandler, parameters, outputStream);
+            sendResponse(outputStream, status.getStatus(), status + "\\n");
         } catch (Exception e) {
             error("Error while handling connection: " + e.getMessage(), e);
         } finally {
@@ -80,11 +87,19 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
     private HttpResponse handleRequest(METHODS method, Endpoint endpointHandler, Map<String, String> parameters, OutputStream outputStream) {
         switch (method) {
             case GET:
+                parameters.put("requestType", "GET");
                 return endpointHandler.handleGetRequest(parameters, outputStream);
             case POST:
+                parameters.put("requestType", "POST");
                 return endpointHandler.handlePostRequest(parameters, outputStream);
+            case PUT:
+                parameters.put("requestType", "PUT");
+                return endpointHandler.handlePutRequest(parameters, outputStream);
+            case DELETE:
+                parameters.put("requestType", "DELETE");
+                return endpointHandler.handleDeleteRequest(parameters, outputStream);
             default:
-                return new HttpResponse(HttpStatus.METHOD_NOT_ALLOWED, null);
+                return new HttpResponse(HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
 
@@ -118,6 +133,8 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
     private enum METHODS {
         GET("GET"),
         POST("POST"),
+        PUT("PUT"),
+        DELETE("DELETE"),
         INVALID("INVALID");
 
         METHODS(String method) {

@@ -12,6 +12,7 @@ public enum HttpStatus {
 
     NOT_IMPLEMENTED(501, "Not Implemented"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    CREATED(201, "Created"),
     UNAUTHORIZED(401, "Unauthorized");
 
     private final int code;

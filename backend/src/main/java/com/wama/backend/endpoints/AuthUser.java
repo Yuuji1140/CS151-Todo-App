@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class AuthUser extends com.wama.LogClass implements Endpoint {
 
-    public boolean validateParameters(Map<String, String> parameters) {
+    public boolean validParameters(Map<String, String> parameters) {
         if (parameters == null)
             return false;
         if (parameters.containsKey("username")
@@ -19,11 +19,6 @@ public class AuthUser extends com.wama.LogClass implements Endpoint {
                     && !parameters.get("type").isEmpty();
         return false;
     }
-
-    // Use default not implemented response
-//    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
-//        return HttpStatus.BAD_REQUEST;
-//    }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
         // TODO: Actual authentication logic
