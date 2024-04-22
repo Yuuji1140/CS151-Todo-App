@@ -1,7 +1,9 @@
-package com.wama.backend;
+package com.wama.backend.endpoints;
 
 public enum HttpStatus {
     // Massive Enum to handle HTTP status codes and such.
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    // (No particular order, just adding them as we need them.)
     OK(200, "OK"),
     BAD_REQUEST(400, "Bad Request"),
     NOT_FOUND(404, "Not Found"),
@@ -9,7 +11,8 @@ public enum HttpStatus {
     CONFLICT(409, "Conflict"),
 
     NOT_IMPLEMENTED(501, "Not Implemented"),
-    INTERNAL_SERVER_ERROR(500, "Internal Server Error");
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    UNAUTHORIZED(401, "Unauthorized");
 
     private final int code;
     private final String message;

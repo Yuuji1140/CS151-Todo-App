@@ -1,29 +1,31 @@
 package com.wama.backend.endpoints;
 
-import com.wama.backend.DatabaseManager;
-import com.wama.backend.HttpStatus;
+import com.wama.User;
 
 
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
-public class RegisterUser extends com.wama.backend.LogClass implements Endpoint {
+public class RegisterUser extends com.wama.LogClass implements Endpoint {
     public boolean validateParameters(Map<String, String> parameters) {
         if (parameters == null) {
             error("Parameters are null");
             return false;
         }
-        if (!parameters.containsKey("username") && !parameters.containsKey("email") && !parameters.containsKey("password")) {
+        if (!parameters.containsKey("username") &&
+                !parameters.containsKey("email") &&
+                !parameters.containsKey("password") &&
+                !parameters.containsKey("type")) { // Customer or Employee
             error("Parameters are missing");
             return false;
         }
         String username = parameters.get("username");
         String email = parameters.get("email");
         String password = parameters.get("password");
+        String type = parameters.get("type");
 
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || type.isEmpty()) {
             debug("Parameters are empty");
             debug("Username: " + username);
             debug("Email: " + email);
@@ -33,40 +35,43 @@ public class RegisterUser extends com.wama.backend.LogClass implements Endpoint 
         return true;
     }
 
-    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
-        return HttpStatus.BAD_REQUEST;
-    }
+//    public HttpStatus handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
+//        return HttpStatus.BAD_REQUEST;
+//    }
 
-    public HttpStatus handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
+    public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
         info("Registering user");
         if (validateParameters(parameters)) {
+            HashMap<String, String> arguments = new HashMap<>();
             String username = parameters.get("username");
             String email = parameters.get("email");
             String password = parameters.get("password");
-            int userID;
-            debug("Registering user with username: " + username + " and email: " + email);
+            String type = parameters.get("type");
+            User.UserType userType = type.equals("Customer") ? User.UserType.CUSTOMER : User.UserType.EMPLOYEE;
+            User user;
+            if (userType == User.UserType.CUSTOMER) {
+                user = new com.wama.Customer(username, password, email, "");
+            } else {
+                user = new com.wama.Employee(username, password, email, "");
+            }
             try {
-                DatabaseManager.insertRecord("Users", new String[]{"username", "email"}, new String[]{username, email});
-                ArrayList<HashMap<String, String>> user = DatabaseManager.selectRecords("Users", new String[]{"id"}, "username='" + username + "'");
-                assert user != null;
-                userID = Integer.parseInt(user.get(0).get("id"));
-            } catch (Exception e) {
-                if (e.getMessage().contains("UNIQUE constraint failed"))
-                    return HttpStatus.CONFLICT;
+                if (user.registerNewUser(password) == null) {
+                    // Theoretically impossible to get here. If the user is null, an exception would have been thrown.
+                    arguments.put("error", "User already exists");
+                    return new HttpResponse(HttpStatus.BAD_REQUEST, arguments);
+                }
+            } catch (IllegalArgumentException e) {
                 error("Error registering user: " + e.getMessage(), e);
-                return HttpStatus.INTERNAL_SERVER_ERROR;
+                arguments.put("error", e.getMessage());
+                return new HttpResponse(HttpStatus.BAD_REQUEST, arguments);
             }
-            try {
-                DatabaseManager.insertRecord("UserPasswords",
-                        new String[]{"user_id", "password"},
-                        new String[]{Integer.toString(userID), password});
-            } catch (Exception e) {
-                return HttpStatus.INTERNAL_SERVER_ERROR;
-            }
-            info("User " + username + "registered successfully");
-            return HttpStatus.OK;
+            arguments.put("username", username);
+            arguments.put("email", email);
+            arguments.put("type", type);
+            arguments.put("authToken", user.getAuthToken());
+            return new HttpResponse(HttpStatus.OK, arguments);
         } else {
-            return HttpStatus.BAD_REQUEST;
+            return new HttpResponse(HttpStatus.BAD_REQUEST, new HashMap<>());
         }
     }
 }
