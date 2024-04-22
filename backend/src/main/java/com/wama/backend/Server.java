@@ -1,6 +1,8 @@
 package com.wama.backend;
 
-import com.wama.backend.endpoints.*;
+import com.wama.backend.endpoints.AuthUser;
+import com.wama.backend.endpoints.Endpoint;
+import com.wama.backend.endpoints.RegisterUser;
 import com.wama.DatabaseManager;
 
 import java.net.ServerSocket;
@@ -18,8 +20,6 @@ public class Server extends com.wama.LogClass {
         endpoints = new HashMap<>();
         endpoints.put("/authUser", new AuthUser());
         endpoints.put("/registerUser", new RegisterUser());
-        endpoints.put("/products", new Products());
-        endpoints.put("/orders", new Orders());
         DatabaseManager.createDatabase();
     }
 

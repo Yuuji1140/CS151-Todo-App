@@ -18,24 +18,10 @@ public interface Endpoint {
         return new HttpResponse(HttpStatus.NOT_IMPLEMENTED, arguments);
     }
 
-    default HttpResponse handlePutRequest(Map<String, String> parameters, OutputStream outputStream) {
-        HashMap<String, String> arguments = new HashMap<>();
-        arguments.put("error", "PUT request not implemented");
-        return new HttpResponse(HttpStatus.NOT_IMPLEMENTED, arguments);
-    }
-
-    default HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {
-        HashMap<String, String> arguments = new HashMap<>();
-        arguments.put("error", "DELETE request not implemented");
-        return new HttpResponse(HttpStatus.NOT_IMPLEMENTED, arguments);
-    }
-
     /*
-    This method is used to validate the parameters of a request before handling it. The ConnectionHandler class
-    calls this method before calling handleXXXRequest.
-    Each individual endpoint should implement this method to validate the parameters of the request BUT SHOULD NOT
-    CALL THE validateParameters METHOD DIRECTLY (that's the ConnectionHandler's job).
+    This method is used to validate the parameters of a request before handling it. The Server class
+    calls this method before calling handleGetRequest or handlePostRequest.
      */
-    boolean validParameters(Map<String, String> parameters);
+    boolean validateParameters(Map<String, String> parameters);
 
 }
