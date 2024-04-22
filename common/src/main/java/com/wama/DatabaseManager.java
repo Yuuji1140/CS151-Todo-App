@@ -17,6 +17,7 @@ public class DatabaseManager extends com.wama.LogClass {
             "password TEXT NOT NULL," +
             "FOREIGN KEY (user_id) REFERENCES Users(id)" +
             ")";
+
     private static final String CREATE_AUTH_TOKENS_TABLE = "CREATE TABLE IF NOT EXISTS AuthTokens (" +
             "user_id TEXT PRIMARY KEY," +
             "auth_token TEXT UNIQUE NOT NULL," +
