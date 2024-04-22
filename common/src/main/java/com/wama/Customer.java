@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 
 public class Customer extends User {
-    private String company;
+    private String name;
     private String email;
+    private String address;
+    private String phone;
 
     public Customer(String username, String password, String email, String authToken) {
         super(username, UserType.EMPLOYEE, email, authToken);
@@ -34,7 +36,7 @@ public class Customer extends User {
 
         return false;
     }
-    
+
     // Implement placeholder
     public void placeOrder() {
 
@@ -42,6 +44,6 @@ public class Customer extends User {
 
     // Implement
     public void addInventory() {
-        
+
     }
 }
