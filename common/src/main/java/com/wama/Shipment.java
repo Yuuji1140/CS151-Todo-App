@@ -15,7 +15,7 @@ public class Shipment extends LogClass {
     public Shipment(String id) {
         this.id = id;
         // TODO: Fetch the rest of the fields from the database
-        selectShipment(id);
+        selectShipment();
     }
 
     private Shipment(String orderId, Timestamp shipmentDate, String status, String trackingNumber) {
@@ -26,7 +26,7 @@ public class Shipment extends LogClass {
         this.trackingNumber = trackingNumber;
     }
 
-    public void selectShipment(String id2) {
+    public void selectShipment() {
         String[] columns = { "id", "order_id", "shipment_date", "status", "tracking_number" };
         ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Shipments", columns,
                 "id = '" + id + "'");
