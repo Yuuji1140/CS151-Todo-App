@@ -119,13 +119,12 @@ for customer_id in customer_ids:
         cursor.execute("UPDATE Orders SET total = ? WHERE id = ?", (total, order_id))
 
         # Shipments
-        if status in ['Shipped', 'Delivered']:
-            shipment_id = str(uuid.uuid4())
-            shipment_date = fake.date_between_dates(date_start=order_date)
-            tracking_number = str(uuid.uuid4())
+        shipment_id = str(uuid.uuid4())
+        shipment_date = fake.date_between_dates(date_start=order_date)
+        tracking_number = str(uuid.uuid4())
 
-            cursor.execute("INSERT INTO Shipments (id, order_id, shipment_date, status, tracking_number) VALUES (?, ?, ?, ?, ?)",
-                           (shipment_id, order_id, shipment_date, status, tracking_number))
+        cursor.execute("INSERT INTO Shipments (id, order_id, shipment_date, status, tracking_number) VALUES (?, ?, ?, ?, ?)",
+                       (shipment_id, order_id, shipment_date, status, tracking_number))
 conn.commit()
 
 # Commit the changes and close the connection
