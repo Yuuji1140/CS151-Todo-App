@@ -35,7 +35,7 @@ public class Order extends LogClass {
         this.total = total;
     }
 
-    private void selectOrder(String id2) {
+    public void selectOrder(String id2) {
         String[] columns = { "id", "customer_id", "employee_id", "order_date", "status", "total" };
         ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns,
                 "id = '" + id + "'");
@@ -49,7 +49,7 @@ public class Order extends LogClass {
             this.total = Double.parseDouble(order.get("total"));
         } else {
             error("Order not found.");
-            throw new IllegalArgumentException("Order not found");
+            throw new IllegalArgumentException("Order not found.");
         }
     }
 
