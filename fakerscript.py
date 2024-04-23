@@ -4,6 +4,7 @@ from faker import Faker
 import uuid
 
 # Usage:
+# Database must already be created (see DatabaseManager.java)
 # python3 -m venv venv
 # source venv/bin/activate
 # pip install faker
