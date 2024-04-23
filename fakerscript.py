@@ -3,6 +3,12 @@ import random
 from faker import Faker
 import uuid
 
+# Usage:
+# python3 -m venv venv
+# source venv/bin/activate
+# pip install faker
+# python fakerscript.py
+
 # Connect to the SQLite database (creates it if it doesn't exist)
 conn = sqlite3.connect('database.db')
 cursor = conn.cursor()
