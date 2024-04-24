@@ -61,7 +61,11 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
             HttpResponse status = handleRequest(method, endpointHandler, parameters, outputStream);
             sendResponse(outputStream, status.getStatus(), status + "\\n");
         } catch (Exception e) {
-            error("Error while handling connection: " + e.getMessage(), e);
+            String errorMsg = e.getMessage();
+            if (errorMsg.contains("Unsupported or unrecognized SSL message"))
+                errorMsg = "Unsupported or unrecognized SSL message. Did you forget to use HTTPS?";
+            error("Error while handling connection: " + errorMsg);
+            debug("Error details: \n" + e + "\n" + Arrays.toString(e.getStackTrace()) + "\n");
         } finally {
             try {
                 socket.close();
