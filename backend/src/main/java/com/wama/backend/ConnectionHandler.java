@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Map;
+import java.util.Arrays;
 
 public class ConnectionHandler extends com.wama.LogClass implements Runnable {
     private final Socket socket;
