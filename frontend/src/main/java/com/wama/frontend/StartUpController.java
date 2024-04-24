@@ -20,15 +20,13 @@ import javafx.util.Duration;
 import java.util.HashMap;
 
 @SuppressWarnings("unused")
-public class SceneController
+public class StartUpController
 {
 	private Stage stage;
 	private Scene scene;
-	private Parent root;
 	
 	@FXML private Pane animationPane;
-	@FXML private Text text1;
-	@FXML private Button signUpButton;
+	
 	/*
 	// Signup debug
 	@FXML private TextField usernameField;
@@ -56,6 +54,7 @@ public class SceneController
 		}
 	}
 	// Signup debug
+	 */
 
     @FXML
     public void initialize() {
@@ -63,39 +62,30 @@ public class SceneController
         ShapeFactory.generateRectangles(animationPane, 3, 600, 625, -100);
         fadeInEffect(animationPane, 3500);
     }
-	*/
-	public void sceneMain(ActionEvent event) throws IOException
+	
+	public void scene(ActionEvent event) throws IOException
 	{
-		Parent root = FXMLLoader.load(getClass().getResource("SceneStartUp.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/com/wama/frontend/scenes/SceneStartUp.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
 		stage.show();
 	}
 	
-	public void sceneSignUp(ActionEvent event) throws IOException
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("SceneSignUp.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
+	@FXML
+    void handleSignUpButtonAction(ActionEvent event) {
+        Main.switchToSceneSignUp();
+    }
 	
-	public void sceneLogin(ActionEvent event) throws IOException
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("SceneLogin.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
+	@FXML
+    void handleLoginButtonAction(ActionEvent event) {
+        Main.switchToSceneLogin();
+    }
 	
-	private void fadeInEffect(Node node, double durationMillis) {
-	    FadeTransition ft = new FadeTransition(Duration.millis(durationMillis), node);
-	    ft.setFromValue(0.0);  // Start fully transparent
-	    ft.setToValue(1.0);    // End fully opaque
+	private void fadeInEffect(Node node, double duration) {
+	    FadeTransition ft = new FadeTransition(Duration.millis(duration), node);
+	    ft.setFromValue(0.0);
+	    ft.setToValue(1.0);
 	    ft.play();
 	}
-
 }

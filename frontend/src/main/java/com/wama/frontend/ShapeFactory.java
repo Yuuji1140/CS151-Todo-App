@@ -20,7 +20,7 @@ public class ShapeFactory {
     private static final int COLOR_RANGE = 156;
     private static final int MIN_ANIM_DURATION = 2;
     private static final int ANIM_DURATION_RANGE = 2;
-    private static final int OFFSET_RANGE = 50;  // Max offset range for random end positions per row
+    private static final int OFFSET_RANGE = 75;  // offset range for random end positions per row
 
     private static Rectangle createRectangle(double width, double height, Color color, double x, double y) {
         Rectangle rectangle = new Rectangle(width, height);
