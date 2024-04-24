@@ -26,40 +26,11 @@ public class StartUpController
 	private Scene scene;
 	
 	@FXML private Pane animationPane;
-	
-	/*
-	// Signup debug
-	@FXML private TextField usernameField;
-	@FXML private TextField emailField;
-	@FXML private PasswordField passwordField;
-	@FXML private ComboBox<String> userTypeComboBox;
-
-	public void handleSignUp(ActionEvent event) {
-		String username = usernameField.getText();
-		String email = emailField.getText();
-		String password = passwordField.getText();
-		String userType = "Employee";
-
-		HashMap<String, String> parameters = new HashMap<>();
-		parameters.put("username", username);
-		parameters.put("email", email);
-		parameters.put("password", password);
-		parameters.put("type", userType);
-
-		try {
-			String response = HttpRequest.post("http://localhost:9876/registerUser", parameters);
-			// Handle response, e.g., show success or error message
-		} catch (IOException e) {
-			// Handle exception
-		}
-	}
-	// Signup debug
-	 */
 
     @FXML
     public void initialize() {
-        ShapeFactory.generateRectangles(animationPane, 3, -250, 25, 0);
-        ShapeFactory.generateRectangles(animationPane, 3, 600, 625, -100);
+        AnimSlidingRects.generateRectangles(animationPane, 3, -250, 25, 0);
+        AnimSlidingRects.generateRectangles(animationPane, 3, 600, 625, -100);
         fadeInEffect(animationPane, 3500);
     }
 	

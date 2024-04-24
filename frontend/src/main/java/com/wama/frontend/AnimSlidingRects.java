@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class ShapeFactory {
+public class AnimSlidingRects {
 
     private static final int BASE_WIDTH = 40;
     private static final int RECTS_PER_ROW = 7;
