@@ -16,10 +16,10 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SceneStartUp.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wama/frontend/SceneStartUp.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/com/wama/frontend/style.css").toExternalForm());
             stage.setResizable(false);
             stage.getIcons().add(new Image("/app/images/icon.png"));
             stage.setTitle("WaMa Systems");
