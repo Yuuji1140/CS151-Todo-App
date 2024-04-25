@@ -1,12 +1,10 @@
 package com.wama.backend.endpoints;
 
-import com.wama.DatabaseManager;
 import com.wama.Order;
 
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 public class Orders extends com.wama.LogClass implements Endpoint {
     private Order order;
@@ -103,7 +101,7 @@ public class Orders extends com.wama.LogClass implements Endpoint {
         String orderDate = parameters.get("order_date");
         String status = parameters.get("status");
         double total = Double.parseDouble(parameters.get("total"));
-        
+
         order = new Order(id);
         order.updateOrder(customerId, employeeId, orderDate, status, total);
         if (order != null) {
@@ -127,6 +125,7 @@ public class Orders extends com.wama.LogClass implements Endpoint {
 
     public HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {
         String id = parameters.get("id");
+
         order = new Order(id);
         order.deleteOrder();
         if (order == null) {

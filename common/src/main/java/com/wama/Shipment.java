@@ -26,7 +26,7 @@ public class Shipment extends LogClass {
         this.trackingNumber = trackingNumber;
     }
 
-    public void selectShipment() {
+    public HashMap<String, String> selectShipment() {
         String[] columns = { "id", "order_id", "shipment_date", "status", "tracking_number" };
         ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Shipments", columns,
                 "id = '" + id + "'");
@@ -36,20 +36,21 @@ public class Shipment extends LogClass {
             this.shipmentDate = Timestamp.valueOf(shipment.get("shipment_date"));
             this.status = shipment.get("status");
             this.trackingNumber = shipment.get("tracking_number");
+            return shipment;
         } else {
             error("Shipment not found.");
             throw new IllegalArgumentException("Shipment not found.");
         }
     }
 
-    public Shipment createShipment(String orderId, Timestamp shipmentDate, String status,
+    public Shipment createShipment(String orderId, String shipmentDate, String status,
             String trackingNumber) {
-        Shipment newShipment = new Shipment(orderId, shipmentDate, status, trackingNumber);
+        Shipment newShipment = new Shipment(orderId, Timestamp.valueOf(shipmentDate), status, trackingNumber);
         // TODO: Insert the new shipment into the database
         try {
             DatabaseManager.insertRecord("Shipments",
                     new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
-                    new String[] { id, orderId, shipmentDate.toString(), status, trackingNumber });
+                    new String[] { id, orderId, shipmentDate, status, trackingNumber });
         } catch (Exception e) {
             error("Error creating shipment: " + e.getMessage(), e);
             newShipment.deleteShipment();
@@ -59,17 +60,17 @@ public class Shipment extends LogClass {
         return newShipment;
     }
 
-    public Shipment updateShipment(String orderId, Timestamp shipmentDate, String status,
+    public Shipment updateShipment(String orderId, String shipmentDate, String status,
             String trackingNumber) {
         this.orderId = orderId;
-        this.shipmentDate = shipmentDate;
+        this.shipmentDate = Timestamp.valueOf(shipmentDate);
         this.status = status;
         this.trackingNumber = trackingNumber;
 
         try {
             DatabaseManager.updateRecord("Shipments",
                     new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
-                    new String[] { id, orderId, shipmentDate.toString(), status, trackingNumber },
+                    new String[] { id, orderId, shipmentDate, status, trackingNumber },
                     "id = '" + id + "'");
         } catch (Exception e) {
             error("Error updating shipment: " + e.getMessage(), e);
@@ -85,6 +86,12 @@ public class Shipment extends LogClass {
             error("Error deleting shipment: " + e.getMessage(), e);
             throw new IllegalArgumentException("Failed to delete shipment.");
         }
+    }
+
+    public static ArrayList<HashMap<String, String>> getAllShipments() {
+        return DatabaseManager.selectRecords("Shipments",
+                new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
+                null);
     }
 
     public String getId() {
