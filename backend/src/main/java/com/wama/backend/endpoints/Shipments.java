@@ -48,7 +48,6 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
             return new HttpResponse(HttpStatus.OK, com.wama.Shipment.getAllShipments());
         }
 
-
         // String[] columns = {"id", "order_id", "shipment_date", "status", "tracking_number"};
         // if (id != null) {
         //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Shipments", columns, "id = '" + id + "'");

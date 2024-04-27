@@ -36,7 +36,7 @@ public class Product extends LogClass {
         this.currentStock = currentStock;
     }
 
-    public void selectProduct() {
+    public HashMap<String, String> selectProduct() {
         String[] columns = { "id", "name", "description", "price", "reorder_point", "current_stock" };
         ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("OrderItems", columns,
                 "id = '" + id + "'");
@@ -48,6 +48,7 @@ public class Product extends LogClass {
             this.price = Double.parseDouble(product.get("price"));
             this.reorderPoint = Integer.parseInt(product.get("reorder_point"));
             this.currentStock = Integer.parseInt(product.get("current_stock"));
+            return product;
         } else {
             error("Product not found.");
             throw new IllegalArgumentException("Product not found.");
@@ -99,6 +100,12 @@ public class Product extends LogClass {
             error("Error deleting product: " + e.getMessage(), e);
             throw new IllegalArgumentException("Failed to delete product.");
         }
+    }
+
+    public static ArrayList<HashMap<String, String>> getAllProducts() {
+        return DatabaseManager.selectRecords("Orders",
+                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock" },
+                null);
     }
 
     public String getId() {
