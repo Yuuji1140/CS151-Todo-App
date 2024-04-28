@@ -25,24 +25,6 @@ public class DatabaseManager extends com.wama.LogClass {
             "FOREIGN KEY (user_id) REFERENCES Users(id)" +
             ")";
 
-    private static final String CREATE_CUSTOMERS_TABLE = "CREATE TABLE IF NOT EXISTS Customers (" +
-            "user_id TEXT PRIMARY KEY," +
-            "name TEXT NOT NULL," +
-            "email TEXT UNIQUE NOT NULL," +
-            "address TEXT," +
-            "phone TEXT," +
-            "FOREIGN KEY (user_id) REFERENCES Users(id)" +
-            ")";
-
-    private static final String CREATE_EMPLOYEES_TABLE = "CREATE TABLE IF NOT EXISTS Employees (" +
-            "user_id TEXT PRIMARY KEY," +
-            "name TEXT NOT NULL," +
-            "email TEXT UNIQUE NOT NULL," +
-            "position TEXT NOT NULL," +
-            "salary REAL," +
-            "FOREIGN KEY (user_id) REFERENCES Users(id)" +
-            ")";
-
     private static final String CREATE_PRODUCTS_TABLE = "CREATE TABLE IF NOT EXISTS Products (" +
             "id TEXT PRIMARY KEY," +
             "name TEXT UNIQUE NOT NULL," +
@@ -86,8 +68,6 @@ public class DatabaseManager extends com.wama.LogClass {
             CREATE_USERS_TABLE,
             CREATE_USER_PASSWORDS_TABLE,
             CREATE_AUTH_TOKENS_TABLE,
-            CREATE_CUSTOMERS_TABLE,
-            CREATE_EMPLOYEES_TABLE,
             CREATE_PRODUCTS_TABLE,
             CREATE_ORDERS_TABLE,
             CREATE_ORDER_ITEMS_TABLE,
