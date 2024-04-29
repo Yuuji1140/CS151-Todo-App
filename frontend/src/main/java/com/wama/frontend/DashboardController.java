@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 
 public class DashboardController
 {
+	
+	
 	@FXML
     void handleSignoutButtonAction(ActionEvent event) {
 		// TODO: Handle logging user out here
@@ -13,12 +15,12 @@ public class DashboardController
 	
 	@FXML
     void handleEmployeeDashboardButtonAction(ActionEvent event) {
-        Main.switchToSceneEmployeeDashboard();
+        Main.switchToSceneDashboardEmployee();
     }
 	
 	@FXML
     void handleCustomerDashboardButtonAction(ActionEvent event) {
-        Main.switchToSceneCustomerDashboard();
+        Main.switchToSceneDashboardCustomer();
     }
 	
 	@FXML
@@ -27,12 +29,32 @@ public class DashboardController
     }
 	
 	@FXML
+    void handleProductsButtonAction(ActionEvent event) {
+		Main.switchToSceneTracking();
+    }
+	
+	@FXML
     void handleTrackingButtonAction(ActionEvent event) {
 		Main.switchToSceneTracking();
     }
 	
 	@FXML
-    void handleFeedbackButtonAction(ActionEvent event) {
-        Main.switchToSceneFeedback();
+    void handleFeedbackCustomerButtonAction(ActionEvent event) {
+        Main.switchToSceneFeedbackCustomer();
+    }
+	
+	@FXML
+    void handleFeedbackCustomerBackButtonAction(ActionEvent event) {
+        Main.switchToSceneDashboardCustomer();
+    }
+	
+	@FXML
+    void handleFeedbackEmployeeButtonAction(ActionEvent event) {
+        Main.switchToSceneFeedbackEmployee();
+    }
+	
+	@FXML
+    void handleFeedbackEmployeeBackButtonAction(ActionEvent event) {
+        Main.switchToSceneDashboardEmployee();
     }
 }

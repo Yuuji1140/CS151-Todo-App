@@ -78,7 +78,7 @@ public class LoginController
 	    parameters.put("password", password);
 	    parameters.put("type", userType);
 
-	    AuthUser authUser = new AuthUser(); // Unsure if I should be doing this
+	    AuthUser authUser = new AuthUser(); // unsure if i should be doing this
 
 	    if (authUser.validParameters(parameters)) {
 	        HttpResponse response = authUser.handlePostRequest(parameters, new ByteArrayOutputStream());
