@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.SignUpController">
+	<children>
+		<Pane fx:id="animationPane" prefHeight="768.0" prefWidth="1024.0">
+         <children>
+            <Pane layoutX="595.0" layoutY="74.0" prefHeight="576.0" prefWidth="390.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="583.0" layoutX="-9.0" layoutY="-3.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="6.0" width="407.0">
+                     <effect>
+                        <DropShadow height="12.0" radius="5.5" width="12.0">
+                           <color>
+                              <Color red="0.6315789222717285" green="0.6315789222717285" blue="0.6315789222717285" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </Rectangle>
+                  <Text fill="#797979" layoutX="77.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign Up">
+                     <font>
+                        <Font name="Monaco" size="56.0" />
+                     </font>
+                  </Text>
+                  <ComboBox fx:id="userTypeComboBox" layoutX="114.0" layoutY="105.0" prefHeight="25.0" prefWidth="163.0" promptText="User Type" styleClass="combo-box" />
+                  
+                  <Text fx:id="usernameError" fill="RED" layoutX="84.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <TextField fx:id="usernameField" layoutX="84.0" layoutY="200.0" prefHeight="42.0" prefWidth="222.0" promptText="Username" />
+                  
+                  <Text fx:id="emailError" fill="RED" layoutX="83.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <TextField fx:id="emailField" layoutX="84.0" layoutY="275.0" prefHeight="42.0" prefWidth="222.0" promptText="Email" />
+                  
+                  <Text fx:id="passwordError" fill="RED" layoutX="84.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <PasswordField fx:id="passwordField" layoutX="84.0" layoutY="350.0" prefHeight="42.0" prefWidth="222.0" promptText="Password" />
+                  
+                  <Text fx:id="rePasswordError" fill="RED" layoutX="84.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <PasswordField fx:id="rePasswordField" layoutX="84.0" layoutY="425.0" prefHeight="42.0" prefWidth="222.0" promptText="Re-enter Password" />
+                  
+                  <Button layoutX="139.0" layoutY="499.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="33.0" prefWidth="112.0" styleClass="button" text="Sign Up">
+                     <font>
+                        <Font name="Monaco" size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
+            <Text fill="#a6a6a6" layoutX="800.0" layoutY="746.0" strokeType="OUTSIDE" strokeWidth="0.0" text="help      privacy      terms" wrappingWidth="209.60821533203125">
+               <font>
+                  <Font name="Monaco" size="12.0" />
+               </font>
+            </Text>
+      		<Button layoutX="45.0" layoutY="685.0" mnemonicParsing="false" onAction="#handleBackButtonAction" prefHeight="49.0" prefWidth="97.0" styleClass="button" text="Back">
+      			<font>
+                  	<Font name="Monaco" size="16.0" />
+               	</font>
+            </Button>
+         </children></Pane>
+   	</children>
+</AnchorPane>

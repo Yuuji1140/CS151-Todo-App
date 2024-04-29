@@ -32,7 +32,8 @@ public class Server extends com.wama.LogClass {
         info("Starting server on port " + PORT + "...");
         // TODO: Will putting this in an out while true: loop allow for the server to restart on failure?
         //       would need to look into retry counts and reasons to fail.
-        try (ServerSocket serverSocket = SSLFactory.getInstance().createSSLServerSocket(PORT)) {
+        //try (ServerSocket serverSocket = SSLFactory.getInstance().createSSLServerSocket(PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             info("Server started successfully on port " + PORT + ".");
 
             // We can handle requests now.
