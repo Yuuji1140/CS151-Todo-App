@@ -93,7 +93,7 @@ public class SignUpController {
             rePasswordError.setVisible(false);
 
         if (isValid) {
-            System.out.println("Fields validated successfully");
+            System.out.println("Field falidation succeeded");
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put("username", username);
             parameters.put("email", email);
@@ -102,13 +102,15 @@ public class SignUpController {
 
             try {
                 String response = HttpRequest.post("http://localhost:9876/registerUser", parameters);
+                Main.switchToSceneLogin();
                 // Handle response, e.g., show success or error message
-            } catch (IOException e) {
+            } 
+            catch (IOException e) {
                 // Handle exception
             }
         }
         else
-            System.out.println("Validation failed");
+            System.out.println("Field falidation failed");
     }
 
     private String validateUsername(String username) {
