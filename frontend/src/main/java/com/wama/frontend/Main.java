@@ -21,7 +21,7 @@ public class Main extends Application {
     public void start(Stage stage) {
     	Main.stage = stage;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wama/frontend/scenes/SceneCustomerDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wama/frontend/scenes/SceneStartUp.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/com/wama/frontend/scenes/style.css").toExternalForm());

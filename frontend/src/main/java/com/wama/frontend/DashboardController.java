@@ -5,8 +5,6 @@ import javafx.fxml.FXML;
 
 public class DashboardController
 {
-	
-	
 	@FXML
     void handleSignoutButtonAction(ActionEvent event) {
 		// TODO: Handle logging user out here
