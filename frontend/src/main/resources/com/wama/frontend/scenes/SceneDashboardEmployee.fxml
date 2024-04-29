@@ -88,7 +88,7 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcfcfc" height="92.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="2.0" width="395.0" />
             <Button layoutX="18.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleSignoutButtonAction" prefHeight="46.0" prefWidth="143.0" text="Sign Out" />
-            <Button layoutX="232.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleFeedbackButtonAction" prefHeight="46.0" prefWidth="143.0" text="Feedback" />
+            <Button layoutX="232.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleFeedbackEmployeeButtonAction" prefHeight="46.0" prefWidth="143.0" text="Feedback" />
          </children>
       </Pane>
       <Text fill="#515151" layoutX="14.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WaMa">

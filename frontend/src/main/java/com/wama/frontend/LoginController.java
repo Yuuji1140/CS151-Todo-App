@@ -1,13 +1,8 @@
 package com.wama.frontend;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.wama.backend.endpoints.AuthUser;
-import com.wama.backend.endpoints.HttpResponse;
-import com.wama.backend.endpoints.HttpStatus;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -17,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -31,15 +25,11 @@ public class LoginController
 	
 	@FXML private Pane animationPane;
 	
-	@FXML private ComboBox<String> userTypeComboBox;
 	@FXML private TextField usernameField;
 	@FXML private PasswordField passwordField;
 	
 	@FXML
-    public void initialize() {
-		userTypeComboBox.getItems().addAll("Customer", "Employee");
-        userTypeComboBox.setValue("Customer");
-        
+    public void initialize() {        
         AnimSlidingRects.generateRectangles(animationPane, 3, -675, 35, 0);
         AnimSlidingRects.generateRectangles(animationPane, 3, -675, 185, 0);
         AnimSlidingRects.generateRectangles(animationPane, 3, -675, 335, 0);
@@ -59,41 +49,67 @@ public class LoginController
     }
 	
 	void switchToDashboard(Map<String, String> userData) {
-	    // switch to appropriate dashboard scene, passing in the user data
+	    String userType = userData.get("type");
+	    if ("Customer".equalsIgnoreCase(userType))
+	        Main.switchToSceneDashboardCustomer();
+	    else if ("Employee".equalsIgnoreCase(userType))
+	        Main.switchToSceneDashboardEmployee();
+	    else 
+	        System.err.println("Unknown user type: " + userType);
 	}
 	
 	@FXML
 	public void handleLogin(ActionEvent event) {
-	    String username = usernameField.getText();
-	    String password = passwordField.getText();
-	    String userType = userTypeComboBox.getValue();
+	    String username = usernameField.getText().trim();
+	    String password = passwordField.getText().trim();
+	    String userType = "Customer"; // hard coded in at the moment, unsure of how to dynamically retrive usertype when logging in, didn't want to modify backend -hike
 
 	    if (username.isEmpty() || password.isEmpty()) {
-	        showAlert("Error", "Username and password cannot be empty");
+	        showAlert("Error", "Username and password cannot be empty!");
 	        return;
 	    }
 
+	    try {
+	        String response = sendLoginRequest(username, password, userType);
+	        if (response.contains("authToken=")) {
+	            Map<String, String> userData = parseUserData(response);
+	            System.out.println("Successfully logged in! Auth Token: " + userData.get("authToken"));
+	            switchToDashboard(userData);
+	        } 
+	        else
+	            showAlert("Login Failed", "Invalid credentials or server error!");
+	    } 
+	    catch (IOException e) {
+	        showAlert("Network Error", "Failed to connect to server!");
+	        System.out.println("Network error: " + e.getMessage());
+	    }
+	}
+
+	private Map<String, String> parseUserData(String response) {
+	    Map<String, String> userData = new HashMap<>();
+	    userData.put("username", extractValue(response, "username"));
+	    userData.put("email", extractValue(response, "email"));
+	    userData.put("id", extractValue(response, "id"));
+	    userData.put("authToken", extractValue(response, "authToken"));
+	    userData.put("type", extractValue(response, "type"));
+	    return userData;
+	}
+
+	private String sendLoginRequest(String username, String password, String userType) throws IOException {
 	    Map<String, String> parameters = new HashMap<>();
 	    parameters.put("username", username);
 	    parameters.put("password", password);
 	    parameters.put("type", userType);
-
-	    AuthUser authUser = new AuthUser(); // unsure if i should be doing this
-
-	    if (authUser.validParameters(parameters)) {
-	        HttpResponse response = authUser.handlePostRequest(parameters, new ByteArrayOutputStream());
-
-	        if (response.getStatus() == HttpStatus.OK) {
-	            Map<String, String> responseData = response.getArguments();
-	            showAlert("Login Successful", "Welcome, " + responseData.get("username"));
-	            switchToDashboard(responseData);
-	        } 
-	        else 
-	            showAlert("Login Failed", "Invalid credentials or server error");
-	    } 
-	    else
-	        showAlert("Error", "Invalid input data");
+	    return HttpRequest.post("http://localhost:9876/authUser", parameters);
 	}
+
+    private String extractValue(String response, String key) {
+        String prefix = key + "=";
+        int startIndex = response.indexOf(prefix) + prefix.length();
+        int endIndex = response.indexOf(",", startIndex);
+        endIndex = endIndex == -1 ? response.length() : endIndex;
+        return response.substring(startIndex, endIndex).trim();
+    }
 
 	private void showAlert(String title, String content) {
 	    Alert alert = new Alert(Alert.AlertType.INFORMATION);

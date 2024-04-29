@@ -44,10 +44,11 @@ public class HttpRequest {
                 System.out.println("Response Payload: " + responsePayload);
                 return responsePayload;
             }
-        } else {
+        } 
+        else {
             // Handle error response
             try (InputStream errorStream = connection.getErrorStream();
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream))) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream))) {
                 String line;
                 StringBuilder errorResponse = new StringBuilder();
                 while ((line = reader.readLine()) != null) {

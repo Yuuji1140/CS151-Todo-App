@@ -86,7 +86,7 @@ public class Main extends Application {
     
     public static void switchToSceneDashboardEmployee() {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneEmployeeDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneDashboardEmployee.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -96,7 +96,7 @@ public class Main extends Application {
     
     public static void switchToSceneDashboardCustomer() {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneCustomerDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneDashboardCustomer.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
