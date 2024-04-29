@@ -49,6 +49,11 @@
     		<artifactId>charm</artifactId>
     		<version>6.2.3</version>
 		</dependency>
+        <dependency>
+        	<groupId>com.wama</groupId>
+        	<artifactId>backend</artifactId>
+        	<version>2023.04.01</version>
+        </dependency>
     </dependencies>
 
 	<repositories>

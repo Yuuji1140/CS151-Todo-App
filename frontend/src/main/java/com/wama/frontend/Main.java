@@ -21,7 +21,7 @@ public class Main extends Application {
     public void start(Stage stage) {
     	Main.stage = stage;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wama/frontend/scenes/SceneStartUp.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wama/frontend/scenes/SceneCustomerDashboard.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/com/wama/frontend/scenes/style.css").toExternalForm());
@@ -57,6 +57,56 @@ public class Main extends Application {
     public static void switchToSceneLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneLogin.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } 
+        catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public static void switchToSceneFeedback() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneFeedback.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } 
+        catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public static void switchToSceneEmployeeDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneEmployeeDashboard.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } 
+        catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public static void switchToSceneCustomerDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneCustomerDashboard.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } 
+        catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public static void switchToSceneOrders() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneOrders.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } 
+        catch (IOException e) { e.printStackTrace(); }
+    }
+    
+    public static void switchToSceneTracking() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneTracking.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);

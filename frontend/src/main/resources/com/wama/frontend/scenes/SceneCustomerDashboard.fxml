@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.CustomerDashboardController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.DashboardController">
    <children>
       <Pane layoutX="725.0" layoutY="14.0" prefHeight="282.0" prefWidth="286.0">
          <children>
@@ -36,11 +36,11 @@
                   <Font name="Arial" size="32.0" />
                </font>
             </Text>
-            <Button layoutX="18.0" layoutY="650.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="143.0" text="Button" />
-            <Button layoutX="18.0" layoutY="575.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="143.0" text="Button" />
-            <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="143.0" text="Button" />
-            <Button layoutX="14.0" layoutY="150.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="143.0" text="Button" />
-            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="143.0" text="Button" />
+            <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCustomerDashboardButtonAction" prefHeight="43.0" prefWidth="143.0" text="Dashboard" />
+            <Button layoutX="14.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleOrdersButtonAction" prefHeight="43.0" prefWidth="143.0" text="Orders" />
+            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleTrackingButtonAction" prefHeight="43.0" prefWidth="143.0" text="Tracking" />
+            <Button layoutX="18.0" layoutY="575.0" mnemonicParsing="false" onAction="#handleFeedbackButtonAction" prefHeight="43.0" prefWidth="143.0" text="Feedback" />
+            <Button layoutX="18.0" layoutY="650.0" mnemonicParsing="false" onAction="#handleSignoutButtonAction" prefHeight="43.0" prefWidth="143.0" text="Sign Out" />
          </children>
       </Pane>
       <Pane layoutX="206.0" layoutY="110.0" prefHeight="186.0" prefWidth="502.0">

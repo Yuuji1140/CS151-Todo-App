@@ -1,6 +1,13 @@
 package com.wama.frontend;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.wama.backend.endpoints.AuthUser;
+import com.wama.backend.endpoints.HttpResponse;
+import com.wama.backend.endpoints.HttpStatus;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -9,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -50,8 +58,49 @@ public class LoginController
         Main.switchToSceneStartUp();
     }
 	
+	void switchToDashboard(Map<String, String> userData) {
+	    // switch to appropriate dashboard scene, passing in the user data
+	}
+	
+	@FXML
 	public void handleLogin(ActionEvent event) {
-		
+	    String username = usernameField.getText();
+	    String password = passwordField.getText();
+	    String userType = userTypeComboBox.getValue();
+
+	    if (username.isEmpty() || password.isEmpty()) {
+	        showAlert("Error", "Username and password cannot be empty");
+	        return;
+	    }
+
+	    Map<String, String> parameters = new HashMap<>();
+	    parameters.put("username", username);
+	    parameters.put("password", password);
+	    parameters.put("type", userType);
+
+	    AuthUser authUser = new AuthUser(); // Unsure if I should be doing this
+
+	    if (authUser.validParameters(parameters)) {
+	        HttpResponse response = authUser.handlePostRequest(parameters, new ByteArrayOutputStream());
+
+	        if (response.getStatus() == HttpStatus.OK) {
+	            Map<String, String> responseData = response.getArguments();
+	            showAlert("Login Successful", "Welcome, " + responseData.get("username"));
+	            switchToDashboard(responseData);
+	        } 
+	        else 
+	            showAlert("Login Failed", "Invalid credentials or server error");
+	    } 
+	    else
+	        showAlert("Error", "Invalid input data");
+	}
+
+	private void showAlert(String title, String content) {
+	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle(title);
+	    alert.setHeaderText(null);
+	    alert.setContentText(content);
+	    alert.showAndWait();
 	}
 	
 	private void fadeInEffect(Node node, double duration) {
