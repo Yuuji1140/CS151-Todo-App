@@ -12,23 +12,23 @@ public class DashboardController
     }
 	
 	@FXML
-    void handleEmployeeDashboardButtonAction(ActionEvent event) {
+    void handleDashboardEmployeeButtonAction(ActionEvent event) {
         Main.switchToSceneDashboardEmployee();
     }
 	
 	@FXML
-    void handleCustomerDashboardButtonAction(ActionEvent event) {
+    void handleDashboardCustomerButtonAction(ActionEvent event) {
         Main.switchToSceneDashboardCustomer();
+    }
+	
+	@FXML
+    void handleProductsButtonAction(ActionEvent event) {
+		Main.switchToSceneProducts();
     }
 	
 	@FXML
     void handleOrdersButtonAction(ActionEvent event) {
         Main.switchToSceneOrders();
-    }
-	
-	@FXML
-    void handleProductsButtonAction(ActionEvent event) {
-		Main.switchToSceneTracking();
     }
 	
 	@FXML
@@ -42,13 +42,13 @@ public class DashboardController
     }
 	
 	@FXML
-    void handleFeedbackCustomerBackButtonAction(ActionEvent event) {
-        Main.switchToSceneDashboardCustomer();
+    void handleFeedbackEmployeeButtonAction(ActionEvent event) {
+        Main.switchToSceneFeedbackEmployee();
     }
 	
 	@FXML
-    void handleFeedbackEmployeeButtonAction(ActionEvent event) {
-        Main.switchToSceneFeedbackEmployee();
+    void handleFeedbackCustomerBackButtonAction(ActionEvent event) {
+        Main.switchToSceneDashboardCustomer();
     }
 	
 	@FXML

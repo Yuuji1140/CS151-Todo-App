@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.wama</groupId>
             <artifactId>common</artifactId>
-            <version>${project.version}</version>
+            <version>2023.04.01</version>
         </dependency>
     </dependencies>
 </project>

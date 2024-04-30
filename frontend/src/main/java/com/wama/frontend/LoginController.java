@@ -85,6 +85,14 @@ public class LoginController
 	    }
 	}
 
+	private String sendLoginRequest(String username, String password, String userType) throws IOException {
+	    Map<String, String> parameters = new HashMap<>();
+	    parameters.put("username", username);
+	    parameters.put("password", password);
+	    parameters.put("type", userType);
+	    return HttpRequest.post("http://localhost:9876/authUser", parameters);
+	}
+	
 	private Map<String, String> parseUserData(String response) {
 	    Map<String, String> userData = new HashMap<>();
 	    userData.put("username", extractValue(response, "username"));
@@ -93,14 +101,6 @@ public class LoginController
 	    userData.put("authToken", extractValue(response, "authToken"));
 	    userData.put("type", extractValue(response, "type"));
 	    return userData;
-	}
-
-	private String sendLoginRequest(String username, String password, String userType) throws IOException {
-	    Map<String, String> parameters = new HashMap<>();
-	    parameters.put("username", username);
-	    parameters.put("password", password);
-	    parameters.put("type", userType);
-	    return HttpRequest.post("http://localhost:9876/authUser", parameters);
 	}
 
     private String extractValue(String response, String key) {

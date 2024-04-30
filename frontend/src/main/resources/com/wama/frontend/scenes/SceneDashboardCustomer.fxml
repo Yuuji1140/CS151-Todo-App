@@ -36,7 +36,7 @@
                   <Font name="Arial" size="32.0" />
                </font>
             </Text>
-            <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCustomerDashboardButtonAction" prefHeight="43.0" prefWidth="143.0" text="Dashboard" />
+            <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleDashboardCustomerButtonAction" prefHeight="43.0" prefWidth="143.0" text="Dashboard" />
             <Button layoutX="14.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleOrdersButtonAction" prefHeight="43.0" prefWidth="143.0" text="Orders" />
             <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleProductsButtonAction" prefHeight="43.0" prefWidth="143.0" text="Products" />
             <Button layoutX="18.0" layoutY="575.0" mnemonicParsing="false" onAction="#handleFeedbackCustomerButtonAction" prefHeight="43.0" prefWidth="143.0" text="Feedback" />
