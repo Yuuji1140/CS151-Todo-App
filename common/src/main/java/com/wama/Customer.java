@@ -11,7 +11,7 @@ public class Customer extends User {
     private String phone;
 
     public Customer(String username, String password, String email, String authToken) {
-        super(username, UserType.EMPLOYEE, email, authToken);
+        super(username, UserType.CUSTOMER, email, authToken);
         if (authToken != null) {
             debug("Employee " + username + " logged in with token");
         } else {

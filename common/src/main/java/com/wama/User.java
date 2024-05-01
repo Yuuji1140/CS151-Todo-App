@@ -37,8 +37,8 @@ public abstract class User extends LogClass {
         try {
             this.id = UUID.randomUUID().toString();
             DatabaseManager.insertRecord("Users",
-                    new String[]{"id", "username", "email"},
-                    new String[]{this.id, username, email});
+                    new String[]{"id", "username", "email", "user_type"},
+                    new String[]{this.id, username, email, type.toString()});
         } catch (Exception e) {
             error("Error registering user: " + e.getMessage(), e);
             this.id = null;
