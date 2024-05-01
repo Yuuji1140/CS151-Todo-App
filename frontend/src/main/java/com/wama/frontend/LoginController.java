@@ -70,7 +70,7 @@ public class LoginController
 	    }
 
 	    try {
-	        String response = sendLoginRequest(username, password, userType);
+	        String response = sendLoginRequest(username, password, userType); // originally sent with a combobox, but during login the program should automatically check the usertype
 	        if (response.contains("authToken=")) {
 	            Map<String, String> userData = parseUserData(response);
 	            System.out.println("Successfully logged in! Auth Token: " + userData.get("authToken"));

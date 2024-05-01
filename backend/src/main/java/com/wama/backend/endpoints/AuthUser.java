@@ -42,7 +42,7 @@ public class AuthUser extends com.wama.LogClass implements Endpoint {
                 arguments.put("id", user.getId());
                 arguments.put("username", user.getUsername());
                 arguments.put("email", user.getEmail());
-                arguments.put("type", type);
+                arguments.put("type", user.getType());
                 return new HttpResponse(HttpStatus.OK, arguments);
             } else {
                 error("Failed to authenticate user with username: " + username);

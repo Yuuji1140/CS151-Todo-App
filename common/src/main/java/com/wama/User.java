@@ -131,6 +131,10 @@ public abstract class User extends LogClass {
         return username;
     }
 
+    public String getType() {
+    	return type.name();
+    }
+    
     public String getEmail() {
         return email;
     }
@@ -157,5 +161,4 @@ public abstract class User extends LogClass {
     }
 
     // Abstract things Users can do like getOrders, getInventory, createOrders, etc. Some will throw a NotImplementedException and others will implement
-
 }
