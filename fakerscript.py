@@ -2,50 +2,118 @@ import sqlite3
 import random
 from faker import Faker
 import uuid
-
-# Usage:
-# Database must already be created (see DatabaseManager.java)
-# python3 -m venv venv
-# source venv/bin/activate
-# pip install faker
-# python fakerscript.py
+from datetime import datetime, timedelta
 
 # Connect to the SQLite database (creates it if it doesn't exist)
 conn = sqlite3.connect('database.db')
 cursor = conn.cursor()
 
+# Create tables
+tables = [
+    """CREATE TABLE IF NOT EXISTS Customers (
+        id TEXT PRIMARY KEY,
+        company_name TEXT UNIQUE NOT NULL,
+        phone TEXT,
+        address TEXT
+    )""",
+    """CREATE TABLE IF NOT EXISTS Users (
+        id TEXT PRIMARY KEY,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        user_type TEXT NOT NULL,
+        company_name TEXT,
+        name TEXT NOT NULL,
+        phone TEXT,
+        address TEXT,
+        FOREIGN KEY (company_name) REFERENCES Customers(company_name) ON DELETE CASCADE ON UPDATE CASCADE
+    )""",
+    """CREATE TABLE IF NOT EXISTS UserPasswords (
+        user_id TEXT PRIMARY KEY,
+        password TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES Users(id)
+    )""",
+    """CREATE TABLE IF NOT EXISTS Products (
+        id TEXT PRIMARY KEY,
+        name TEXT UNIQUE NOT NULL,
+        description TEXT,
+        price REAL NOT NULL,
+        reorder_point INTEGER,
+        current_stock INTEGER NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS Orders (
+        id TEXT PRIMARY KEY,
+        customer_id TEXT NOT NULL,
+        order_date TIMESTAMP NOT NULL,
+        status TEXT NOT NULL,
+        total REAL NOT NULL,
+        FOREIGN KEY (customer_id) REFERENCES Customers(id)
+    )""",
+    """CREATE TABLE IF NOT EXISTS OrderItems (
+        id TEXT PRIMARY KEY,
+        order_id TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        price REAL NOT NULL,
+        FOREIGN KEY (order_id) REFERENCES Orders(id),
+        FOREIGN KEY (product_id) REFERENCES Products(id)
+    )""",
+    """CREATE TABLE IF NOT EXISTS Shipments (
+        id TEXT PRIMARY KEY,
+        order_id TEXT NOT NULL,
+        shipment_date TIMESTAMP NOT NULL,
+        status TEXT NOT NULL,
+        tracking_number TEXT,
+        FOREIGN KEY (order_id) REFERENCES Orders(id)
+    )"""
+]
+
+for table in tables:
+    cursor.execute(table)
+
 # Seed the database with fake data
 fake = Faker()
 
-# Users, UserPasswords, AuthTokens, Customers, Employees
-for _ in range(30):
+# Employees
+for i in range(10):
     user_id = str(uuid.uuid4())
-    username = fake.user_name()
+    username = f'emp{i+1}'
     email = fake.email()
     password = fake.password()
-    auth_token = str(uuid.uuid4())
     expires_at = fake.future_datetime()
+    name = fake.name()
+    phone = fake.phone_number()
+    address = fake.address()
 
-    cursor.execute("INSERT INTO Users (id, username, email) VALUES (?, ?, ?)", (user_id, username, email))
+    cursor.execute("INSERT INTO Users (id, username, email, user_type, name, phone, address) VALUES (?, ?, ?, 'employee', ?, ?, ?)", (user_id, username, email, name, phone, address))
     cursor.execute("INSERT INTO UserPasswords (user_id, password) VALUES (?, ?)", (user_id, password))
-    cursor.execute("INSERT INTO AuthTokens (user_id, auth_token, expires_at) VALUES (?, ?, ?)", (user_id, auth_token, expires_at))
-
-    # Determine if the user should be a Customer or an Employee
-    is_employee = random.choice([True, False])
-
-    if is_employee:
-        name = fake.name()
-        position = fake.job()
-        salary = round(random.uniform(30000, 100000), 2)
-        cursor.execute("INSERT INTO Employees (user_id, name, email, position, salary) VALUES (?, ?, ?, ?, ?)", (user_id, name, email, position, salary))
-    else:
-        name = fake.name()
-        address = fake.address()
-        phone = fake.phone_number()
-        cursor.execute("INSERT INTO Customers (user_id, name, email, address, phone) VALUES (?, ?, ?, ?, ?)", (user_id, name, email, address, phone))
 conn.commit()
 
-# Products
+# Customers and Users
+for _ in range(20):
+    customer_id = str(uuid.uuid4())
+    company_name = fake.company()
+    phone = fake.phone_number()
+    address = fake.address()
+
+    cursor.execute("INSERT INTO Customers (id, company_name, phone, address) VALUES (?, ?, ?, ?)", (customer_id, company_name, phone, address))
+
+    for _ in range(2):
+        user_id = str(uuid.uuid4())
+        username = fake.user_name()
+        email = fake.email()
+        password = fake.password()
+        auth_token = str(uuid.uuid4())
+        expires_at = fake.future_datetime()
+        name = fake.name()
+        user_phone = fake.phone_number()
+        user_address = fake.address()
+
+        cursor.execute("INSERT INTO Users (id, username, email, user_type, company_name, name, phone, address) VALUES (?, ?, ?, 'customer', ?, ?, ?, ?)", (user_id, username, email, company_name, name, user_phone, user_address))
+        cursor.execute("INSERT INTO UserPasswords (user_id, password) VALUES (?, ?)", (user_id, password))
+        cursor.execute("INSERT INTO AuthTokens (user_id, auth_token, expires_at) VALUES (?, ?, ?)", (user_id, auth_token, expires_at))
+conn.commit()
+
+# Products (using the existing products)
 products = [
     ('Pencil', 'A simple pencil', 0.99, 100, 500),
     ('Notebook', 'A spiral notebook', 2.99, 50, 200),
@@ -81,27 +149,22 @@ products = [
 
 for product in products:
     product_id = str(uuid.uuid4())
-    try:
-        name, description, price, reorder_point, current_stock = product
-        cursor.execute("INSERT INTO Products (id, name, description, price, reorder_point, current_stock) VALUES (?, ?, ?, ?, ?, ?)",
+    name, description, price, reorder_point, current_stock = product
+    cursor.execute("INSERT INTO Products (id, name, description, price, reorder_point, current_stock) VALUES (?, ?, ?, ?, ?, ?)",
                    (product_id, name, description, price, reorder_point, current_stock))
-    except:
-        continue
 conn.commit()
 
 # Orders, OrderItems, Shipments
-customer_ids = [row[0] for row in cursor.execute("SELECT user_id FROM Customers")]
+customer_ids = [row[0] for row in cursor.execute("SELECT id FROM Customers")]
 for customer_id in customer_ids:
-    num_orders = random.randint(2, 6)  # Each customer has 2 to 6 orders
-    for _ in range(num_orders):
+    for _ in range(5):
         order_id = str(uuid.uuid4())
-        employee_id = fake.random_element([row[0] for row in cursor.execute("SELECT user_id FROM Employees")])
         order_date = fake.past_datetime()
         status = fake.random_element(['Pending', 'Processing', 'Shipped', 'Delivered'])
         total = 0
 
-        cursor.execute("INSERT INTO Orders (id, customer_id, employee_id, order_date, status, total) VALUES (?, ?, ?, ?, ?, ?)",
-                       (order_id, customer_id, employee_id, order_date, status, total))
+        cursor.execute("INSERT INTO Orders (id, customer_id, order_date, status, total) VALUES (?, ?, ?, ?, ?)",
+                       (order_id, customer_id, order_date, status, total))
 
         # OrderItems
         num_items = random.randint(1, 10)

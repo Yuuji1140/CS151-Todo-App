@@ -5,18 +5,14 @@ import java.util.HashMap;
 
 
 public class Customer extends User {
-    private String name;
-    private String email;
-    private String address;
-    private String phone;
+    private String company_name;
 
-    public Customer(String username, String password, String email, String authToken) {
-        super(username, UserType.CUSTOMER, email, authToken);
-        if (authToken != null) {
-            debug("Employee " + username + " logged in with token");
-        } else {
-            debug("Creating blank employee object for " + username);
-        }
+    public Customer(String username) {
+        super(username, UserType.CUSTOMER);
+    }
+
+    public Customer(String username, String email, String company_name, String name, String phone, String address) {
+        super(username, UserType.CUSTOMER, email, company_name, name, phone, address);
     }
 
     // Implement login

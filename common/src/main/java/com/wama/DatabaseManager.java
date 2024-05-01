@@ -6,23 +6,28 @@ import java.util.HashMap;
 
 public class DatabaseManager extends com.wama.LogClass {
     private static final String DB_URL = "jdbc:sqlite:database.db";
+    private static final String CREATE_CUSTOMERS_TABLE = "CREATE TABLE IF NOT EXISTS Customers (" +
+            "id TEXT PRIMARY KEY," +
+            "company_name TEXT UNIQUE NOT NULL," +
+            "phone TEXT," +
+            "address TEXT," +
+            ")";
+
     private static final String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS Users (" +
             "id TEXT PRIMARY KEY," +
             "username TEXT UNIQUE NOT NULL," +
             "email TEXT UNIQUE NOT NULL," +
-            "user_type TEXT NOT NULL" +
+            "user_type TEXT NOT NULL," +
+            "company_name TEXT," + // NULL = Employee, NOT NULL = Customer
+            "name TEXT NOT NULL," +
+            "phone TEXT," +
+            "address TEXT," +
+            "FOREIGN KEY (company_name) REFERENCES Customers(company_name) ON DELETE CASCADE ON UPDATE CASCADE" +
             ")";
 
     private static final String CREATE_USER_PASSWORDS_TABLE = "CREATE TABLE IF NOT EXISTS UserPasswords (" +
             "user_id TEXT PRIMARY KEY," +
             "password TEXT NOT NULL," +
-            "FOREIGN KEY (user_id) REFERENCES Users(id)" +
-            ")";
-
-    private static final String CREATE_AUTH_TOKENS_TABLE = "CREATE TABLE IF NOT EXISTS AuthTokens (" +
-            "user_id TEXT PRIMARY KEY," +
-            "auth_token TEXT UNIQUE NOT NULL," +
-            "expires_at TIMESTAMP NOT NULL," +
             "FOREIGN KEY (user_id) REFERENCES Users(id)" +
             ")";
 
@@ -38,12 +43,10 @@ public class DatabaseManager extends com.wama.LogClass {
     private static final String CREATE_ORDERS_TABLE = "CREATE TABLE IF NOT EXISTS Orders (" +
             "id TEXT PRIMARY KEY," +
             "customer_id TEXT NOT NULL," +
-            "employee_id TEXT," +
             "order_date TIMESTAMP NOT NULL," +
             "status TEXT NOT NULL," +
             "total REAL NOT NULL," +
             "FOREIGN KEY (customer_id) REFERENCES Customers(id)," +
-            "FOREIGN KEY (employee_id) REFERENCES Employees(id)" +
             ")";
 
     private static final String CREATE_ORDER_ITEMS_TABLE = "CREATE TABLE IF NOT EXISTS OrderItems (" +
@@ -67,8 +70,8 @@ public class DatabaseManager extends com.wama.LogClass {
 
     private static final String[] TABLES = {
             CREATE_USERS_TABLE,
+            CREATE_CUSTOMERS_TABLE,
             CREATE_USER_PASSWORDS_TABLE,
-            CREATE_AUTH_TOKENS_TABLE,
             CREATE_PRODUCTS_TABLE,
             CREATE_ORDERS_TABLE,
             CREATE_ORDER_ITEMS_TABLE,

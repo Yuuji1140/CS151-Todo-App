@@ -1,18 +1,13 @@
 package com.wama;
 
 public class Employee extends User {
-    private String name;
-    private String email;
-    private String position;
-    private double salary;
 
-    public Employee(String username, String password, String email, String authToken) {
-        super(username, UserType.EMPLOYEE, email, authToken);
-        if (authToken != null) {
-            debug("Employee " + username + " logged in with token");
-        } else {
-            debug("Creating blank employee object for " + username);
-        }
+    public Employee(String username) {
+        super(username, UserType.EMPLOYEE);
+    }
+
+    public Employee(String username, String email, String name, String phone, String address) {
+        super(username, UserType.EMPLOYEE, email, null, name, phone, address);
     }
 
     public void processShipment() {

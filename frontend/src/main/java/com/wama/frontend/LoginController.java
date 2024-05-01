@@ -3,6 +3,8 @@ package com.wama.frontend;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -71,12 +73,12 @@ public class LoginController
 
 	    try {
 	        String response = sendLoginRequest(username, password, userType); // originally sent with a combobox, but during login the program should automatically check the usertype
-	        if (response.contains("authToken=")) {
-	            Map<String, String> userData = parseUserData(response);
-	            System.out.println("Successfully logged in! Auth Token: " + userData.get("authToken"));
-	            switchToDashboard(userData);
-	        } 
-	        else
+
+			Map<String, String> userData = parseUserData(response);
+			if (userData.containsKey("id")) {
+				System.out.println("Successfully logged in!");
+				switchToDashboard(userData);
+			} else
 	            showAlert("Login Failed", "Invalid credentials or server error!");
 	    } 
 	    catch (IOException e) {
@@ -94,22 +96,23 @@ public class LoginController
 	}
 	
 	private Map<String, String> parseUserData(String response) {
-	    Map<String, String> userData = new HashMap<>();
-	    userData.put("username", extractValue(response, "username"));
-	    userData.put("email", extractValue(response, "email"));
-	    userData.put("id", extractValue(response, "id"));
-	    userData.put("authToken", extractValue(response, "authToken"));
-	    userData.put("type", extractValue(response, "type"));
-	    return userData;
+		Map<String, String> userData = new HashMap<>();
+
+		// Regular expression pattern to match key-value pairs
+		String pattern = "(\\w+)=([^,}]+)";
+
+		Pattern regex = Pattern.compile(pattern);
+		Matcher matcher = regex.matcher(response);
+
+		while (matcher.find()) {
+			String key = matcher.group(1);
+			String value = matcher.group(2);
+			userData.put(key, value);
+		}
+
+		return userData;
 	}
 
-    private String extractValue(String response, String key) {
-        String prefix = key + "=";
-        int startIndex = response.indexOf(prefix) + prefix.length();
-        int endIndex = response.indexOf(",", startIndex);
-        endIndex = endIndex == -1 ? response.length() : endIndex;
-        return response.substring(startIndex, endIndex).trim();
-    }
 
 	private void showAlert(String title, String content) {
 	    Alert alert = new Alert(Alert.AlertType.INFORMATION);

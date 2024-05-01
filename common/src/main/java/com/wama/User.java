@@ -7,46 +7,52 @@ import java.util.UUID;
 public abstract class User extends LogClass {
     private String id;
     private final String username;
-    private String authToken;
     public final UserType type;
     private  String email;
+    private String company_name;
+    private String name;
+    private String phone;
+    private String address;
 
-    protected User(String username, UserType type, String email, String authToken) {
+    protected User(String username, UserType type) {
+        this.username = username;
+        this.type = type;
+        this.id = getCurrentId();
+    }
+
+    protected User(String username, UserType type, String email, String company_name, String name, String phone, String address) {
         this.username = username;
         this.type = type;
         this.email = email;
         this.id = getCurrentId();
-        if (validAuthToken()) {
-            this.authToken = authToken;
-            debug("User " + username + " logged in with token");
-        } else {
-            if (this.id.isEmpty()) {
-                debug("User " + username + " not found in database");
-            }
-            this.authToken = null;
-            debug("Creating blank user object for " + username);
+        this.company_name = company_name;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        if (this.id.isEmpty()) {
+            debug("User " + username + " not found in database");
         }
+        debug("Creating blank user object for " + username);
     }
 
     public User registerNewUser(String password) throws IllegalArgumentException {
         debug("Registering user with username: " + username + " and email: " + email);
-        if (this.id == null) {
+        if (!this.id.isEmpty()) {
             // Already registered
             return this;
         }
         try {
             this.id = UUID.randomUUID().toString();
             DatabaseManager.insertRecord("Users",
-                    new String[]{"id", "username", "email", "user_type"},
-                    new String[]{this.id, username, email, type.toString()});
+                    new String[]{"id", "username", "email", "user_type", "company_name", "name", "phone", "address"},
+                    new String[]{this.id, username, email, type.toString(), company_name, name, phone, address});
         } catch (Exception e) {
             error("Error registering user: " + e.getMessage(), e);
             this.id = null;
             throw new IllegalArgumentException(!e.getMessage().contains("UNIQUE constraint failed")
                     ? e.getMessage() : "Username or email already exists");
         }
-        // This is a valid user, and we just placed them in the table. Store their password, generate a token and return the object
-        generateAuthToken();
+        // This is a valid user, and we just placed them in the table. Store their password
         try {
             DatabaseManager.insertRecord("UserPasswords",
                     new String[]{"user_id", "password"},
@@ -60,7 +66,7 @@ public abstract class User extends LogClass {
     }
 
     public User loginUser(String password) {
-        if (this.username == null || getCurrentId().isEmpty()) {
+        if (this.id.isEmpty()) {
             // Already logged in or not registered, don't tell them for security reasons
             return null;
         }
@@ -80,47 +86,25 @@ public abstract class User extends LogClass {
         }
         this.id = user.get(0).get("id");
         this.email = user.get(0).get("email");
-        generateAuthToken();
+        this.company_name = user.get(0).get("company_name");
+        this.name = user.get(0).get("name");
+        this.phone = user.get(0).get("phone");
+        this.address = user.get(0).get("address");
+        info("User " + username + " logged in successfully.");
         return this;
     }
 
-    private void generateAuthToken() {
-        // Generate a random 128-bit token
-        String token = UUID.randomUUID().toString();
-        this.authToken = token;
-        // SQLite formatted date 24 hours from now
-        long expiresAtMillis = System.currentTimeMillis() + 24 * 60 * 60 * 1000;
-        try {
-            // Delete any auth token that exists
-            DatabaseManager.deleteRecord("AuthTokens", "user_id=\"" + id + "\"");
-        } catch (Exception e) {
-            debug("Error deleting auth token: " + e.getMessage());
-        }
-        try {
-            DatabaseManager.insertRecord("AuthTokens",
-                    new String[]{"user_id", "auth_token", "expires_at"},
-                    new String[]{id, token, String.valueOf(expiresAtMillis)});
-        } catch (Exception e) {
-            error("Error generating auth token: " + e.getMessage(), e);
-        }
-    }
-
-    private boolean validAuthToken() {
-        if (authToken == null) {
-            return false;
-        }
-        String condition = id == null || id.isEmpty() ? null : "user_id=" + id;
-        ArrayList<HashMap<String, String>> authTokens = DatabaseManager.selectRecords("AuthTokens",
-                new String[]{"auth_token"}, condition);
-        // TODO: Check if token is expired
-        if (authTokens == null || authTokens.size() != 1) {
-            return false;
-        }
-        return authTokens.get(0).get("auth_token").equals(getAuthToken());
-    }
-
-    public String getAuthToken() {
-        return authToken;
+    public HashMap<String, String> getParameters() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", id);
+        parameters.put("username", username);
+        parameters.put("email", email);
+        parameters.put("type", type.name());
+        parameters.put("company_name", company_name);
+        parameters.put("name", name);
+        parameters.put("phone", phone);
+        parameters.put("address", address);
+        return parameters;
     }
 
     public String getId() {
@@ -151,9 +135,7 @@ public abstract class User extends LogClass {
         /*
         The auth token and ID are all that validate a user.
          */
-        this.id = null;
-        this.authToken = null;
-    }
+        this.id = null;}
 
     public enum UserType {
         CUSTOMER,

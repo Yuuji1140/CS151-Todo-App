@@ -21,36 +21,25 @@ public class AuthUser extends com.wama.LogClass implements Endpoint {
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
-        // TODO: Actual authentication logic
         String username = parameters.get("username");
         String password = parameters.get("password");
         String type = parameters.get("type");
-        if (username != null && password != null) {
-            HashMap<String, String> arguments = new HashMap<>();
-            info("Authenticating user with username: " + username);
-            User.UserType userType = type.equals("Customer") ? User.UserType.CUSTOMER : User.UserType.EMPLOYEE;
-            User user;
-            // Lookup email from username
-            if (userType == User.UserType.CUSTOMER) {
-                user = new com.wama.Customer(username, password, "", "");
-            } else {
-                user = new com.wama.Employee(username, password, "", "");
-            }
-            User loggedInUser = user.loginUser(password);
-            if (loggedInUser != null) {
-                arguments.put("authToken", user.getAuthToken());
-                arguments.put("id", user.getId());
-                arguments.put("username", user.getUsername());
-                arguments.put("email", user.getEmail());
-                arguments.put("type", user.getType());
-                return new HttpResponse(HttpStatus.OK, arguments);
-            } else {
-                error("Failed to authenticate user with username: " + username);
-                return new HttpResponse(HttpStatus.UNAUTHORIZED, arguments);
-            }
+
+        info("Authenticating user with username: " + username);
+        User.UserType userType = type.equals("Customer") ? User.UserType.CUSTOMER : User.UserType.EMPLOYEE;
+        User user;
+
+        if (userType == User.UserType.CUSTOMER) {
+            user = new com.wama.Customer(username);
         } else {
-            error("Invalid parameters provided for authentication.");
-            return new HttpResponse(HttpStatus.BAD_REQUEST, new HashMap<>());
+            user = new com.wama.Employee(username);
+        }
+        User loggedInUser = user.loginUser(password);
+        if (loggedInUser != null) {
+            return new HttpResponse(HttpStatus.OK, loggedInUser.getParameters());
+        } else {
+            error("Failed to authenticate user with username: " + username);
+            return new HttpResponse(HttpStatus.UNAUTHORIZED, new HashMap<>());
         }
     }
 }

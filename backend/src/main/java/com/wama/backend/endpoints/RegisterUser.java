@@ -16,7 +16,11 @@ public class RegisterUser extends com.wama.LogClass implements Endpoint {
         if (!parameters.containsKey("username") &&
                 !parameters.containsKey("email") &&
                 !parameters.containsKey("password") &&
-                !parameters.containsKey("type")) { // Customer or Employee
+                !parameters.containsKey("type") &&
+                !parameters.containsKey("company_name") &&
+                !parameters.containsKey("name") &&
+                !parameters.containsKey("phone") &&
+                !parameters.containsKey("address")) {
             error("Parameters are missing");
             return false;
         }
@@ -24,12 +28,28 @@ public class RegisterUser extends com.wama.LogClass implements Endpoint {
         String email = parameters.get("email");
         String password = parameters.get("password");
         String type = parameters.get("type");
+        String company_name = parameters.get("company_name");
+        String name = parameters.get("name");
+        String phone = parameters.get("phone");
+        String address = parameters.get("address");
 
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || type.isEmpty()) {
+        if (username.isEmpty() ||
+                email.isEmpty() ||
+                password.isEmpty() ||
+                type.isEmpty() ||
+                name.isEmpty() ||
+                phone.isEmpty() ||
+                address.isEmpty() ||
+                (company_name.isEmpty() && type.equals("Customer"))) {
             debug("Parameters are empty");
             debug("Username: " + username);
             debug("Email: " + email);
             debug("Password: " + password);
+            debug("Type: " + type);
+            debug("Company Name: " + company_name);
+            debug("Name: " + name);
+            debug("Phone: " + phone);
+            debug("Address: " + address);
             return false;
         }
         return true;
@@ -42,12 +62,17 @@ public class RegisterUser extends com.wama.LogClass implements Endpoint {
         String email = parameters.get("email");
         String password = parameters.get("password");
         String type = parameters.get("type");
+        String name = parameters.get("name");
+        String phone = parameters.get("phone");
+        String address = parameters.get("address");
+
         User.UserType userType = type.equals("Customer") ? User.UserType.CUSTOMER : User.UserType.EMPLOYEE;
+        String company_name = userType == User.UserType.CUSTOMER ? parameters.get("company_name") : null;
         User user;
         if (userType == User.UserType.CUSTOMER) {
-            user = new com.wama.Customer(username, password, email, "");
+            user = new com.wama.Customer(username, email, company_name, name, phone, address);
         } else {
-            user = new com.wama.Employee(username, password, email, "");
+            user = new com.wama.Employee(username, email, name, phone, address);
         }
         try {
             if (user.registerNewUser(password) == null) {
@@ -60,10 +85,6 @@ public class RegisterUser extends com.wama.LogClass implements Endpoint {
             arguments.put("error", e.getMessage());
             return new HttpResponse(HttpStatus.BAD_REQUEST, arguments);
         }
-        arguments.put("username", username);
-        arguments.put("email", email);
-        arguments.put("type", type);
-        arguments.put("authToken", user.getAuthToken());
-        return new HttpResponse(HttpStatus.OK, arguments);
-        }
+        return new HttpResponse(HttpStatus.OK, user.getParameters());
+    }
 }

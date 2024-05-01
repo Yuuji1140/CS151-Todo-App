@@ -58,6 +58,10 @@ public class SignUpController {
         String password = passwordField.getText();
         String rePassword = rePasswordField.getText();
         String userType = userTypeComboBox.getValue();
+        String nameOfUser = "Demo User";
+        String phone = "1234567890";
+        String address = "1234 Demo User Way. Demo City, Demo State, 12345";
+        String companyName = userType.equalsIgnoreCase("Customer") ? "Demo Company" : "";
 
         String usernameErrorText = validateUsername(username);
         if (!usernameErrorText.isEmpty()) {
@@ -99,6 +103,10 @@ public class SignUpController {
             parameters.put("email", email);
             parameters.put("password", password);
             parameters.put("type", userType);
+            parameters.put("company_name", companyName);
+            parameters.put("name", nameOfUser);
+            parameters.put("phone", phone);
+            parameters.put("address", address);
 
             try {
                 String response = HttpRequest.post("http://localhost:9876/registerUser", parameters);
