@@ -130,7 +130,7 @@ public abstract class User extends LogClass {
     private String getCurrentId() {
         ArrayList<HashMap<String, String>> user = DatabaseManager.selectRecords("Users", new String[]{"id"}, "username='" + username + "'");
         if (user == null || user.size() != 1) {
-            return null;
+            return "";
         }
         return user.get(0).get("id");
     }

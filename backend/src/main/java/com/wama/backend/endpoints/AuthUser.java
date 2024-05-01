@@ -24,7 +24,6 @@ public class AuthUser extends com.wama.LogClass implements Endpoint {
         String username = parameters.get("username");
         String password = parameters.get("password");
 
-
         info("Authenticating user with username: " + username);
         User assumeEmployee = new Employee(username);
         User user = User.getCurrentType(username) == User.UserType.CUSTOMER ? new Customer(username) : assumeEmployee;
