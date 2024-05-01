@@ -7,17 +7,20 @@ import java.util.UUID;
 public abstract class User extends LogClass {
     private String id;
     private final String username;
-    public final UserType type;
-    private  String email;
+    public UserType type;
+    private String email;
     private String company_name;
     private String name;
     private String phone;
     private String address;
 
-    protected User(String username, UserType type) {
+    protected User(String username) {
         this.username = username;
-        this.type = type;
         this.id = getCurrentId();
+        if (this.id != null && !this.id.isEmpty()) {
+            this.type = getCurrentType(this.username);
+        }
+
     }
 
     protected User(String username, UserType type, String email, String company_name, String name, String phone, String address) {
@@ -71,7 +74,8 @@ public abstract class User extends LogClass {
             return null;
         }
         ArrayList<HashMap<String, String>> user = DatabaseManager.selectRecords("Users",
-                new String[]{"id"}, "username='" + username + "'");
+                new String[]{"id", "username", "name", "email", "phone", "company_name", "address", "user_type"},
+                "username='" + username + "'");
         if (user == null || user.size() != 1) {
             return null;
         }
@@ -126,9 +130,17 @@ public abstract class User extends LogClass {
     private String getCurrentId() {
         ArrayList<HashMap<String, String>> user = DatabaseManager.selectRecords("Users", new String[]{"id"}, "username='" + username + "'");
         if (user == null || user.size() != 1) {
-            return "";
+            return null;
         }
         return user.get(0).get("id");
+    }
+
+    public static UserType getCurrentType(String username) {
+    	ArrayList<HashMap<String, String>> user = DatabaseManager.selectRecords("Users", new String[]{"user_type"}, "username='" + username + "'");
+    	if (user == null || user.size() != 1) {
+    		return null;
+    	}
+    	return UserType.valueOf(user.get(0).get("user_type"));
     }
 
     public void logout() {

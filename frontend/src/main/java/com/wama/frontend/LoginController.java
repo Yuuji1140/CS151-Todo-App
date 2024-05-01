@@ -29,7 +29,8 @@ public class LoginController
 	
 	@FXML private TextField usernameField;
 	@FXML private PasswordField passwordField;
-	
+
+
 	@FXML
     public void initialize() {        
         AnimSlidingRects.generateRectangles(animationPane, 3, -675, 35, 0);
@@ -64,7 +65,7 @@ public class LoginController
 	public void handleLogin(ActionEvent event) {
 	    String username = usernameField.getText().trim();
 	    String password = passwordField.getText().trim();
-	    String userType = "Customer"; // hard coded in at the moment, unsure of how to dynamically retrive usertype when logging in, didn't want to modify backend -hike
+	    //String userType = "Customer"; // hard coded in at the moment, unsure of how to dynamically retrive usertype when logging in, didn't want to modify backend -hike
 
 	    if (username.isEmpty() || password.isEmpty()) {
 	        showAlert("Error", "Username and password cannot be empty!");
@@ -72,7 +73,7 @@ public class LoginController
 	    }
 
 	    try {
-	        String response = sendLoginRequest(username, password, userType); // originally sent with a combobox, but during login the program should automatically check the usertype
+	        String response = sendLoginRequest(username, password); // originally sent with a combobox, but during login the program should automatically check the usertype
 
 			Map<String, String> userData = parseUserData(response);
 			if (userData.containsKey("id")) {
@@ -87,11 +88,10 @@ public class LoginController
 	    }
 	}
 
-	private String sendLoginRequest(String username, String password, String userType) throws IOException {
+	private String sendLoginRequest(String username, String password) throws IOException {
 	    Map<String, String> parameters = new HashMap<>();
 	    parameters.put("username", username);
 	    parameters.put("password", password);
-	    parameters.put("type", userType);
 	    return HttpRequest.post("http://localhost:9876/authUser", parameters);
 	}
 	
