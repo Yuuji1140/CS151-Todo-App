@@ -33,24 +33,29 @@ public class Products extends com.wama.LogClass implements Endpoint {
     }
 
     public HttpResponse handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
+        /*
+        Request is to get an array of hashmaps of all products in the Products table.
+         */
         String id = parameters.get("id");
 
-        if (id != null) {
-            product = new Product(id);
-            HashMap<String, String> productDetails = product.selectProduct();
-            if (productDetails != null) {
-                return new HttpResponse(HttpStatus.OK, productDetails);
-            } else {
-                HashMap<String, String> arguments = new HashMap<>();
-                arguments.put("error", "Product not found");
-                return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
-            }
-        } else {
+        product = new Product(id);
+        if (id.equalsIgnoreCase("all"))
             return new HttpResponse(HttpStatus.OK, com.wama.Product.getAllProducts());
-        }
+
+        HashMap<String, String> productDetails = product.selectProduct();
+        if (productDetails != null)
+            return new HttpResponse(HttpStatus.OK, productDetails);
+
+        HashMap<String, String> arguments = new HashMap<>();
+        arguments.put("error", "Product not found");
+        return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
+
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
+        /*
+        Request is to create a new product in the Products table.
+         */
         String name = parameters.get("name");
         String description = parameters.get("description");
         double price = Double.parseDouble(parameters.get("price"));
@@ -69,6 +74,9 @@ public class Products extends com.wama.LogClass implements Endpoint {
     }
 
     public HttpResponse handlePutRequest(Map<String, String> parameters, OutputStream outputStream) {
+        /*
+        Request is to update an existing product in the Products table.
+         */
         String id = parameters.get("id");
         String name = parameters.get("name");
         String description = parameters.get("description");
@@ -78,8 +86,8 @@ public class Products extends com.wama.LogClass implements Endpoint {
         String encodedImg = parameters.get("encoded_image");
 
         product = new Product(id);
-        product.updateProduct(name, description, price, reorderPoint, initialStock, encodedImg);
-        if (product != null) {
+        Product updatedProduct = product.updateProduct(name, description, price, reorderPoint, initialStock, encodedImg);
+        if (updatedProduct != null) {
             return new HttpResponse(HttpStatus.OK, new HashMap<>());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
@@ -89,6 +97,9 @@ public class Products extends com.wama.LogClass implements Endpoint {
     }
 
     public HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {
+        /*
+        Request is to delete an existing product in the Products table.
+         */
         String id = parameters.get("id");
 
         product = new Product(id);
