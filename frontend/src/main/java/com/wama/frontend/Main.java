@@ -114,9 +114,9 @@ public class Main extends Application {
         catch (IOException e) { e.printStackTrace(); }
     }
     
-    public static void switchToSceneProducts() {
+    public static void switchToSceneCatalog() {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneProducts.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com/wama/frontend/scenes/SceneCatalog.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);

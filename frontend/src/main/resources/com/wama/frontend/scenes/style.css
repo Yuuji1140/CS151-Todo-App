@@ -24,3 +24,30 @@
     -fx-background-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgb(108, 108, 108), 10, 0, 2, 2);
 }
+
+.product-box {
+    -fx-padding: 5;
+    -fx-border-style: solid inside;
+    -fx-border-width: 1;
+    -fx-border-insets: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: lightgrey;
+}
+
+.product-name, .product-price, .product-description, .product-stock {
+    -fx-font-size: 12px;
+}
+
+.product-box:hover {
+    -fx-cursor: hand;
+}
+
+.scroll-pane > .viewport {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.scroll-pane {
+	-fx-border-color: transparent;
+    -fx-background-insets: 0;
+}

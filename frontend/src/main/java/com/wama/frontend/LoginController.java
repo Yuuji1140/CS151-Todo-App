@@ -65,7 +65,6 @@ public class LoginController
 	public void handleLogin(ActionEvent event) {
 	    String username = usernameField.getText().trim();
 	    String password = passwordField.getText().trim();
-	    //String userType = "Customer"; // hard coded in at the moment, unsure of how to dynamically retrive usertype when logging in, didn't want to modify backend -hike
 
 	    if (username.isEmpty() || password.isEmpty()) {
 	        showAlert("Error", "Username and password cannot be empty!");
@@ -73,13 +72,14 @@ public class LoginController
 	    }
 
 	    try {
-	        String response = sendLoginRequest(username, password); // originally sent with a combobox, but during login the program should automatically check the usertype
+	        String response = sendLoginRequest(username, password);
 
 			Map<String, String> userData = parseUserData(response);
 			if (userData.containsKey("id")) {
 				System.out.println("Successfully logged in!");
 				switchToDashboard(userData);
-			} else
+			}
+			else
 	            showAlert("Login Failed", "Invalid credentials or server error!");
 	    } 
 	    catch (IOException e) {
@@ -98,7 +98,7 @@ public class LoginController
 	private Map<String, String> parseUserData(String response) {
 		Map<String, String> userData = new HashMap<>();
 
-		// Regular expression pattern to match key-value pairs
+		// regular expression pattern to match key-value pairs
 		String pattern = "(\\w+)=([^,}]+)";
 
 		Pattern regex = Pattern.compile(pattern);
@@ -112,7 +112,6 @@ public class LoginController
 
 		return userData;
 	}
-
 
 	private void showAlert(String title, String content) {
 	    Alert alert = new Alert(Alert.AlertType.INFORMATION);

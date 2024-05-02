@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.paint.LinearGradient?>
-<?import javafx.scene.paint.Stop?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.DashboardController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.OrdersController">
    <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="739.0" prefWidth="174.0">
          <children>
@@ -21,86 +19,13 @@
             </Text>
             <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleDashboardCustomerButtonAction" prefHeight="43.0" prefWidth="143.0" text="Dashboard" />
             <Button layoutX="14.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleOrdersButtonAction" prefHeight="43.0" prefWidth="143.0" text="Orders" />
-            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleProductsButtonAction" prefHeight="43.0" prefWidth="143.0" text="Products" />
+            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleCatalogButtonAction" prefHeight="43.0" prefWidth="143.0" text="Catalog" />
             <Button layoutX="18.0" layoutY="575.0" mnemonicParsing="false" onAction="#handleFeedbackCustomerButtonAction" prefHeight="43.0" prefWidth="143.0" text="Feedback" />
             <Button layoutX="18.0" layoutY="650.0" mnemonicParsing="false" onAction="#handleSignoutButtonAction" prefHeight="43.0" prefWidth="143.0" text="Sign Out" />
          </children>
       </Pane>
       <Pane layoutX="213.0" layoutY="14.0" prefHeight="739.0" prefWidth="796.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5f5f500" height="739.0" stroke="BLACK" strokeType="INSIDE" width="796.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" height="343.0" layoutX="14.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="379.0">
-               <fill>
-                  <LinearGradient endX="0.29261359301480383" endY="0.3750000722480542" startX="1.0" startY="1.0">
-                     <stops>
-                        <Stop>
-                           <color>
-                              <Color red="0.9052631855010986" green="0.9052631855010986" blue="0.9052631855010986" />
-                           </color>
-                        </Stop>
-                        <Stop offset="1.0">
-                           <color>
-                              <Color red="1.0" green="1.0" blue="1.0" />
-                           </color>
-                        </Stop>
-                     </stops>
-                  </LinearGradient>
-               </fill>
-            </Rectangle>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" height="343.0" layoutX="14.0" layoutY="382.0" stroke="BLACK" strokeType="INSIDE" width="379.0">
-               <fill>
-                  <LinearGradient endY="1.0" startX="1.0" startY="0.916666668472868">
-                     <stops>
-                        <Stop>
-                           <color>
-                              <Color red="0.9052631855010986" green="0.9052631855010986" blue="0.9052631855010986" />
-                           </color>
-                        </Stop>
-                        <Stop offset="1.0">
-                           <color>
-                              <Color red="1.0" green="1.0" blue="1.0" />
-                           </color>
-                        </Stop>
-                     </stops>
-                  </LinearGradient>
-               </fill>
-            </Rectangle>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" height="343.0" layoutX="411.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="371.0">
-               <fill>
-                  <LinearGradient endX="1.0" endY="0.5643939393939394" startX="0.06818181976224437" startY="1.0">
-                     <stops>
-                        <Stop>
-                           <color>
-                              <Color red="0.9052631855010986" green="0.9052631855010986" blue="0.9052631855010986" />
-                           </color>
-                        </Stop>
-                        <Stop offset="1.0">
-                           <color>
-                              <Color red="1.0" green="1.0" blue="1.0" />
-                           </color>
-                        </Stop>
-                     </stops>
-                  </LinearGradient>
-               </fill>
-            </Rectangle>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" height="343.0" layoutX="411.0" layoutY="382.0" stroke="BLACK" strokeType="INSIDE" width="371.0">
-               <fill>
-                  <LinearGradient endX="0.8333333333333333" endY="0.678030303030303" startX="0.708333362232555">
-                     <stops>
-                        <Stop>
-                           <color>
-                              <Color red="0.9052631855010986" green="0.9052631855010986" blue="0.9052631855010986" />
-                           </color>
-                        </Stop>
-                        <Stop offset="1.0">
-                           <color>
-                              <Color red="1.0" green="1.0" blue="1.0" />
-                           </color>
-                        </Stop>
-                     </stops>
-                  </LinearGradient>
-               </fill>
-            </Rectangle>
          </children>
       </Pane>
    </children>

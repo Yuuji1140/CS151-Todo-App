@@ -1,14 +1,29 @@
 package com.wama.frontend;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 public class DashboardController
 {
+	@FXML private Label labelDate;
+	@FXML private Label labelName;
+	
+	public void initialize() {
+		LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy");
+        String textDate = currentDate.format(formatter);
+        
+		labelDate.setText(textDate);
+		labelName.setText("Hey, [username]");
+	}
+	
 	@FXML
-    void handleSignoutButtonAction(ActionEvent event) {
-		// TODO: Handle logging user out here
-		Main.switchToSceneStartUp();
+    void handleDashboardCustomerButtonAction(ActionEvent event) {
+        Main.switchToSceneDashboardCustomer();
     }
 	
 	@FXML
@@ -17,23 +32,13 @@ public class DashboardController
     }
 	
 	@FXML
-    void handleDashboardCustomerButtonAction(ActionEvent event) {
-        Main.switchToSceneDashboardCustomer();
-    }
-	
-	@FXML
-    void handleProductsButtonAction(ActionEvent event) {
-		Main.switchToSceneProducts();
-    }
-	
-	@FXML
     void handleOrdersButtonAction(ActionEvent event) {
         Main.switchToSceneOrders();
     }
 	
 	@FXML
-    void handleTrackingButtonAction(ActionEvent event) {
-		Main.switchToSceneTracking();
+    void handleCatalogButtonAction(ActionEvent event) {
+		Main.switchToSceneCatalog();
     }
 	
 	@FXML
@@ -53,6 +58,11 @@ public class DashboardController
 	
 	@FXML
     void handleFeedbackEmployeeBackButtonAction(ActionEvent event) {
-        Main.switchToSceneDashboardEmployee();
+		Main.switchToSceneDashboardEmployee();
+    }
+	
+	@FXML
+    void handleSignoutButtonAction(ActionEvent event) {
+		Main.switchToSceneStartUp();
     }
 }

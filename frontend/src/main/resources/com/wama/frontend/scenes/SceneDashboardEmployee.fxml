@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
@@ -11,16 +12,16 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.DashboardController">
    <children>
-      <Text fill="#595959" layoutX="897.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hey, [firstname]">
+      <Label fx:id="labelName" layoutX="206.0" layoutY="14.0" text="Label" textFill="#666666">
          <font>
             <Font name="Arial" size="16.0" />
          </font>
-      </Text>
-      <Text fill="#9c9c9c" layoutX="915.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[today's date]">
+      </Label>
+      <Label fx:id="labelDate" layoutX="206.0" layoutY="42.0" text="Label" textFill="#a1a1a1">
          <font>
-            <Font name="Arial" size="16.0" />
+            <Font name="Arial" size="14.0" />
          </font>
-      </Text>
+      </Label>
       <Pane layoutX="420.0" layoutY="80.0" prefHeight="114.0" prefWidth="590.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fcfcfc" height="114.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="2.0" width="590.0" />

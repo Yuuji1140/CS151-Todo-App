@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.DashboardController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.CatalogController">
    <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="739.0" prefWidth="174.0">
          <children>
@@ -18,14 +19,19 @@
             </Text>
             <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleDashboardCustomerButtonAction" prefHeight="43.0" prefWidth="143.0" text="Dashboard" />
             <Button layoutX="14.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleOrdersButtonAction" prefHeight="43.0" prefWidth="143.0" text="Orders" />
-            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleProductsButtonAction" prefHeight="43.0" prefWidth="143.0" text="Products" />
+            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleCatalogButtonAction" prefHeight="43.0" prefWidth="143.0" text="Catalog" />
             <Button layoutX="18.0" layoutY="575.0" mnemonicParsing="false" onAction="#handleFeedbackCustomerButtonAction" prefHeight="43.0" prefWidth="143.0" text="Feedback" />
             <Button layoutX="18.0" layoutY="650.0" mnemonicParsing="false" onAction="#handleSignoutButtonAction" prefHeight="43.0" prefWidth="143.0" text="Sign Out" />
          </children>
       </Pane>
       <Pane layoutX="213.0" layoutY="14.0" prefHeight="739.0" prefWidth="796.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5f5f500" height="739.0" stroke="BLACK" strokeType="INSIDE" width="796.0" />
+            <ScrollPane layoutX="3.0" layoutY="73.0" prefHeight="627.0" prefWidth="777.0" styleClass="scroll-pane">
+    			<content>
+            			<TilePane fx:id="tilePane" hgap="10" layoutY="14.0" prefColumns="3" prefHeight="660.0" prefWidth="758.0" styleClass="tile-pane" tileAlignment="BASELINE_LEFT" vgap="10" />
+    			</content>
+			</ScrollPane>
+            <Button layoutX="667.0" layoutY="7.0" onAction="#handleViewCart" text="View Cart" />
          </children>
       </Pane>
    </children>
