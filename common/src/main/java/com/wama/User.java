@@ -17,7 +17,7 @@ public abstract class User extends LogClass {
     protected User(String username) {
         this.username = username;
         this.id = getCurrentId();
-        if (this.id != null && !this.id.isEmpty()) {
+        if (!this.id.isEmpty()) {
             this.type = getCurrentType(this.username);
         }
 
@@ -140,7 +140,8 @@ public abstract class User extends LogClass {
     	if (user == null || user.size() != 1) {
     		return null;
     	}
-    	return UserType.valueOf(user.get(0).get("user_type"));
+        String type = user.get(0).get("user_type").toUpperCase();
+    	return UserType.valueOf(type);
     }
 
     public void logout() {
