@@ -3,6 +3,7 @@ package com.wama;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.Base64;
 
 public class Product extends LogClass {
     private final String id;
@@ -11,6 +12,7 @@ public class Product extends LogClass {
     private double price;
     private int reorderPoint;
     private int currentStock;
+    private String encodedImg;
     /*
      * We can either create a product with just an ID and have it return a product
      * object with the rest of
@@ -25,7 +27,8 @@ public class Product extends LogClass {
         selectProduct();
     }
 
-    private Product(String name, String description, double price, int reorderPoint, int currentStock) {
+    private Product(String name, String description, double price, int reorderPoint, int currentStock,
+            String encodedImg) {
         // Cryptographically secure random UUID -
         // shouldn't collide (if it does, we write a paper on it and get famous)
         this.id = UUID.randomUUID().toString();
@@ -34,10 +37,11 @@ public class Product extends LogClass {
         this.price = price;
         this.reorderPoint = reorderPoint;
         this.currentStock = currentStock;
+        this.encodedImg = encodedImg;
     }
 
     public HashMap<String, String> selectProduct() {
-        String[] columns = { "id", "name", "description", "price", "reorder_point", "current_stock" };
+        String[] columns = { "id", "name", "description", "price", "reorder_point", "current_stock", "encoded_image" };
         ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("OrderItems", columns,
                 "id = '" + id + "'");
         if (result != null && !result.isEmpty()) {
@@ -48,6 +52,7 @@ public class Product extends LogClass {
             this.price = Double.parseDouble(product.get("price"));
             this.reorderPoint = Integer.parseInt(product.get("reorder_point"));
             this.currentStock = Integer.parseInt(product.get("current_stock"));
+            this.encodedImg = product.get("encoded_image");
             return product;
         } else {
             error("Product not found.");
@@ -56,14 +61,15 @@ public class Product extends LogClass {
     }
 
     public Product createProduct(String name, String description, double price,
-            int reorderPoint, int currentStock) {
-        Product newProduct = new Product(name, description, price, reorderPoint, currentStock);
+            int reorderPoint, int currentStock, String encodedImg) {
+        Product newProduct = new Product(name, description, price, reorderPoint, currentStock, encodedImg);
         // TODO: Insert the new product into the database
         try {
             DatabaseManager.insertRecord("Product",
-                    new String[] { "id", "name", "description", "price", "reorder_point", "current_stock" },
+                    new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
+                            "encoded_image" },
                     new String[] { id, name, description, Double.toString(price), Integer.toString(reorderPoint),
-                            Integer.toString(currentStock)});
+                            Integer.toString(currentStock), encodedImg });
         } catch (Exception e) {
             error("Error creating product: " + e.getMessage(), e);
             newProduct.deleteProduct();
@@ -73,18 +79,21 @@ public class Product extends LogClass {
     }
 
     public Product updateProduct(String name, String description, double price,
-            int reorderPoint, int currentStock) {
+            int reorderPoint, int currentStock, String encodedImg) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.reorderPoint = reorderPoint;
         this.currentStock = currentStock;
+        this.encodedImg = encodedImg;
 
         try {
             DatabaseManager.updateRecord("Product",
-                    new String[] { "id", "name", "description", "price", "reorder_point", "current_stock" },
+                    new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
+                            "encoded_image" },
                     new String[] { id, name, description, Double.toString(price), Integer.toString(reorderPoint),
-                            Integer.toString(currentStock)}, "id = '" + id + "'");
+                            Integer.toString(currentStock), encodedImg },
+                    "id = '" + id + "'");
         } catch (Exception e) {
             error("Error updating product: " + e.getMessage(), e);
             throw new IllegalArgumentException("Failed to update product.");
@@ -104,7 +113,7 @@ public class Product extends LogClass {
 
     public static ArrayList<HashMap<String, String>> getAllProducts() {
         return DatabaseManager.selectRecords("Orders",
-                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock" },
+                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock", "encoded_image" },
                 null);
     }
 

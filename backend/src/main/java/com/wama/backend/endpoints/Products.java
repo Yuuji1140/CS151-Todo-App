@@ -48,22 +48,6 @@ public class Products extends com.wama.LogClass implements Endpoint {
         } else {
             return new HttpResponse(HttpStatus.OK, com.wama.Product.getAllProducts());
         }
-
-        // String[] columns = {"id", "name", "description", "price", "reorder_point", "current_stock"};
-        // if (id != null) {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Products", columns, "id = '" + id + "'");
-        //     if (result.size() > 0) {
-        //         HashMap<String, String> product = result.get(0);
-        //         return new HttpResponse(HttpStatus.OK, product);
-        //     } else {
-        //         HashMap<String, String> arguments = new HashMap<>();
-        //         arguments.put("error", "Product not found");
-        //         return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
-        //     }
-        // } else {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Products", columns, null);
-        //     return new HttpResponse(HttpStatus.OK, result);
-        // }
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -72,8 +56,9 @@ public class Products extends com.wama.LogClass implements Endpoint {
         double price = Double.parseDouble(parameters.get("price"));
         int reorderPoint = Integer.parseInt(parameters.get("reorder_point"));
         int initialStock = Integer.parseInt(parameters.get("initial_stock"));
+        String encodedImg = parameters.get("encoded_image");
 
-        product = product.createProduct(name, description, price, reorderPoint, initialStock);
+        product = product.createProduct(name, description, price, reorderPoint, initialStock, encodedImg);
         if (product != null) {
             return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
         } else {
@@ -81,16 +66,6 @@ public class Products extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error creating product");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-
-        // String[] columns = {"name", "description", "price", "reorder_point", "current_stock"};
-        // String[] values = {name, description, String.valueOf(price), String.valueOf(reorderPoint), String.valueOf(initialStock)};
-        // if (DatabaseManager.insertRecord("Products", columns, values)) {
-        //     return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error creating product");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handlePutRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -100,9 +75,10 @@ public class Products extends com.wama.LogClass implements Endpoint {
         double price = Double.parseDouble(parameters.get("price"));
         int reorderPoint = Integer.parseInt(parameters.get("reorder_point"));
         int initialStock = Integer.parseInt(parameters.get("initial_stock"));
+        String encodedImg = parameters.get("encoded_image");
 
         product = new Product(id);
-        product.updateProduct(name, description, price, reorderPoint, initialStock);
+        product.updateProduct(name, description, price, reorderPoint, initialStock, encodedImg);
         if (product != null) {
             return new HttpResponse(HttpStatus.OK, new HashMap<>());
         } else {
@@ -110,16 +86,6 @@ public class Products extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error updating product");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-
-        // String[] columns = {"name", "description", "price", "reorder_point"};
-        // String[] values = {name, description, String.valueOf(price), String.valueOf(reorderPoint)};
-        // if (DatabaseManager.updateRecord("Products", columns, values, "id = '" + id + "'")) {
-        //     return new HttpResponse(HttpStatus.OK, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error updating product");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {

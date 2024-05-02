@@ -48,23 +48,6 @@ public class Orders extends com.wama.LogClass implements Endpoint {
         } else {
             return new HttpResponse(HttpStatus.OK, com.wama.Order.getAllOrders());
         }
-
-        // String[] columns = { "id", "customer_id", "employee_id", "order_date", "status", "total" };
-        // if (id != null) {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns,
-        //             "id = '" + id + "'");
-        //     if (result.size() > 0) {
-        //         HashMap<String, String> order = result.get(0);
-        //         return new HttpResponse(HttpStatus.OK, order);
-        //     } else {
-        //         HashMap<String, String> arguments = new HashMap<>();
-        //         arguments.put("error", "Order not found");
-        //         return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
-        //     }
-        // } else {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns, null);
-        //     return new HttpResponse(HttpStatus.OK, result);
-        // }
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -82,16 +65,6 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error creating order");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-        
-        // String[] columns = { "customer_id", "employee_id", "order_date", "status", "total" };
-        // String[] values = { customerId, employeeId, orderDate, status, String.valueOf(total) };
-        // if (DatabaseManager.insertRecord("Orders", columns, values)) {
-        //     return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error creating order");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handlePutRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -111,16 +84,6 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error updating order");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-
-        // String[] columns = { "customer_id", "employee_id", "order_date", "status", "total" };
-        // String[] values = { customerId, employeeId, orderDate, status, String.valueOf(total) };
-        // if (DatabaseManager.updateRecord("Orders", columns, values, "id = '" + id + "'")) {
-        //     return new HttpResponse(HttpStatus.OK, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error updating order");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {

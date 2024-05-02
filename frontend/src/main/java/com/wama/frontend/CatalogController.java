@@ -1,6 +1,8 @@
 package com.wama.frontend;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 
 import com.wama.DatabaseManager;
@@ -47,7 +49,9 @@ public class CatalogController {
             current_stock.getStyleClass().add("product-stock");
 
             ImageView imageView = new ImageView();
-            imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
+            byte[] decodedBytes = Base64.getDecoder().decode(product.get("encoded_image"));
+            imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
+            // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
             imageView.setFitHeight(80);
             imageView.setFitWidth(80);
 

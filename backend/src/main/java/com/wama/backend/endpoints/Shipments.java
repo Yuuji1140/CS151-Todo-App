@@ -47,22 +47,6 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
         } else {
             return new HttpResponse(HttpStatus.OK, com.wama.Shipment.getAllShipments());
         }
-
-        // String[] columns = {"id", "order_id", "shipment_date", "status", "tracking_number"};
-        // if (id != null) {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Shipments", columns, "id = '" + id + "'");
-        //     if (result.size() > 0) {
-        //         HashMap<String, String> shipment = result.get(0);
-        //         return new HttpResponse(HttpStatus.OK, shipment);
-        //     } else {
-        //         HashMap<String, String> arguments = new HashMap<>();
-        //         arguments.put("error", "Shipment not found");
-        //         return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
-        //     }
-        // } else {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Shipments", columns, null);
-        //     return new HttpResponse(HttpStatus.OK, result);
-        // }
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -79,16 +63,6 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error creating shipment");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-
-        // String[] columns = {"order_id", "shipment_date", "status", "tracking_number"};
-        // String[] values = {orderId, shipmentDate, status, trackingNumber};
-        // if (DatabaseManager.insertRecord("Shipments", columns, values)) {
-        //     return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error creating shipment");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handlePutRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -107,16 +81,6 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error updating shipment");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-        
-        // String[] columns = {"order_id", "shipment_date", "status", "tracking_number"};
-        // String[] values = {orderId, shipmentDate, status, trackingNumber};
-        // if (DatabaseManager.updateRecord("Shipments", columns, values, "id = '" + id + "'")) {
-        //     return new HttpResponse(HttpStatus.OK, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error updating shipment");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {
