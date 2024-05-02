@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 
+import javax.imageio.IIOException;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.wama.DatabaseManager;
 
 import javafx.event.ActionEvent;
@@ -19,9 +24,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class CatalogController {
-	private ShoppingCart shoppingCart = new ShoppingCart();
-	
-	@FXML
+    private ShoppingCart shoppingCart = new ShoppingCart();
+
+    @FXML
     private TilePane tilePane;
 
     public void initialize() {
@@ -29,37 +34,85 @@ public class CatalogController {
     }
 
     private void loadProducts() {
-        ArrayList<HashMap<String, String>> products = DatabaseManager.selectRecords("Products", new String[]{"id", "name", "description", "price", "current_stock", "encoded_image"}, null);
-        for (HashMap<String, String> product : products) {
-            VBox productBox = new VBox(5);
-            productBox.getStyleClass().add("product-box");
-            
-            productBox.setOnMouseClicked(event -> handleProductClick(product));
+        try {
+            String response = HttpRequest.get("http://localhost:9876/products");
 
-            Text name = new Text(product.get("name"));
-            name.getStyleClass().add("product-name");
+            JsonArray productsArray = new Gson().fromJson(response, JsonArray.class);
+            for (int i = 0; i < productsArray.size(); i++) {
+                JsonObject productJson = productsArray.get(i).getAsJsonObject();
+                HashMap<String, String> product = new HashMap<>();
+                product.put("id", productJson.get("id").getAsString());
+                product.put("name", productJson.get("name").getAsString());
+                product.put("description", productJson.get("description").getAsString());
+                product.put("price", productJson.get("price").getAsString());
+                product.put("current_stock", productJson.get("current_stock").getAsString());
+                product.put("encoded_image", productJson.get("encoded_image").getAsString());
 
-            Text price = new Text("$" + product.get("price"));
-            price.getStyleClass().add("product-price");
+                VBox productBox = new VBox(5);
+                productBox.getStyleClass().add("product-box");
 
-            Text description = new Text(product.get("description"));
-            description.getStyleClass().add("product-description");
-            
-            Text current_stock = new Text(product.get("current_stock"));
-            current_stock.getStyleClass().add("product-stock");
+                productBox.setOnMouseClicked(event -> handleProductClick(product));
 
-            ImageView imageView = new ImageView();
-            byte[] decodedBytes = Base64.getDecoder().decode(product.get("encoded_image"));
-            imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
-            // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
-            imageView.setFitHeight(80);
-            imageView.setFitWidth(80);
+                Text name = new Text(product.get("name"));
+                name.getStyleClass().add("product-name");
 
-            productBox.getChildren().addAll(imageView, name, price, description, current_stock);
-            tilePane.getChildren().add(productBox);
+                Text price = new Text("$" + product.get("price"));
+                price.getStyleClass().add("product-price");
+
+                Text description = new Text(product.get("description"));
+                description.getStyleClass().add("product-description");
+
+                Text current_stock = new Text(product.get("current_stock"));
+                current_stock.getStyleClass().add("product-stock");
+
+                ImageView imageView = new ImageView();
+                byte[] decodedBytes = Base64.getDecoder().decode(product.get("encoded_image"));
+                imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
+                // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
+                imageView.setFitHeight(80);
+                imageView.setFitWidth(80);
+
+                productBox.getChildren().addAll(imageView, name, price, description, current_stock);
+                tilePane.getChildren().add(productBox);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
+        // ArrayList<HashMap<String, String>> products =
+        // DatabaseManager.selectRecords("Products", new String[]{"id", "name",
+        // "description", "price", "current_stock", "encoded_image"}, null);
+        // for (HashMap<String, String> product : products) {
+        // VBox productBox = new VBox(5);
+        // productBox.getStyleClass().add("product-box");
+
+        // productBox.setOnMouseClicked(event -> handleProductClick(product));
+
+        // Text name = new Text(product.get("name"));
+        // name.getStyleClass().add("product-name");
+
+        // Text price = new Text("$" + product.get("price"));
+        // price.getStyleClass().add("product-price");
+
+        // Text description = new Text(product.get("description"));
+        // description.getStyleClass().add("product-description");
+
+        // Text current_stock = new Text(product.get("current_stock"));
+        // current_stock.getStyleClass().add("product-stock");
+
+        // ImageView imageView = new ImageView();
+        // byte[] decodedBytes =
+        // Base64.getDecoder().decode(product.get("encoded_image"));
+        // imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
+        // // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
+        // imageView.setFitHeight(80);
+        // imageView.setFitWidth(80);
+
+        // productBox.getChildren().addAll(imageView, name, price, description,
+        // current_stock);
+        // tilePane.getChildren().add(productBox);
+        // }
     }
-    
+
     private void handleProductClick(HashMap<String, String> product) {
         shoppingCart.addItem(product);
         System.out.println("Added to cart: " + product.get("name") + ", ID: " + product.get("id"));
@@ -69,7 +122,7 @@ public class CatalogController {
     private void updateCartView() {
         // update cart UI here
     }
-    
+
     @FXML
     private void handleViewCart(ActionEvent event) {
         Stage cartStage = new Stage();
@@ -85,27 +138,27 @@ public class CatalogController {
     }
 
     @FXML
-	void handleDashboardCustomerButtonAction(ActionEvent event) {
-		Main.switchToSceneDashboardCustomer();
-	}
+    void handleDashboardCustomerButtonAction(ActionEvent event) {
+        Main.switchToSceneDashboardCustomer();
+    }
 
-	@FXML
-	void handleOrdersButtonAction(ActionEvent event) {
-		Main.switchToSceneOrders();
-	}
-	
-	@FXML
-	void handleCatalogButtonAction(ActionEvent event) {
-		Main.switchToSceneCatalog();
-	}
+    @FXML
+    void handleOrdersButtonAction(ActionEvent event) {
+        Main.switchToSceneOrders();
+    }
 
-	@FXML
-	void handleFeedbackCustomerButtonAction(ActionEvent event) {
-		Main.switchToSceneFeedbackCustomer();
-	}
-	
-	@FXML
-	void handleSignoutButtonAction(ActionEvent event) {
-		Main.switchToSceneStartUp();
-	}
+    @FXML
+    void handleCatalogButtonAction(ActionEvent event) {
+        Main.switchToSceneCatalog();
+    }
+
+    @FXML
+    void handleFeedbackCustomerButtonAction(ActionEvent event) {
+        Main.switchToSceneFeedbackCustomer();
+    }
+
+    @FXML
+    void handleSignoutButtonAction(ActionEvent event) {
+        Main.switchToSceneStartUp();
+    }
 }

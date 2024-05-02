@@ -15,25 +15,30 @@ import com.google.gson.Gson;
 public class HttpRequest {
 
     // Frontend calls this method
-    public static String post(String urlString, Map<String, String> parameters) throws IOException {
+    private static String sendRequest(String urlString, String requestMethod, Map<String, String> parameters)
+            throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestMethod(requestMethod);
 
-        String jsonBody = new Gson().toJson(parameters);
+        if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json");
 
-        try (OutputStream outputStream = connection.getOutputStream()) {
-            outputStream.write(jsonBody.getBytes(StandardCharsets.UTF_8));
+            String jsonBody = new Gson().toJson(parameters);
+
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                outputStream.write(jsonBody.getBytes(StandardCharsets.UTF_8));
+            }
         }
 
         int responseCode = connection.getResponseCode();
-        // TODO: Handle response code for all endpoints (see backend/endpoints/ConnectionHandler.java METHODS enum)
+        // TODO: Handle response code for all endpoints (see
+        // backend/endpoints/ConnectionHandler.java METHODS enum)
 
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (InputStream inputStream = connection.getInputStream();
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String line;
                 StringBuilder response = new StringBuilder();
                 while ((line = reader.readLine()) != null) {
@@ -44,11 +49,10 @@ public class HttpRequest {
                 System.out.println("Response Payload: " + responsePayload);
                 return responsePayload;
             }
-        } 
-        else {
+        } else {
             // Handle error response
             try (InputStream errorStream = connection.getErrorStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream))) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream))) {
                 String line;
                 StringBuilder errorResponse = new StringBuilder();
                 while ((line = reader.readLine()) != null) {
@@ -60,5 +64,21 @@ public class HttpRequest {
                 return "Error registering user: " + errorPayload;
             }
         }
+    }
+
+    public static String get(String urlString) throws IOException {
+        return sendRequest(urlString, "GET", null);
+    }
+
+    public static String post(String urlString, Map<String, String> parameters) throws IOException {
+        return sendRequest(urlString, "POST", parameters);
+    }
+
+    public static String put(String urlString, Map<String, String> parameters) throws IOException {
+        return sendRequest(urlString, "PUT", parameters);
+    }
+
+    public static String delete(String urlString) throws IOException {
+        return sendRequest(urlString, "DELETE", null);
     }
 }
