@@ -3,7 +3,6 @@ package com.wama;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.Base64;
 
 public class Product extends LogClass {
     private final String id;
@@ -139,6 +138,10 @@ public class Product extends LogClass {
 
     public int getCurrentStock() {
         return currentStock;
+    }
+
+    public String getEncodedImg() {
+        return encodedImg;
     }
 
     // TODO: Setters and getters (change name, add stock, change price, etc.)

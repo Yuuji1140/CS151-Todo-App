@@ -29,7 +29,7 @@ public class CatalogController {
     }
 
     private void loadProducts() {
-        ArrayList<HashMap<String, String>> products = DatabaseManager.selectRecords("Products", new String[]{"id", "name", "description", "price", "current_stock"}, null);
+        ArrayList<HashMap<String, String>> products = DatabaseManager.selectRecords("Products", new String[]{"id", "name", "description", "price", "current_stock", "encoded_image"}, null);
         for (HashMap<String, String> product : products) {
             VBox productBox = new VBox(5);
             productBox.getStyleClass().add("product-box");

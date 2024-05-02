@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Server",
+            "request": "launch",
+            "mainClass": "com.wama.backend.Server",
+            "projectName": "backend"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)",
+            "request": "launch",
+            "mainClass": "com.wama.frontend.Main",
+            "args": [],
+            "vmArgs": [
+                "--module-path",
+                "/Users/vietnguyen/Java/javafx-sdk-22.0.1/lib",
+                "--add-modules=javafx.controls,javafx.fxml"
+            ]
+        }
+    ]
+}
