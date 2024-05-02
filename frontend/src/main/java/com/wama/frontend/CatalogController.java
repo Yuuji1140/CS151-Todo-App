@@ -35,8 +35,15 @@ public class CatalogController {
 
     private void loadProducts() {
         try {
-            String response = HttpRequest.get("http://localhost:9876/products");
-
+            /*
+            "id" is a required parameter for the GET request to the /products endpoint.
+            add it with the all value
+             */
+            //String response = HttpRequest.get("http://localhost:9876/products");
+            // private static String sendRequest(String urlString, String requestMethod, Map<String, String> parameters)
+            HashMap<String, String> parameters = new HashMap<>();
+            parameters.put("id", "all");
+            String response = HttpRequest.get("http://localhost:9876/products", parameters);
             JsonArray productsArray = new Gson().fromJson(response, JsonArray.class);
             for (int i = 0; i < productsArray.size(); i++) {
                 JsonObject productJson = productsArray.get(i).getAsJsonObject();

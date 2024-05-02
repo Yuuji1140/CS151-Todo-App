@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -17,11 +18,12 @@ public class HttpRequest {
     // Frontend calls this method
     private static String sendRequest(String urlString, String requestMethod, Map<String, String> parameters)
             throws IOException {
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(requestMethod);
+        HttpURLConnection connection = null;
 
         if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
+            URL url = new URL(urlString);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(requestMethod);
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
 
@@ -32,9 +34,22 @@ public class HttpRequest {
             }
         }
 
-        int responseCode = connection.getResponseCode();
-        // TODO: Handle response code for all endpoints (see
-        // backend/endpoints/ConnectionHandler.java METHODS enum)
+        if (requestMethod.equals("GET")) {
+            StringBuilder queryParams = new StringBuilder();
+            for (Map.Entry<String, String> param : parameters.entrySet()) {
+                if (!queryParams.isEmpty()) {
+                    queryParams.append("&");
+                }
+                queryParams.append(param.getKey()).append("=").append(param.getValue());
+            }
+            URL url = new URL(urlString + "?" + queryParams);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(requestMethod);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(requestMethod);
+        }
+
+        int responseCode = connection != null ? connection.getResponseCode() : 0;
 
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (InputStream inputStream = connection.getInputStream();
@@ -66,8 +81,8 @@ public class HttpRequest {
         }
     }
 
-    public static String get(String urlString) throws IOException {
-        return sendRequest(urlString, "GET", null);
+    public static String get(String urlString, HashMap<String, String> parameters) throws IOException {
+        return sendRequest(urlString, "GET", parameters);
     }
 
     public static String post(String urlString, Map<String, String> parameters) throws IOException {

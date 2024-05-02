@@ -22,8 +22,8 @@ public class Product extends LogClass {
 
     public Product(String id) {
         this.id = id;
-        // TODO: Fetch the rest of the fields from the database
-        selectProduct();
+        if (!id.equals("all"))
+            selectProduct();
     }
 
     private Product(String name, String description, double price, int reorderPoint, int currentStock,
@@ -36,12 +36,12 @@ public class Product extends LogClass {
         this.price = price;
         this.reorderPoint = reorderPoint;
         this.currentStock = currentStock;
-        this.encodedImg = encodedImg;
+        this.encodedImg = encodedImg;  // Base64 encoded image to display in the frontend
     }
 
     public HashMap<String, String> selectProduct() {
         String[] columns = { "id", "name", "description", "price", "reorder_point", "current_stock", "encoded_image" };
-        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("OrderItems", columns,
+        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Products", columns,
                 "id = '" + id + "'");
         if (result != null && !result.isEmpty()) {
             HashMap<String, String> product = result.get(0);
@@ -62,7 +62,6 @@ public class Product extends LogClass {
     public Product createProduct(String name, String description, double price,
             int reorderPoint, int currentStock, String encodedImg) {
         Product newProduct = new Product(name, description, price, reorderPoint, currentStock, encodedImg);
-        // TODO: Insert the new product into the database
         try {
             DatabaseManager.insertRecord("Product",
                     new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
@@ -111,7 +110,7 @@ public class Product extends LogClass {
     }
 
     public static ArrayList<HashMap<String, String>> getAllProducts() {
-        return DatabaseManager.selectRecords("Orders",
+        return DatabaseManager.selectRecords("Products",
                 new String[] { "id", "name", "description", "price", "reorder_point", "current_stock", "encoded_image" },
                 null);
     }

@@ -38,10 +38,11 @@ public class Products extends com.wama.LogClass implements Endpoint {
          */
         String id = parameters.get("id");
 
-        product = new Product(id);
-        if (id.equalsIgnoreCase("all"))
-            return new HttpResponse(HttpStatus.OK, com.wama.Product.getAllProducts());
+        if (id.equalsIgnoreCase("all")) {
+            return new HttpResponse(HttpStatus.OK, Product.getAllProducts());
+        }
 
+        product = new Product(id);
         HashMap<String, String> productDetails = product.selectProduct();
         if (productDetails != null)
             return new HttpResponse(HttpStatus.OK, productDetails);
