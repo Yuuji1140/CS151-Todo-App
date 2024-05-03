@@ -1,9 +1,14 @@
 package com.wama.frontend;
 
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashMap;
-
-import com.wama.DatabaseManager;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,45 +22,138 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class CatalogController {
-	private ShoppingCart shoppingCart = new ShoppingCart();
-	
-	@FXML
+    private ShoppingCart shoppingCart = new ShoppingCart();
+
+    @FXML
     private TilePane tilePane;
 
     public void initialize() {
         loadProducts();
+        storeImages();
+    }
+
+    private void storeImages() {
+        String folderPath = "frontend/src/main/resources/com/wama/frontend/images/products";
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    String imageName = file.getName();
+                    String imagePath = folderPath + File.separator + imageName;
+
+                    String encodedImage = encodeImages(imagePath);
+
+                    // Checks if imageName contains whitespace
+                    String pattern = (imageName.matches(".*\\s.*")) ? "(\\w+\\s+\\w+)\\d\\.(\\w+)"
+                            : "(\\w+)\\d\\.(\\w+)";
+                    Pattern regex = Pattern.compile(pattern);
+                    Matcher matcher = regex.matcher(imageName);
+
+                    if (matcher.find()) {
+                        String name = matcher.group(1);
+                        HashMap<String, String> parameters = new HashMap<>();
+                        parameters.put("name", name);
+                        parameters.put("encoded_image", encodedImage);
+
+                        try {
+                            String response = HttpRequest.put("http://localhost:9876/products", parameters);
+                            System.out.println(response);
+                        } catch (Exception e) {
+                            throw new IllegalArgumentException(e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private String encodeImages(String imagePath) {
+        try {
+            byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath));
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     private void loadProducts() {
-        ArrayList<HashMap<String, String>> products = DatabaseManager.selectRecords("Products", new String[]{"id", "name", "description", "price", "current_stock"}, null);
-        for (HashMap<String, String> product : products) {
-            VBox productBox = new VBox(5);
-            productBox.getStyleClass().add("product-box");
-            
-            productBox.setOnMouseClicked(event -> handleProductClick(product));
+        try {
+            /*
+             * "id" is a required parameter for the GET request to the /products endpoint.
+             * add it with the all value
+             */
+            // String response = HttpRequest.get("http://localhost:9876/products");
+            // private static String sendRequest(String urlString, String requestMethod,
+            // Map<String, String> parameters)
+            HashMap<String, String> parameters = new HashMap<>();
+            parameters.put("id", "all");
+            String response = HttpRequest.get("http://localhost:9876/products", parameters);
+            Map<String, HashMap<String, String>> products = parseProductData(response);
 
-            Text name = new Text(product.get("name"));
-            name.getStyleClass().add("product-name");
+            for (int i = 0; i < products.size(); i++) {
+                HashMap<String, String> product = products.get(Integer.toString(i));
+                VBox productBox = new VBox(5);
+                productBox.getStyleClass().add("product-box");
 
-            Text price = new Text("$" + product.get("price"));
-            price.getStyleClass().add("product-price");
+                productBox.setOnMouseClicked(event -> handleProductClick(product));
 
-            Text description = new Text(product.get("description"));
-            description.getStyleClass().add("product-description");
-            
-            Text current_stock = new Text(product.get("current_stock"));
-            current_stock.getStyleClass().add("product-stock");
+                Text name = new Text(product.get("name"));
+                name.getStyleClass().add("product-name");
 
-            ImageView imageView = new ImageView();
-            imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
-            imageView.setFitHeight(80);
-            imageView.setFitWidth(80);
+                Text price = new Text("$" + product.get("price"));
+                price.getStyleClass().add("product-price");
 
-            productBox.getChildren().addAll(imageView, name, price, description, current_stock);
-            tilePane.getChildren().add(productBox);
+                Text description = new Text(product.get("description"));
+                description.getStyleClass().add("product-description");
+
+                Text current_stock = new Text(product.get("current_stock"));
+                current_stock.getStyleClass().add("product-stock");
+
+                ImageView imageView = new ImageView();
+                byte[] decodedBytes = Base64.getDecoder().decode(product.get("encoded_image"));
+                imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
+                // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
+                imageView.setFitHeight(80);
+                imageView.setFitWidth(80);
+
+                productBox.getChildren().addAll(imageView, name, price, description,
+                        current_stock);
+                tilePane.getChildren().add(productBox);
+            }
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
-    
+
+    private Map<String, HashMap<String, String>> parseProductData(String response) {
+        Map<String, HashMap<String, String>> productData = new HashMap<>();
+
+        // regular expression pattern to match key-value pairs
+        String outerPattern = "(\\d+)=(\\{[^}]*\\})";
+        Pattern outerRegex = Pattern.compile(outerPattern);
+        Matcher outerMatcher = outerRegex.matcher(response);
+
+        while (outerMatcher.find()) {
+            HashMap<String, String> detailsMap = new HashMap<>();
+            String[] keyValuePairs = outerMatcher.group(1).split(",\\s+");
+            String details = outerMatcher.group(2);
+
+            String innerPattern = "(\\w+)=([^,}]+)";
+            Pattern innerRegex = Pattern.compile(innerPattern);
+            Matcher innerMatcher = innerRegex.matcher(details);
+            while (innerMatcher.find()) {
+                String key = innerMatcher.group(1);
+                String value = innerMatcher.group(2);
+                detailsMap.put(key, value);
+            }
+            productData.put(keyValuePairs[0], detailsMap);
+        }
+        return productData;
+    }
+
     private void handleProductClick(HashMap<String, String> product) {
         shoppingCart.addItem(product);
         System.out.println("Added to cart: " + product.get("name") + ", ID: " + product.get("id"));
@@ -65,7 +163,7 @@ public class CatalogController {
     private void updateCartView() {
         // update cart UI here
     }
-    
+
     @FXML
     private void handleViewCart(ActionEvent event) {
         Stage cartStage = new Stage();
@@ -81,27 +179,27 @@ public class CatalogController {
     }
 
     @FXML
-	void handleDashboardCustomerButtonAction(ActionEvent event) {
-		Main.switchToSceneDashboardCustomer();
-	}
+    void handleDashboardCustomerButtonAction(ActionEvent event) {
+        Main.switchToSceneDashboardCustomer();
+    }
 
-	@FXML
-	void handleOrdersButtonAction(ActionEvent event) {
-		Main.switchToSceneOrders();
-	}
-	
-	@FXML
-	void handleCatalogButtonAction(ActionEvent event) {
-		Main.switchToSceneCatalog();
-	}
+    @FXML
+    void handleOrdersButtonAction(ActionEvent event) {
+        Main.switchToSceneOrders();
+    }
 
-	@FXML
-	void handleFeedbackCustomerButtonAction(ActionEvent event) {
-		Main.switchToSceneFeedbackCustomer();
-	}
-	
-	@FXML
-	void handleSignoutButtonAction(ActionEvent event) {
-		Main.switchToSceneStartUp();
-	}
+    @FXML
+    void handleCatalogButtonAction(ActionEvent event) {
+        Main.switchToSceneCatalog();
+    }
+
+    @FXML
+    void handleFeedbackCustomerButtonAction(ActionEvent event) {
+        Main.switchToSceneFeedbackCustomer();
+    }
+
+    @FXML
+    void handleSignoutButtonAction(ActionEvent event) {
+        Main.switchToSceneStartUp();
+    }
 }

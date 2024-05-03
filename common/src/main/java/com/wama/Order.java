@@ -22,8 +22,8 @@ public class Order extends LogClass {
 
     public Order(String id) {
         this.id = id;
-        // TODO: Fetch the rest of the fields from the database
-        selectOrder();
+        if (!id.equalsIgnoreCase("all"))
+            selectOrder();
     }
 
     private Order(String customerId, String employeeId, Timestamp orderDate, String status, double total) {
@@ -103,7 +103,7 @@ public class Order extends LogClass {
 
     public static ArrayList<HashMap<String, String>> getAllOrders() {
         return DatabaseManager.selectRecords("Orders",
-                new String[] { "id", "customer_id", "employee_id", "order_date", "status", "total" },
+                new String[] { "id", "customer_id", "order_date", "status", "total" },
                 null);
     }
 

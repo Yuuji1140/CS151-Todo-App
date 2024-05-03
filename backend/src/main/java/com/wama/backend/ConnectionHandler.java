@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class ConnectionHandler extends com.wama.LogClass implements Runnable {
     private final Socket socket;
@@ -43,7 +44,12 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
             }
 
             METHODS method = parseMethod(requestParts[0]);
-            String endpoint = requestParts[1];
+            String endpointWithParams = requestParts[1];
+
+            String[] endpointAndParams = extractEndpointAndParameters(endpointWithParams);
+            String endpoint = endpointAndParams[0];
+            String parametersString = endpointAndParams[1];
+
             Endpoint endpointHandler = endpoints.get(endpoint);
 
             if (endpointHandler == null) {
@@ -51,8 +57,13 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
                 return;
             }
 
-            String requestBody = readRequestBody(reader);
-            Map<String, String> parameters = extractJsonParameters(requestBody);
+            Map<String, String> parameters = new HashMap<>();
+            Map<String, String> extractedParameters = extractParameters(parametersString);
+            if (extractedParameters != null)
+                parameters.putAll(extractedParameters);
+            Map<String, String> extractedJsonParameters = extractJsonParameters(readRequestBody(reader));
+            if (extractedJsonParameters != null)
+                parameters.putAll(extractedJsonParameters);
 
             if (!endpointHandler.validParameters(parameters)) {
                 sendResponse(outputStream, HttpStatus.BAD_REQUEST, "Invalid parameters\\n");
@@ -87,6 +98,28 @@ public class ConnectionHandler extends com.wama.LogClass implements Runnable {
     private static Map<String, String> extractJsonParameters(String requestBody) {
         Gson gson = new Gson();
         return gson.fromJson(requestBody, new TypeToken<Map<String, String>>() {}.getType());
+    }
+
+    private static String[] extractEndpointAndParameters(String endpointWithParams) {
+        // For GET requests
+        String[] parts = endpointWithParams.split("\\?", 2);
+        String endpoint = parts[0];
+        String params = (parts.length > 1) ? parts[1] : "";
+        return new String[]{endpoint, params};
+    }
+
+    private static Map<String, String> extractParameters(String parametersString) {
+        //  For GET requests
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("requestType", "GET");
+        String[] pairs = parametersString.split("&");
+        for (String pair : pairs) {
+            String[] keyValue = pair.split("=", 2);
+            if (keyValue.length == 2) {
+                parameters.put(keyValue[0], keyValue[1]);
+            }
+        }
+        return parameters;
     }
 
     private HttpResponse handleRequest(METHODS method, Endpoint endpointHandler, Map<String, String> parameters, OutputStream outputStream) {

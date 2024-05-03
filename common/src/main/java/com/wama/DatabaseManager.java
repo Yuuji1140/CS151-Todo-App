@@ -37,7 +37,8 @@ public class DatabaseManager extends com.wama.LogClass {
             "description TEXT," +
             "price REAL NOT NULL," +
             "reorder_point INTEGER," +
-            "current_stock INTEGER NOT NULL" +
+            "current_stock INTEGER NOT NULL," +
+            "encoded_image TEXT UNIQUE NOT NULL" +
             ")";
 
     private static final String CREATE_ORDERS_TABLE = "CREATE TABLE IF NOT EXISTS Orders (" +

@@ -13,3 +13,4 @@ target/
 jars/
 /wama.iml
 /venv/
+.vscode

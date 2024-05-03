@@ -3,6 +3,7 @@ package com.wama.backend.endpoints;
 import com.wama.Order;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -17,7 +18,7 @@ public class Orders extends com.wama.LogClass implements Endpoint {
         }
         String requestType = parameters.get("requestType");
         if (requestType.equals("POST") || requestType.equals("PUT")) {
-            if (!parameters.containsKey("customer_id") || !parameters.containsKey("employee_id") ||
+            if (!parameters.containsKey("customer_id") ||
                     !parameters.containsKey("order_date") || !parameters.containsKey("status") ||
                     !parameters.containsKey("total")) {
                 error("Parameters are missing for POST or PUT request");
@@ -28,43 +29,40 @@ public class Orders extends com.wama.LogClass implements Endpoint {
                 error("ID parameter is missing for DELETE or GET request");
                 return false;
             }
+            if (parameters.get("id").equalsIgnoreCase("all") && !parameters.containsKey("company_id")) {
+                error("Company ID parameter is missing for GET request");
+                return false;
+            }
+        } else {
+            error("Invalid request type");
+            return false;
         }
         return true;
     }
 
     public HttpResponse handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
         String id = parameters.get("id");
-
-        if (id != null) {
-            order = new Order(id);
-            HashMap<String, String> orderDetails = order.selectOrder();
-            if (orderDetails != null) {
-                return new HttpResponse(HttpStatus.OK, orderDetails);
-            } else {
-                HashMap<String, String> arguments = new HashMap<>();
-                arguments.put("error", "Order not found");
-                return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
+        if (id.equalsIgnoreCase("all") && parameters.containsKey("company_id")) {
+            ArrayList<HashMap<String, String>> returnOrders = new ArrayList<>();
+            ArrayList<HashMap<String, String>> orders = Order.getAllOrders();
+            for (HashMap<String, String> order : orders) {
+                if (order.get("customer_id").equals(parameters.get("company_id"))) {
+                    returnOrders.add(order);
+                }
             }
-        } else {
-            return new HttpResponse(HttpStatus.OK, com.wama.Order.getAllOrders());
+            return new HttpResponse(HttpStatus.OK, returnOrders);
         }
 
-        // String[] columns = { "id", "customer_id", "employee_id", "order_date", "status", "total" };
-        // if (id != null) {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns,
-        //             "id = '" + id + "'");
-        //     if (result.size() > 0) {
-        //         HashMap<String, String> order = result.get(0);
-        //         return new HttpResponse(HttpStatus.OK, order);
-        //     } else {
-        //         HashMap<String, String> arguments = new HashMap<>();
-        //         arguments.put("error", "Order not found");
-        //         return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
-        //     }
-        // } else {
-        //     ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns, null);
-        //     return new HttpResponse(HttpStatus.OK, result);
-        // }
+        order = new Order(id);
+        HashMap<String, String> orderDetails = order.selectOrder();
+        if (orderDetails != null) {
+            return new HttpResponse(HttpStatus.OK, orderDetails);
+        } else {
+            HashMap<String, String> arguments = new HashMap<>();
+            arguments.put("error", "Order not found");
+            return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
+        }
+
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -82,16 +80,6 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error creating order");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-        
-        // String[] columns = { "customer_id", "employee_id", "order_date", "status", "total" };
-        // String[] values = { customerId, employeeId, orderDate, status, String.valueOf(total) };
-        // if (DatabaseManager.insertRecord("Orders", columns, values)) {
-        //     return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error creating order");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handlePutRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -111,16 +99,6 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error updating order");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
-
-        // String[] columns = { "customer_id", "employee_id", "order_date", "status", "total" };
-        // String[] values = { customerId, employeeId, orderDate, status, String.valueOf(total) };
-        // if (DatabaseManager.updateRecord("Orders", columns, values, "id = '" + id + "'")) {
-        //     return new HttpResponse(HttpStatus.OK, new HashMap<>());
-        // } else {
-        //     HashMap<String, String> arguments = new HashMap<>();
-        //     arguments.put("error", "Error updating order");
-        //     return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
-        // }
     }
 
     public HttpResponse handleDeleteRequest(Map<String, String> parameters, OutputStream outputStream) {
