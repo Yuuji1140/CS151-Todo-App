@@ -1,6 +1,9 @@
 package com.wama.frontend;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +29,53 @@ public class CatalogController {
 
     public void initialize() {
         loadProducts();
+        storeImages();
+    }
+
+    private void storeImages() {
+        String folderPath = "frontend/src/main/resources/com/wama/frontend/images/products";
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    String imageName = file.getName();
+                    String imagePath = folderPath + File.separator + imageName;
+
+                    String encodedImage = encodeImages(imagePath);
+
+                    // Checks if imageName contains whitespace
+                    String pattern = (imageName.matches(".*\\s.*")) ? "(\\w+\\s+\\w+)\\d\\.(\\w+)"
+                            : "(\\w+)\\d\\.(\\w+)";
+                    Pattern regex = Pattern.compile(pattern);
+                    Matcher matcher = regex.matcher(imageName);
+
+                    if (matcher.find()) {
+                        String name = matcher.group(1);
+                        HashMap<String, String> parameters = new HashMap<>();
+                        parameters.put("name", name);
+                        parameters.put("encoded_image", encodedImage);
+
+                        try {
+                            String response = HttpRequest.put("http://localhost:9876/products", parameters);
+                            System.out.println(response);
+                        } catch (Exception e) {
+                            throw new IllegalArgumentException(e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private String encodeImages(String imagePath) {
+        try {
+            byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath));
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     private void loadProducts() {
