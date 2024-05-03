@@ -23,7 +23,7 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
                 return false;
             }
         } else if (requestType.equals("DELETE") || requestType.equals("GET")) {
-            if (!parameters.containsKey("id") || !parameters.containsKey("company_id")) {
+            if (!parameters.containsKey("id") && !parameters.containsKey("company_id")) {
                 error("Must have id or company_id for DELETE or GET request");
                 return false;
             }

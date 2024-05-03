@@ -16,7 +16,7 @@ public class OrdersController
 
 	public void initialize() throws IOException {
 		loadOrders();
-		//loadShipments();
+		loadShipments();
 	}
 
 	@FXML
@@ -35,7 +35,7 @@ public class OrdersController
 		parameters.put("company_id", user.getCompanyId());
 		String response = HttpRequest.get("http://localhost:9876/orders", parameters);
 		this.orders = parseProductData(response);
-		System.out.println(this.orders);
+		//System.out.println(this.orders);
 	}
 
 	private HashMap<String, HashMap<String, String>> parseProductData(String response) {
