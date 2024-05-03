@@ -17,7 +17,7 @@ public class Orders extends com.wama.LogClass implements Endpoint {
         }
         String requestType = parameters.get("requestType");
         if (requestType.equals("POST") || requestType.equals("PUT")) {
-            if (!parameters.containsKey("customer_id") || !parameters.containsKey("employee_id") ||
+            if (!parameters.containsKey("customer_id") ||
                     !parameters.containsKey("order_date") || !parameters.containsKey("status") ||
                     !parameters.containsKey("total")) {
                 error("Parameters are missing for POST or PUT request");

@@ -75,8 +75,11 @@ public class LoginController
 	        String response = sendLoginRequest(username, password);
 
 			HashMap<String, String> userData = parseUserData(response);
-			LoggedInUser user = LoggedInUser.getInstance(userData); // This creates a singleton logged in user
+			LoggedInUser user = LoggedInUser.getInstance(); // This creates a singleton logged in user
+			user.setUser(userData.get("id"), username, userData.get("email"), userData.get("company_name"),
+					userData.get("company_id") ,userData.get("name"), userData.get("phone"), userData.get("address"));
 			System.out.println("User ID: " + user.getUserId());
+			System.out.println("Company id: " + user.getCompanyName());
 			if (userData.containsKey("id")) {
 				System.out.println("Successfully logged in!");
 				switchToDashboard(userData);

@@ -1,58 +1,81 @@
 package com.wama.frontend;
 
-import java.util.HashMap;
-import com.wama.User;
-
 public class LoggedInUser {
     private static LoggedInUser instance;
-    private User user;
 
-    private LoggedInUser(HashMap<String, String> userValues) {
-        this.user = new User(userValues);
-    }
+    private String id;
+    private String username;
+    private String email;
+    private String companyName;
+    private String companyId;
+    private String name;
+    private String phone;
+    private String address;
 
-    public static LoggedInUser getInstance(HashMap<String, String> userValues) {
+    private LoggedInUser() {}
+
+    public static LoggedInUser getInstance() {
         if (instance == null) {
-            instance = new LoggedInUser(userValues);
+            instance = new LoggedInUser();
         }
         return instance;
     }
 
+    public void setUser(String id, String username, String email, String companyName,
+                        String companyId, String name, String phone, String address) {
+        instance.id = id;
+        instance.username = username;
+        instance.email = email;
+        instance.companyName = companyName;
+        instance.companyId = companyId;
+        instance.name = name;
+        instance.phone = phone;
+        instance.address = address;
+    }
+
     public String getUserId() {
-        return user.getId();
+        return instance.id;
     }
 
     public String getUsername() {
-        return user.getUsername();
+        return instance.username;
     }
 
     public String getEmail() {
-        return user.getEmail();
+        return instance.email;
     }
 
     public String getCompanyName() {
-        return user.getCompanyName();
+        return instance.companyName;
     }
 
     public String getName() {
-        return user.getName();
+        return instance.name;
     }
 
     public String getPhone() {
-        return user.getPhone();
+        return instance.phone;
     }
 
     public String getAddress() {
-        return user.getAddress();
+        return instance.address;
     }
 
     @Override
     public String toString() {
-        return user.toString();
+        return "LoggedInUser{" +
+                "id='" + instance.id + '\'' +
+                ", username='" + instance.username + '\'' +
+                ", email='" + instance.email + '\'' +
+                ", companyName='" + instance.companyName + '\'' +
+                ", companyId='" + instance.companyId + '\'' +
+                ", name='" + instance.name + '\'' +
+                ", phone='" + instance.phone + '\'' +
+                ", address='" + instance.address + '\'' +
+                '}';
     }
 
     public void logout() {
         instance = null;
-        user.logout();
     }
 }

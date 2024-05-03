@@ -5,6 +5,18 @@ import javafx.fxml.FXML;
 
 public class OrdersController
 {
+	LoggedInUser user = LoggedInUser.getInstance();
+
+	public void initialize() {
+		loadCatalog();
+	}
+
+	@FXML
+	private void loadCatalog() {
+		// Print everything about the user for debug first
+		System.out.println(user);
+	}
+
 	@FXML
 	void handleDashboardCustomerButtonAction(ActionEvent event) {
 		Main.switchToSceneDashboardCustomer();
