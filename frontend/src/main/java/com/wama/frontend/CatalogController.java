@@ -1,16 +1,11 @@
 package com.wama.frontend;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
-
-import javax.imageio.IIOException;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.wama.DatabaseManager;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,25 +31,19 @@ public class CatalogController {
     private void loadProducts() {
         try {
             /*
-            "id" is a required parameter for the GET request to the /products endpoint.
-            add it with the all value
+             * "id" is a required parameter for the GET request to the /products endpoint.
+             * add it with the all value
              */
-            //String response = HttpRequest.get("http://localhost:9876/products");
-            // private static String sendRequest(String urlString, String requestMethod, Map<String, String> parameters)
+            // String response = HttpRequest.get("http://localhost:9876/products");
+            // private static String sendRequest(String urlString, String requestMethod,
+            // Map<String, String> parameters)
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put("id", "all");
             String response = HttpRequest.get("http://localhost:9876/products", parameters);
-            JsonArray productsArray = new Gson().fromJson(response, JsonArray.class);
-            for (int i = 0; i < productsArray.size(); i++) {
-                JsonObject productJson = productsArray.get(i).getAsJsonObject();
-                HashMap<String, String> product = new HashMap<>();
-                product.put("id", productJson.get("id").getAsString());
-                product.put("name", productJson.get("name").getAsString());
-                product.put("description", productJson.get("description").getAsString());
-                product.put("price", productJson.get("price").getAsString());
-                product.put("current_stock", productJson.get("current_stock").getAsString());
-                product.put("encoded_image", productJson.get("encoded_image").getAsString());
+            Map<String, HashMap<String, String>> products = parseProductData(response);
 
+            for (int i = 0; i < products.size(); i++) {
+                HashMap<String, String> product = products.get(Integer.toString(i));
                 VBox productBox = new VBox(5);
                 productBox.getStyleClass().add("product-box");
 
@@ -79,45 +68,40 @@ public class CatalogController {
                 imageView.setFitHeight(80);
                 imageView.setFitWidth(80);
 
-                productBox.getChildren().addAll(imageView, name, price, description, current_stock);
+                productBox.getChildren().addAll(imageView, name, price, description,
+                        current_stock);
                 tilePane.getChildren().add(productBox);
             }
+
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-        // ArrayList<HashMap<String, String>> products =
-        // DatabaseManager.selectRecords("Products", new String[]{"id", "name",
-        // "description", "price", "current_stock", "encoded_image"}, null);
-        // for (HashMap<String, String> product : products) {
-        // VBox productBox = new VBox(5);
-        // productBox.getStyleClass().add("product-box");
+    }
 
-        // productBox.setOnMouseClicked(event -> handleProductClick(product));
+    private Map<String, HashMap<String, String>> parseProductData(String response) {
+        Map<String, HashMap<String, String>> productData = new HashMap<>();
 
-        // Text name = new Text(product.get("name"));
-        // name.getStyleClass().add("product-name");
+        // regular expression pattern to match key-value pairs
+        String outerPattern = "(\\d+)=(\\{[^}]*\\})";
+        Pattern outerRegex = Pattern.compile(outerPattern);
+        Matcher outerMatcher = outerRegex.matcher(response);
 
-        // Text price = new Text("$" + product.get("price"));
-        // price.getStyleClass().add("product-price");
+        while (outerMatcher.find()) {
+            HashMap<String, String> detailsMap = new HashMap<>();
+            String[] keyValuePairs = outerMatcher.group(1).split(",\\s+");
+            String details = outerMatcher.group(2);
 
-        // Text description = new Text(product.get("description"));
-        // description.getStyleClass().add("product-description");
-
-        // Text current_stock = new Text(product.get("current_stock"));
-        // current_stock.getStyleClass().add("product-stock");
-
-        // ImageView imageView = new ImageView();
-        // byte[] decodedBytes =
-        // Base64.getDecoder().decode(product.get("encoded_image"));
-        // imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
-        // // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
-        // imageView.setFitHeight(80);
-        // imageView.setFitWidth(80);
-
-        // productBox.getChildren().addAll(imageView, name, price, description,
-        // current_stock);
-        // tilePane.getChildren().add(productBox);
-        // }
+            String innerPattern = "(\\w+)=([^,}]+)";
+            Pattern innerRegex = Pattern.compile(innerPattern);
+            Matcher innerMatcher = innerRegex.matcher(details);
+            while (innerMatcher.find()) {
+                String key = innerMatcher.group(1);
+                String value = innerMatcher.group(2);
+                detailsMap.put(key, value);
+            }
+            productData.put(keyValuePairs[0], detailsMap);
+        }
+        return productData;
     }
 
     private void handleProductClick(HashMap<String, String> product) {
