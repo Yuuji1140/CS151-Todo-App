@@ -49,6 +49,10 @@ public class LoggedInUser {
         return instance.companyName;
     }
 
+    public String getCompanyId() {
+        return instance.companyId;
+    }
+
     public String getName() {
         return instance.name;
     }

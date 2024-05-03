@@ -3,6 +3,7 @@ package com.wama.backend.endpoints;
 import com.wama.Order;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -28,26 +29,40 @@ public class Orders extends com.wama.LogClass implements Endpoint {
                 error("ID parameter is missing for DELETE or GET request");
                 return false;
             }
+            if (parameters.get("id").equalsIgnoreCase("all") && !parameters.containsKey("company_id")) {
+                error("Company ID parameter is missing for GET request");
+                return false;
+            }
+        } else {
+            error("Invalid request type");
+            return false;
         }
         return true;
     }
 
     public HttpResponse handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
         String id = parameters.get("id");
-
-        if (id != null) {
-            order = new Order(id);
-            HashMap<String, String> orderDetails = order.selectOrder();
-            if (orderDetails != null) {
-                return new HttpResponse(HttpStatus.OK, orderDetails);
-            } else {
-                HashMap<String, String> arguments = new HashMap<>();
-                arguments.put("error", "Order not found");
-                return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
+        if (id.equalsIgnoreCase("all") && parameters.containsKey("company_id")) {
+            ArrayList<HashMap<String, String>> returnOrders = new ArrayList<>();
+            ArrayList<HashMap<String, String>> orders = Order.getAllOrders();
+            for (HashMap<String, String> order : orders) {
+                if (order.get("customer_id").equals(parameters.get("company_id"))) {
+                    returnOrders.add(order);
+                }
             }
-        } else {
-            return new HttpResponse(HttpStatus.OK, com.wama.Order.getAllOrders());
+            return new HttpResponse(HttpStatus.OK, returnOrders);
         }
+
+        order = new Order(id);
+        HashMap<String, String> orderDetails = order.selectOrder();
+        if (orderDetails != null) {
+            return new HttpResponse(HttpStatus.OK, orderDetails);
+        } else {
+            HashMap<String, String> arguments = new HashMap<>();
+            arguments.put("error", "Order not found");
+            return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
+        }
+
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
