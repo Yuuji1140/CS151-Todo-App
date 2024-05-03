@@ -20,6 +20,7 @@ public class Server extends com.wama.LogClass {
         endpoints.put("/registerUser", new RegisterUser());
         endpoints.put("/products", new Products());
         endpoints.put("/orders", new Orders());
+        endpoints.put("/shipments", new Shipments());
         DatabaseManager.createDatabase();
     }
 

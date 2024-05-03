@@ -48,7 +48,7 @@ public class User extends LogClass {
         this.type = UserType.valueOf(userValues.get("type"));
         this.email = userValues.get("email");
         this.company_name = userValues.get("company_name");
-        this.company_id = companyNameToId("company_id");
+        this.company_id = userValues.get("company_id");
         this.name = userValues.get("name");
         this.phone = userValues.get("phone");
         this.address = userValues.get("address");

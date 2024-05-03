@@ -124,28 +124,32 @@ public class DatabaseManager extends com.wama.LogClass {
     }
 
     public static ArrayList<HashMap<String, String>> selectRecords(String tableName, String[] columns, String condition) {
-        ArrayList<HashMap<String, String>> return_list = new ArrayList<>();
+        ArrayList<HashMap<String, String>> returnList = new ArrayList<>();
 
         String selectQuery = "SELECT " + String.join(", ", columns) + " FROM " + tableName;
         if (condition != null && !condition.isEmpty()) {
             selectQuery += " WHERE " + condition;
         }
+
         try (Connection conn = DriverManager.getConnection(DB_URL);
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(selectQuery)) {
-            // Parse the ResultSet and return a HashMap
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(selectQuery)) {
+
             while (rs.next()) {
                 HashMap<String, String> records = new HashMap<>();
                 for (String column : columns) {
                     records.put(column, rs.getString(column));
                 }
-                return_list.add(records);
+                returnList.add(records);
             }
-            debug("Selected " + return_list.size() + " records from " + tableName);
-            return return_list;
+
+            debug("Selected " + returnList.size() + " records from " + tableName);
+            return returnList;
+
         } catch (SQLException e) {
             error("Error at selectRecords: " + e.getMessage(), e);
-            return null;
+            // Return an empty ArrayList instead of null
+            return new ArrayList<>();
         }
     }
 
@@ -184,6 +188,40 @@ public class DatabaseManager extends com.wama.LogClass {
         } catch (SQLException e) {
             error("Error deleting record: " + e.getMessage(), e);
             return false;
+        }
+    }
+
+    public static ArrayList<HashMap<String, String>> getCustomerShipments(String customerId) {
+        String query = "SELECT Shipments.id, Shipments.order_id, Shipments.shipment_date, Shipments.status, Shipments.tracking_number " +
+                "FROM Shipments " +
+                "JOIN Orders ON Shipments.order_id = Orders.id " +
+                "WHERE Orders.customer_id = '" + customerId + "'";
+
+        ArrayList<HashMap<String, String>> resultList = new ArrayList<>();
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+
+            while (rs.next()) {
+                HashMap<String, String> record = new HashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = rsmd.getColumnName(i);
+                    String columnValue = rs.getString(i);
+                    record.put(columnName, columnValue);
+                }
+                resultList.add(record);
+            }
+
+            debug("Raw query executed successfully. Returned " + resultList.size() + " records.");
+            return resultList;
+
+        } catch (SQLException e) {
+            error("Error executing raw query: " + e.getMessage(), e);
+            return new ArrayList<>();
         }
     }
 }

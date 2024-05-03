@@ -5,28 +5,37 @@ import javafx.fxml.FXML;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OrdersController
 {
 	LoggedInUser user = LoggedInUser.getInstance();
+	HashMap<String, HashMap<String, String>> orders;
+	HashMap<String, HashMap<String, String>> shipments;
 
 	public void initialize() throws IOException {
-		loadCatalog();
+		loadOrders();
+		loadShipments();
 	}
 
 	@FXML
-	private void loadCatalog() throws IOException {
+	private void loadShipments() throws IOException {
+		HashMap<String, String> parameters = new HashMap<>();
+		parameters.put("company_id", user.getCompanyId());
+		String response = HttpRequest.get("http://localhost:9876/shipments", parameters);
+		this.shipments = parseProductData(response);
+		System.out.println(this.shipments);
+	}
+
+	@FXML
+	private void loadOrders() throws IOException {
 		HashMap<String, String> parameters = new HashMap<>();
 		parameters.put("id", "all");
 		parameters.put("company_id", user.getCompanyId());
 		String response = HttpRequest.get("http://localhost:9876/orders", parameters);
-		HashMap<String, HashMap<String, String>> orders = parseProductData(response);
-		System.out.println(orders);
-		//Num records received
-		System.out.println(orders.size());
+		this.orders = parseProductData(response);
+		//System.out.println(this.orders);
 	}
 
 	private HashMap<String, HashMap<String, String>> parseProductData(String response) {
