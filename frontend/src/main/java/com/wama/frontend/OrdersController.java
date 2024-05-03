@@ -23,7 +23,7 @@ public class OrdersController
 	private void loadShipments() throws IOException {
 		HashMap<String, String> parameters = new HashMap<>();
 		parameters.put("company_id", user.getCompanyId());
-		String response = HttpRequest.get("http://localhost:9876/shipments", parameters);
+		String response = HttpRequest.get("/shipments", parameters);
 		this.shipments = parseProductData(response);
 		System.out.println(this.shipments);
 	}
@@ -33,7 +33,7 @@ public class OrdersController
 		HashMap<String, String> parameters = new HashMap<>();
 		parameters.put("id", "all");
 		parameters.put("company_id", user.getCompanyId());
-		String response = HttpRequest.get("http://localhost:9876/orders", parameters);
+		String response = HttpRequest.get("/orders", parameters);
 		this.orders = parseProductData(response);
 		//System.out.println(this.orders);
 	}

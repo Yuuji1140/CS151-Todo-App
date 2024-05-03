@@ -43,7 +43,7 @@ public class LoginController
         AnimSlidingRects.generateRectangles(animationPane, 3, 1000, 335, -100);
         AnimSlidingRects.generateRectangles(animationPane, 3, 1000, 485, -100);
         
-        fadeInEffect(animationPane, 3500);
+        //fadeInEffect(animationPane, 3500);
     }
 	
 	@FXML
@@ -97,7 +97,7 @@ public class LoginController
 	    Map<String, String> parameters = new HashMap<>();
 	    parameters.put("username", username);
 	    parameters.put("password", password);
-	    return HttpRequest.post("http://localhost:9876/authUser", parameters);
+	    return HttpRequest.post("/authUser", parameters);
 	}
 	
 	private HashMap<String, String> parseUserData(String response) {

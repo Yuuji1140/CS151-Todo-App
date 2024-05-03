@@ -109,7 +109,7 @@ public class SignUpController {
             parameters.put("address", address);
 
             try {
-                String response = HttpRequest.post("http://localhost:9876/registerUser", parameters);
+                String response = HttpRequest.post("/registerUser", parameters);
                 System.out.println(response);
                 Main.switchToSceneLogin();
                 // Handle response, e.g., show success or error message

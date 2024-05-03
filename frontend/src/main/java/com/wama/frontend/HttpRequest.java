@@ -14,14 +14,20 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 public class HttpRequest {
+    private static final String BASE_URL = "trevors-laptop";
+    private static final int PORT = 9876;
+
+    private static String urlString(String endpoint) {
+        return "https://" + BASE_URL + ":" + PORT + endpoint;
+    }
 
     // Frontend calls this method
-    private static String sendRequest(String urlString, String requestMethod, Map<String, String> parameters)
+    private static String sendRequest(String endpoint, String requestMethod, Map<String, String> parameters)
             throws IOException {
         HttpURLConnection connection = null;
 
         if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
-            URL url = new URL(urlString);
+            URL url = new URL(urlString(endpoint));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
             connection.setDoOutput(true);
@@ -42,7 +48,7 @@ public class HttpRequest {
                 }
                 queryParams.append(param.getKey()).append("=").append(param.getValue());
             }
-            URL url = new URL(urlString + "?" + queryParams);
+            URL url = new URL(urlString(endpoint) + "?" + queryParams);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
             connection = (HttpURLConnection) url.openConnection();
@@ -81,19 +87,19 @@ public class HttpRequest {
         }
     }
 
-    public static String get(String urlString, HashMap<String, String> parameters) throws IOException {
-        return sendRequest(urlString, "GET", parameters);
+    public static String get(String endpoint, HashMap<String, String> parameters) throws IOException {
+        return sendRequest(endpoint, "GET", parameters);
     }
 
-    public static String post(String urlString, Map<String, String> parameters) throws IOException {
-        return sendRequest(urlString, "POST", parameters);
+    public static String post(String endpoint, Map<String, String> parameters) throws IOException {
+        return sendRequest(endpoint, "POST", parameters);
     }
 
-    public static String put(String urlString, Map<String, String> parameters) throws IOException {
-        return sendRequest(urlString, "PUT", parameters);
+    public static String put(String endpoint, Map<String, String> parameters) throws IOException {
+        return sendRequest(endpoint, "PUT", parameters);
     }
 
-    public static String delete(String urlString) throws IOException {
-        return sendRequest(urlString, "DELETE", null);
+    public static String delete(String endpoint) throws IOException {
+        return sendRequest(endpoint, "DELETE", null);
     }
 }

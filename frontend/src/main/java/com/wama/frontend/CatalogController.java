@@ -58,7 +58,7 @@ public class CatalogController {
                         parameters.put("encoded_image", encodedImage);
 
                         try {
-                            String response = HttpRequest.put("http://localhost:9876/products", parameters);
+                            String response = HttpRequest.put("/products", parameters);
                             System.out.println(response);
                         } catch (Exception e) {
                             throw new IllegalArgumentException(e.getMessage());
@@ -84,12 +84,9 @@ public class CatalogController {
              * "id" is a required parameter for the GET request to the /products endpoint.
              * add it with the all value
              */
-            // String response = HttpRequest.get("http://localhost:9876/products");
-            // private static String sendRequest(String urlString, String requestMethod,
-            // Map<String, String> parameters)
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put("id", "all");
-            String response = HttpRequest.get("http://localhost:9876/products", parameters);
+            String response = HttpRequest.get("/products", parameters);
             Map<String, HashMap<String, String>> products = parseProductData(response);
 
             for (int i = 0; i < products.size(); i++) {
