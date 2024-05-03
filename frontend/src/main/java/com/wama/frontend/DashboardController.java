@@ -11,6 +11,7 @@ public class DashboardController
 {
 	@FXML private Label labelDate;
 	@FXML private Label labelName;
+    private LoggedInUser user = LoggedInUser.getInstance();
 	
 	public void initialize() {
 		LocalDate currentDate = LocalDate.now();
@@ -18,7 +19,7 @@ public class DashboardController
         String textDate = currentDate.format(formatter);
         
 		labelDate.setText(textDate);
-		labelName.setText("Hey, [username]");
+		labelName.setText("Hey, " + user.getName() + "!");
 	}
 	
 	@FXML
