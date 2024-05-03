@@ -74,7 +74,9 @@ public class LoginController
 	    try {
 	        String response = sendLoginRequest(username, password);
 
-			Map<String, String> userData = parseUserData(response);
+			HashMap<String, String> userData = parseUserData(response);
+			LoggedInUser user = LoggedInUser.getInstance(userData); // This creates a singleton logged in user
+			System.out.println("User ID: " + user.getUserId());
 			if (userData.containsKey("id")) {
 				System.out.println("Successfully logged in!");
 				switchToDashboard(userData);
@@ -95,8 +97,8 @@ public class LoginController
 	    return HttpRequest.post("http://localhost:9876/authUser", parameters);
 	}
 	
-	private Map<String, String> parseUserData(String response) {
-		Map<String, String> userData = new HashMap<>();
+	private HashMap<String, String> parseUserData(String response) {
+		HashMap<String, String> userData = new HashMap<>();
 
 		// regular expression pattern to match key-value pairs
 		String pattern = "(\\w+)=([^,}]+)";
