@@ -18,7 +18,7 @@ public class HttpRequest {
     private static final int PORT = 9876;
 
     private static String urlString(String endpoint) {
-        return "https://" + BASE_URL + ":" + PORT + endpoint;
+        return "http://" + BASE_URL + ":" + PORT + endpoint;
     }
 
     // Frontend calls this method
