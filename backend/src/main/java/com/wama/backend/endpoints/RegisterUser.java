@@ -1,11 +1,13 @@
 package com.wama.backend.endpoints;
 
 import com.wama.User;
+import com.wama.DatabaseManager;
 
 
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class RegisterUser extends com.wama.LogClass implements Endpoint {
     public boolean validParameters(Map<String, String> parameters) {
@@ -68,14 +70,10 @@ public class RegisterUser extends com.wama.LogClass implements Endpoint {
 
         User.UserType userType = type.equals("Customer") ? User.UserType.CUSTOMER : User.UserType.EMPLOYEE;
         String company_name = userType == User.UserType.CUSTOMER ? parameters.get("company_name") : null;
-        User user;
-        if (userType == User.UserType.CUSTOMER) {
-            user = new com.wama.Customer(username, email, company_name, name, phone, address);
-        } else {
-            user = new com.wama.Employee(username, email, name, phone, address);
-        }
+        User registeredUser;
         try {
-            if (user.registerNewUser(password) == null) {
+            registeredUser = registerUser(username, email, password, userType, company_name, name, phone, address);
+            if (registeredUser == null) {
                 // Theoretically impossible to get here. If the user is null, an exception would have been thrown.
                 arguments.put("error", "User already exists");
                 return new HttpResponse(HttpStatus.BAD_REQUEST, arguments);
@@ -85,6 +83,35 @@ public class RegisterUser extends com.wama.LogClass implements Endpoint {
             arguments.put("error", e.getMessage());
             return new HttpResponse(HttpStatus.BAD_REQUEST, arguments);
         }
-        return new HttpResponse(HttpStatus.OK, user.getParameters());
+        return new HttpResponse(HttpStatus.OK, registeredUser.getParameters());
+    }
+
+    private User registerUser(String username, String email, String password, User.UserType userType,
+                              String companyName, String name, String phone, String address) {
+        String userId = UUID.randomUUID().toString();
+
+
+        try {
+            DatabaseManager.insertRecord("Users",
+                    new String[]{"id", "username", "email", "user_type", "company_name", "name", "phone", "address"},
+                    new String[]{userId, username, email, userType.toString(), companyName, name, phone, address});
+
+            DatabaseManager.insertRecord("UserPasswords",
+                    new String[]{"user_id", "password"},
+                    new String[]{userId, password});
+
+            HashMap<String, String> userValues = new HashMap<>();
+            userValues.put("id", userId);
+            userValues.put("username", username);
+            userValues.put("email", email);
+            userValues.put("type", userType.toString());
+            userValues.put("company_name", companyName);
+            userValues.put("name", name);
+            userValues.put("phone", phone);
+            userValues.put("address", address);
+            return new User(userValues);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
