@@ -13,17 +13,27 @@ public class Shipment extends LogClass {
     private String trackingNumber;
 
     public Shipment(String id) {
+        // Select a single shipment
         this.id = id;
-        // TODO: Fetch the rest of the fields from the database
         selectShipment();
     }
 
     private Shipment(String orderId, Timestamp shipmentDate, String status, String trackingNumber) {
+        // Create a new shipment
         this.id = UUID.randomUUID().toString();
         this.orderId = orderId;
         this.shipmentDate = shipmentDate;
         this.status = status;
         this.trackingNumber = trackingNumber;
+    }
+
+    public Shipment(HashMap<String, String> shipmentValues) {
+        // Unpack them from the frontend
+        this.id = shipmentValues.get("id");
+        this.orderId = shipmentValues.get("order_id");
+        this.shipmentDate = Timestamp.valueOf(shipmentValues.get("shipment_date"));
+        this.status = shipmentValues.get("status");
+        this.trackingNumber = shipmentValues.get("tracking_number");
     }
 
     public HashMap<String, String> selectShipment() {
@@ -46,7 +56,6 @@ public class Shipment extends LogClass {
     public Shipment createShipment(String orderId, String shipmentDate, String status,
             String trackingNumber) {
         Shipment newShipment = new Shipment(orderId, Timestamp.valueOf(shipmentDate), status, trackingNumber);
-        // TODO: Insert the new shipment into the database
         try {
             DatabaseManager.insertRecord("Shipments",
                     new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
@@ -88,6 +97,15 @@ public class Shipment extends LogClass {
         }
     }
 
+    public static ArrayList<HashMap<String, String>> getShipmentsByCustomerId(String customerId) {
+        try {
+            return DatabaseManager.getCustomerShipments(customerId);
+        } catch (Exception e) {
+            error("Error getting shipments by customer ID: " + e.getMessage(), e);
+            throw new IllegalArgumentException("Failed to get shipments by customer ID.");
+        }
+    }
+
     public static ArrayList<HashMap<String, String>> getAllShipments() {
         return DatabaseManager.selectRecords("Shipments",
                 new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
@@ -114,5 +132,4 @@ public class Shipment extends LogClass {
         return trackingNumber;
     }
 
-    // TODO: Setters and getters (change status, update tracking number, etc.)
 }
