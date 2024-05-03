@@ -12,10 +12,12 @@ public class Shipment extends LogClass {
     private String status;
     private String trackingNumber;
 
-    public Shipment(String id) {
-        // Select a single shipment
+    public Shipment(String id, String orderId, Timestamp shipmentDate, String status, String trackingNumber) {
         this.id = id;
-        selectShipment();
+        this.orderId = orderId;
+        this.shipmentDate = shipmentDate;
+        this.status = status;
+        this.trackingNumber = trackingNumber;
     }
 
     private Shipment(String orderId, Timestamp shipmentDate, String status, String trackingNumber) {
@@ -36,82 +38,6 @@ public class Shipment extends LogClass {
         this.trackingNumber = shipmentValues.get("tracking_number");
     }
 
-    public HashMap<String, String> selectShipment() {
-        String[] columns = { "id", "order_id", "shipment_date", "status", "tracking_number" };
-        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Shipments", columns,
-                "id = '" + id + "'");
-        if (result != null && !result.isEmpty()) {
-            HashMap<String, String> shipment = result.get(0);
-            this.orderId = shipment.get("order_id");
-            this.shipmentDate = Timestamp.valueOf(shipment.get("shipment_date"));
-            this.status = shipment.get("status");
-            this.trackingNumber = shipment.get("tracking_number");
-            return shipment;
-        } else {
-            error("Shipment not found.");
-            throw new IllegalArgumentException("Shipment not found.");
-        }
-    }
-
-    public Shipment createShipment(String orderId, String shipmentDate, String status,
-            String trackingNumber) {
-        Shipment newShipment = new Shipment(orderId, Timestamp.valueOf(shipmentDate), status, trackingNumber);
-        try {
-            DatabaseManager.insertRecord("Shipments",
-                    new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
-                    new String[] { id, orderId, shipmentDate, status, trackingNumber });
-        } catch (Exception e) {
-            error("Error creating shipment: " + e.getMessage(), e);
-            newShipment.deleteShipment();
-            throw new IllegalArgumentException("Failed to create shipment.");
-        }
-
-        return newShipment;
-    }
-
-    public Shipment updateShipment(String orderId, String shipmentDate, String status,
-            String trackingNumber) {
-        this.orderId = orderId;
-        this.shipmentDate = Timestamp.valueOf(shipmentDate);
-        this.status = status;
-        this.trackingNumber = trackingNumber;
-
-        try {
-            DatabaseManager.updateRecord("Shipments",
-                    new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
-                    new String[] { id, orderId, shipmentDate, status, trackingNumber },
-                    "id = '" + id + "'");
-        } catch (Exception e) {
-            error("Error updating shipment: " + e.getMessage(), e);
-            throw new IllegalArgumentException("Failed to update shipment.");
-        }
-        return this;
-    }
-
-    public void deleteShipment() {
-        try {
-            DatabaseManager.deleteRecord("Shipments", "id = '" + id + "'");
-        } catch (Exception e) {
-            error("Error deleting shipment: " + e.getMessage(), e);
-            throw new IllegalArgumentException("Failed to delete shipment.");
-        }
-    }
-
-    public static ArrayList<HashMap<String, String>> getShipmentsByCustomerId(String customerId) {
-        try {
-            return DatabaseManager.getCustomerShipments(customerId);
-        } catch (Exception e) {
-            error("Error getting shipments by customer ID: " + e.getMessage(), e);
-            throw new IllegalArgumentException("Failed to get shipments by customer ID.");
-        }
-    }
-
-    public static ArrayList<HashMap<String, String>> getAllShipments() {
-        return DatabaseManager.selectRecords("Shipments",
-                new String[] { "id", "order_id", "shipment_date", "status", "tracking_number" },
-                null);
-    }
-
     public String getId() {
         return id;
     }
@@ -130,6 +56,16 @@ public class Shipment extends LogClass {
 
     public String getTrackingNumber() {
         return trackingNumber;
+    }
+
+    public HashMap<String, String> getParameters() {
+        HashMap<String, String> shipment = new HashMap<>();
+        shipment.put("id", id);
+        shipment.put("order_id", orderId);
+        shipment.put("shipment_date", shipmentDate.toString());
+        shipment.put("status", status);
+        shipment.put("tracking_number", trackingNumber);
+        return shipment;
     }
 
 }
