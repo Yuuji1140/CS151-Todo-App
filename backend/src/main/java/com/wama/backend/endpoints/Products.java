@@ -18,10 +18,13 @@ public class Products extends com.wama.LogClass implements Endpoint {
             return false;
         }
 
-        if (parameters.containsKey("name"))
+        if (parameters.containsKey("name")) {
             return !parameters.get("name").isEmpty();
+        }
         if (parameters.containsKey("id"))
             return !parameters.get("id").isEmpty();
+
+        error("Missing product name or id");
         return false;
     }
 
@@ -76,16 +79,21 @@ public class Products extends com.wama.LogClass implements Endpoint {
          */
         String id = parameters.get("id");
         String name = parameters.get("name");
-        String description = parameters.get("description");
-        Double price = (parameters.get("price") != null) ? Double.parseDouble(parameters.get("price")) : null;
-        Integer reorderPoint = (parameters.get("reorder_point") != null) ? Integer.parseInt(parameters.get("reorder_point"))
-                : null;
-        Integer initialStock = (parameters.get("rinitial_stock") != null)
-                ? Integer.parseInt(parameters.get("initial_stock"))
-                : null;
-        String encodedImg = parameters.get("encoded_image");
 
         product = (id != null) ? new Product(id) : new Product(findId(name));
+
+        String description = (parameters.get("description") != null) ? parameters.get("description")
+                : product.getDescription();
+        Double price = (parameters.get("price") != null) ? Double.parseDouble(parameters.get("price"))
+                : product.getPrice();
+        Integer reorderPoint = (parameters.get("reorder_point") != null)
+                ? Integer.parseInt(parameters.get("reorder_point"))
+                : product.getReorderPoint();
+        Integer initialStock = (parameters.get("rinitial_stock") != null)
+                ? Integer.parseInt(parameters.get("initial_stock"))
+                : product.getCurrentStock();
+        String encodedImg = (parameters.get("encoded_image") != null) ? parameters.get("encoded_image")
+                : product.getEncodedImg();
 
         Product updatedProduct = product.updateProduct(name, description, price, reorderPoint, initialStock,
                 encodedImg);

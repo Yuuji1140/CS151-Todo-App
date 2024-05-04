@@ -48,10 +48,10 @@ public class Product extends LogClass {
 
             this.name = product.get("name");
             this.description = product.get("description");
-            this.price = (product.containsKey("price")) ? Double.parseDouble(product.get("price")) : null;
-            this.reorderPoint = (product.containsKey("reorder_point")) ? Integer.parseInt(product.get("reorder_point"))
+            this.price = (product.get("price") != null) ? Double.parseDouble(product.get("price")) : null;
+            this.reorderPoint = (product.get("reorder_point") != null) ? Integer.parseInt(product.get("reorder_point"))
                     : null;
-            this.currentStock = (product.containsKey("current_stock")) ? Integer.parseInt(product.get("current_stock"))
+            this.currentStock = (product.get("current_stock") != null) ? Integer.parseInt(product.get("current_stock"))
                     : null;
             this.encodedImg = product.get("encoded_image");
             return product;
