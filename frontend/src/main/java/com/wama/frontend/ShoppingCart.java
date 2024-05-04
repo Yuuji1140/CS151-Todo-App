@@ -1,8 +1,6 @@
 package com.wama.frontend;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ShoppingCart {
     private final HashMap<HashMap<String, String>, Integer> items = new HashMap<>();
@@ -18,13 +16,13 @@ public class ShoppingCart {
 
     public void removeItem(HashMap<String, String> item) {
         // items.remove(item);
-        if (items.containsKey(item)) {
-            int quantity = items.get(item);
-            if (quantity > 1)
-                items.put(item, quantity - 1);
-            else
-                items.remove(item);
-        }
+        if (items.containsKey(item))
+            items.remove(item);
+    }
+
+    public void updateQuantity(HashMap<String, String> item, int newQuantity) {
+        if (items.containsKey(item))
+            items.put(item, newQuantity);
     }
 
     public HashMap<HashMap<String, String>, Integer> getItems() {
@@ -32,7 +30,8 @@ public class ShoppingCart {
     }
 
     public double getTotal() {
-        // return items.stream().mapToDouble(item -> Double.parseDouble(item.get("price"))).sum();
+        // return items.stream().mapToDouble(item ->
+        // Double.parseDouble(item.get("price"))).sum();
         double total = 0;
         for (HashMap<String, String> item : items.keySet()) {
             int quantity = items.get(item);
