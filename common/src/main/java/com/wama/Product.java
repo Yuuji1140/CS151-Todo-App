@@ -8,9 +8,9 @@ public class Product extends LogClass {
     private final String id;
     private String name;
     private String description;
-    private double price;
-    private int reorderPoint;
-    private int currentStock;
+    private Double price;
+    private Integer reorderPoint;
+    private Integer currentStock;
     private String encodedImg;
     /*
      * We can either create a product with just an ID and have it return a product
@@ -26,7 +26,7 @@ public class Product extends LogClass {
             selectProduct();
     }
 
-    private Product(String name, String description, double price, int reorderPoint, int currentStock,
+    private Product(String name, String description, Double price, Integer reorderPoint, Integer currentStock,
             String encodedImg) {
         // Cryptographically secure random UUID -
         // shouldn't collide (if it does, we write a paper on it and get famous)
@@ -36,7 +36,7 @@ public class Product extends LogClass {
         this.price = price;
         this.reorderPoint = reorderPoint;
         this.currentStock = currentStock;
-        this.encodedImg = encodedImg;  // Base64 encoded image to display in the frontend
+        this.encodedImg = encodedImg; // Base64 encoded image to display in the frontend
     }
 
     public HashMap<String, String> selectProduct() {
@@ -48,9 +48,11 @@ public class Product extends LogClass {
 
             this.name = product.get("name");
             this.description = product.get("description");
-            this.price = Double.parseDouble(product.get("price"));
-            this.reorderPoint = Integer.parseInt(product.get("reorder_point"));
-            this.currentStock = Integer.parseInt(product.get("current_stock"));
+            this.price = (product.containsKey("price")) ? Double.parseDouble(product.get("price")) : null;
+            this.reorderPoint = (product.containsKey("reorder_point")) ? Integer.parseInt(product.get("reorder_point"))
+                    : null;
+            this.currentStock = (product.containsKey("current_stock")) ? Integer.parseInt(product.get("current_stock"))
+                    : null;
             this.encodedImg = product.get("encoded_image");
             return product;
         } else {
@@ -59,15 +61,20 @@ public class Product extends LogClass {
         }
     }
 
-    public Product createProduct(String name, String description, double price,
-            int reorderPoint, int currentStock, String encodedImg) {
+    public Product createProduct(String name, String description, Double price, Integer reorderPoint,
+            Integer currentStock, String encodedImg) {
         Product newProduct = new Product(name, description, price, reorderPoint, currentStock, encodedImg);
+
+        String priceString = (price == null) ? null : Double.toString(price);
+        String reorderPointString = (reorderPoint == null) ? null : Integer.toString(reorderPoint);
+        String currentStockString = (reorderPoint == null) ? null : Integer.toString(currentStock);
+
         try {
-            DatabaseManager.insertRecord("Product",
+            DatabaseManager.insertRecord("Products",
                     new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
                             "encoded_image" },
-                    new String[] { id, name, description, Double.toString(price), Integer.toString(reorderPoint),
-                            Integer.toString(currentStock), encodedImg });
+                    new String[] { id, name, description, priceString, reorderPointString, currentStockString,
+                            encodedImg });
         } catch (Exception e) {
             error("Error creating product: " + e.getMessage(), e);
             newProduct.deleteProduct();
@@ -76,8 +83,8 @@ public class Product extends LogClass {
         return newProduct;
     }
 
-    public Product updateProduct(String name, String description, double price,
-            int reorderPoint, int currentStock, String encodedImg) {
+    public Product updateProduct(String name, String description, Double price, Integer reorderPoint,
+            Integer currentStock, String encodedImg) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -85,12 +92,16 @@ public class Product extends LogClass {
         this.currentStock = currentStock;
         this.encodedImg = encodedImg;
 
+        String priceString = (price == null) ? null : Double.toString(price);
+        String reorderPointString = (reorderPoint == null) ? null : Integer.toString(reorderPoint);
+        String currentStockString = (reorderPoint == null) ? null : Integer.toString(currentStock);
+
         try {
-            DatabaseManager.updateRecord("Product",
+            DatabaseManager.updateRecord("Products",
                     new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
                             "encoded_image" },
-                    new String[] { id, name, description, Double.toString(price), Integer.toString(reorderPoint),
-                            Integer.toString(currentStock), encodedImg },
+                    new String[] { id, name, description, priceString, reorderPointString, currentStockString,
+                            encodedImg },
                     "id = '" + id + "'");
         } catch (Exception e) {
             error("Error updating product: " + e.getMessage(), e);
@@ -102,7 +113,7 @@ public class Product extends LogClass {
 
     public void deleteProduct() {
         try {
-            DatabaseManager.deleteRecord("Product", "id = '" + id + "'");
+            DatabaseManager.deleteRecord("Products", "id = '" + id + "'");
         } catch (Exception e) {
             error("Error deleting product: " + e.getMessage(), e);
             throw new IllegalArgumentException("Failed to delete product.");
@@ -111,7 +122,8 @@ public class Product extends LogClass {
 
     public static ArrayList<HashMap<String, String>> getAllProducts() {
         return DatabaseManager.selectRecords("Products",
-                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock", "encoded_image" },
+                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
+                        "encoded_image" },
                 null);
     }
 
@@ -127,15 +139,15 @@ public class Product extends LogClass {
         return description;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public int getReorderPoint() {
+    public Integer getReorderPoint() {
         return reorderPoint;
     }
 
-    public int getCurrentStock() {
+    public Integer getCurrentStock() {
         return currentStock;
     }
 

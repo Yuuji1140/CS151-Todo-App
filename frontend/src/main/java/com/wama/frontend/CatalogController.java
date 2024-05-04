@@ -29,7 +29,9 @@ public class CatalogController {
 
     public void initialize() {
         loadProducts();
-        storeImages();
+        
+        // Run to update images
+        // storeImages();
     }
 
     private void storeImages() {
