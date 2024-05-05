@@ -14,8 +14,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Spinner;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -23,13 +26,16 @@ import javafx.stage.Stage;
 
 public class CatalogController {
     private ShoppingCart shoppingCart = new ShoppingCart();
+    private int current_stock;
 
     @FXML
     private TilePane tilePane;
 
     public void initialize() {
         loadProducts();
-        storeImages();
+
+        // Run to update images
+        // storeImages();
     }
 
     private void storeImages() {
@@ -105,6 +111,7 @@ public class CatalogController {
                 Text description = new Text(product.get("description"));
                 description.getStyleClass().add("product-description");
 
+                current_stock = Integer.parseInt(product.get("current_stock"));
                 Text current_stock = new Text(product.get("current_stock"));
                 current_stock.getStyleClass().add("product-stock");
 
@@ -166,10 +173,30 @@ public class CatalogController {
         Stage cartStage = new Stage();
         VBox layout = new VBox(10);
         Scene scene = new Scene(layout, 300, 400);
-        ListView<String> listView = new ListView<>();
-        for (HashMap<String, String> item : shoppingCart.getItems()) {
-            listView.getItems().add(item.get("name") + " - $" + item.get("price"));
+        ListView<HBox> listView = new ListView<>();
+
+        for (HashMap<String, String> item : shoppingCart.getItems().keySet()) {
+            Text itemText = new Text(item.get("name") + " - $" + item.get("price"));
+            
+            Spinner<Integer> qauntitySpinner = new Spinner<>(0, current_stock, shoppingCart.getItems().get(item));
+            qauntitySpinner.getEditor().setStyle("-fx-font-size: 10px;");
+            qauntitySpinner.setEditable(true);
+            qauntitySpinner.setPrefWidth(50);
+
+            qauntitySpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue == 0) {
+                    shoppingCart.removeItem(item);
+                    listView.getItems().removeIf(hBox -> hBox.getChildren().contains(itemText));
+                } else {
+                    shoppingCart.updateQuantity(item, newValue);
+                }
+            });
+
+            HBox row = new HBox(10, itemText, qauntitySpinner);
+            HBox.setHgrow(itemText, Priority.ALWAYS);
+            listView.getItems().add(row);
         }
+
         layout.getChildren().addAll(listView);
         cartStage.setScene(scene);
         cartStage.show();
