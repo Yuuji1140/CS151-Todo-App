@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.wama.frontend.HttpRequest;
+import com.wama.frontend.LoggedInUser;
 import com.wama.frontend.Main;
 import com.wama.frontend.ShoppingCart;
 
@@ -18,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -34,25 +39,26 @@ import javafx.scene.text.Text;
 public class CatalogController {
     private ShoppingCart shoppingCart = new ShoppingCart();
     private int current_stock;
+    private LoggedInUser user = LoggedInUser.getInstance();
 
     @FXML
     private TilePane tilePane;
-    
+
     @FXML
     private Button purchaseButton;
-    
+
     @FXML
     private Button viewCartButton;
-    
+
     @FXML
     private Text totalText;
-    
+
     @FXML
     private ScrollPane mainContent;
     private Node originalContent;
 
     public void initialize() {
-    	originalContent = mainContent.getContent();
+        originalContent = mainContent.getContent();
         loadProducts();
 
         // Run to update images
@@ -60,7 +66,7 @@ public class CatalogController {
     }
 
     @SuppressWarnings("unused")
-	private void storeImages() {
+    private void storeImages() {
         String folderPath = "frontend/src/main/resources/com/wama/frontend/images/products";
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
@@ -88,8 +94,7 @@ public class CatalogController {
                         try {
                             String response = HttpRequest.put("/products", parameters);
                             System.out.println(response);
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             throw new IllegalArgumentException(e.getMessage());
                         }
                     }
@@ -183,19 +188,46 @@ public class CatalogController {
     private void handleProductClick(HashMap<String, String> product) {
         shoppingCart.addItem(product);
         System.out.println("Added to cart: " + product.get("name") + ", ID: " + product.get("id"));
-        
+
         double total = shoppingCart.getTotal();
         Text totalText = (Text) mainContent.getScene().lookup("#totalText");
-        
+
         if (totalText != null)
             totalText.setText("Total: $" + String.format("%.2f", total));
     }
-    
+
     @FXML
     private void handlePurchase(ActionEvent event) {
-        System.out.println("Purchase button pressed!");
+        if (shoppingCart.getItems().isEmpty()) {
+            showAlert("Error", "Empty shopping cart");
+            return;
+        }
+
+        try {
+            Map<String, String> orderParameters = new HashMap<>();
+
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String textDate = currentDate.format(formatter);
+
+            orderParameters.put("customer_id", user.getUserId());
+            orderParameters.put("order_date", textDate);
+            orderParameters.put("status", "processing");
+            orderParameters.put("total", Double.toString(shoppingCart.getTotal()));
+
+            String response = HttpRequest.post("/orders", orderParameters);
+
+            ArrayList<Map<String, String>> orderItems = new ArrayList<>();
+            for (HashMap<String, String> item : shoppingCart.getItems().keySet()) {
+                Map<String, String> itemData = new HashMap<>();
+                
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
     }
-    
+
     @FXML
     private void handleViewCart(ActionEvent event) {
         if (mainContent.getContent() == originalContent)
@@ -203,7 +235,7 @@ public class CatalogController {
         else
             showCatalog();
     }
-    
+
     private void updateTotalDisplay() {
         double total = shoppingCart.getTotal();
         if (totalText != null)
@@ -258,6 +290,14 @@ public class CatalogController {
         mainContent.setContent(originalContent);
         viewCartButton.setText("Shopping Cart");
         purchaseButton.setVisible(false);
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
