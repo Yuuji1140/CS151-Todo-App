@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.CatalogController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.controllers.CatalogController">
    <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="739.0" prefWidth="174.0">
          <children>
@@ -26,12 +26,14 @@
       </Pane>
       <Pane layoutX="213.0" layoutY="14.0" prefHeight="739.0" prefWidth="796.0">
          <children>
-            <ScrollPane layoutX="3.0" layoutY="73.0" prefHeight="627.0" prefWidth="777.0" styleClass="scroll-pane">
+            <ScrollPane fx:id="mainContent" layoutX="3.0" layoutY="73.0" prefHeight="627.0" prefWidth="786.0" styleClass="scroll-pane">
     			<content>
-            			<TilePane fx:id="tilePane" hgap="10" layoutY="14.0" prefColumns="3" prefHeight="660.0" prefWidth="758.0" styleClass="tile-pane" tileAlignment="BASELINE_LEFT" vgap="10" />
+        			<TilePane fx:id="tilePane" hgap="10" prefColumns="3" prefHeight="622.0" prefWidth="765.0" styleClass="tile-pane" tileAlignment="BASELINE_LEFT" vgap="10" />
     			</content>
 			</ScrollPane>
-            <Button layoutX="667.0" layoutY="7.0" onAction="#handleViewCart" text="View Cart" />
+			<Text fx:id="totalText" fill="#535353" layoutY="62.0" styleClass="total-text" text="Total: $0.00" />
+			<Button fx:id="purchaseButton" layoutX="500.0" layoutY="13.0" onAction="#handlePurchase" text="Purchase" visible="false" />
+            <Button fx:id="viewCartButton" layoutX="626.0" layoutY="13.0" onAction="#handleViewCart" text="Shopping Cart" />
          </children>
       </Pane>
    </children>

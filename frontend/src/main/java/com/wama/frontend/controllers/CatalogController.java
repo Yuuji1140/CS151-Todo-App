@@ -1,4 +1,4 @@
-package com.wama.frontend;
+package com.wama.frontend.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -10,19 +10,26 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.wama.frontend.HttpRequest;
+import com.wama.frontend.Main;
+import com.wama.frontend.ShoppingCart;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class CatalogController {
     private ShoppingCart shoppingCart = new ShoppingCart();
@@ -30,15 +37,30 @@ public class CatalogController {
 
     @FXML
     private TilePane tilePane;
+    
+    @FXML
+    private Button purchaseButton;
+    
+    @FXML
+    private Button viewCartButton;
+    
+    @FXML
+    private Text totalText;
+    
+    @FXML
+    private ScrollPane mainContent;
+    private Node originalContent;
 
     public void initialize() {
+    	originalContent = mainContent.getContent();
         loadProducts();
 
         // Run to update images
         // storeImages();
     }
 
-    private void storeImages() {
+    @SuppressWarnings("unused")
+	private void storeImages() {
         String folderPath = "frontend/src/main/resources/com/wama/frontend/images/products";
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
@@ -51,7 +73,7 @@ public class CatalogController {
 
                     String encodedImage = encodeImages(imagePath);
 
-                    // Checks if imageName contains whitespace
+                    // checks if imageName contains whitespace
                     String pattern = (imageName.matches(".*\\s.*")) ? "(\\w+\\s+\\w+)\\d\\.(\\w+)"
                             : "(\\w+)\\d\\.(\\w+)";
                     Pattern regex = Pattern.compile(pattern);
@@ -66,7 +88,8 @@ public class CatalogController {
                         try {
                             String response = HttpRequest.put("/products", parameters);
                             System.out.println(response);
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             throw new IllegalArgumentException(e.getMessage());
                         }
                     }
@@ -122,8 +145,7 @@ public class CatalogController {
                 imageView.setFitHeight(80);
                 imageView.setFitWidth(80);
 
-                productBox.getChildren().addAll(imageView, name, price, description,
-                        current_stock);
+                productBox.getChildren().addAll(imageView, name, price, description, current_stock);
                 tilePane.getChildren().add(productBox);
             }
 
@@ -161,45 +183,81 @@ public class CatalogController {
     private void handleProductClick(HashMap<String, String> product) {
         shoppingCart.addItem(product);
         System.out.println("Added to cart: " + product.get("name") + ", ID: " + product.get("id"));
-        updateCartView(); // updates UI to reflect items in the cart
+        
+        double total = shoppingCart.getTotal();
+        Text totalText = (Text) mainContent.getScene().lookup("#totalText");
+        
+        if (totalText != null)
+            totalText.setText("Total: $" + String.format("%.2f", total));
     }
-
-    private void updateCartView() {
-        // update cart UI here
+    
+    @FXML
+    private void handlePurchase(ActionEvent event) {
+        System.out.println("Purchase button pressed!");
     }
-
+    
     @FXML
     private void handleViewCart(ActionEvent event) {
-        Stage cartStage = new Stage();
-        VBox layout = new VBox(10);
-        Scene scene = new Scene(layout, 300, 400);
-        ListView<HBox> listView = new ListView<>();
+        if (mainContent.getContent() == originalContent)
+            showCart();
+        else
+            showCatalog();
+    }
+    
+    private void updateTotalDisplay() {
+        double total = shoppingCart.getTotal();
+        if (totalText != null)
+            totalText.setText("Total: $" + String.format("%.2f", total));
+        purchaseButton.setVisible(total > 0);
+    }
+
+    private void showCart() {
+        VBox cartLayout = new VBox(10);
+        TilePane tilePane = new TilePane();
+        tilePane.setPadding(new Insets(15, 15, 15, 15));
+        tilePane.setVgap(29);
+        tilePane.setHgap(29);
+        tilePane.setPrefColumns(5); // You can set the number of columns based on your UI requirement
 
         for (HashMap<String, String> item : shoppingCart.getItems().keySet()) {
-            Text itemText = new Text(item.get("name") + " - $" + item.get("price"));
-            
-            Spinner<Integer> qauntitySpinner = new Spinner<>(0, current_stock, shoppingCart.getItems().get(item));
-            qauntitySpinner.getEditor().setStyle("-fx-font-size: 10px;");
-            qauntitySpinner.setEditable(true);
-            qauntitySpinner.setPrefWidth(50);
+            VBox itemBox = new VBox(5);
+            itemBox.getStyleClass().add("cart-item-box");
 
-            qauntitySpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            Text itemName = new Text(item.get("name"));
+            itemName.getStyleClass().add("cart-item-name");
+
+            Text itemPrice = new Text("$" + item.get("price"));
+            itemPrice.getStyleClass().add("cart-item-price");
+
+            Spinner<Integer> quantitySpinner = new Spinner<>(0, current_stock, shoppingCart.getItems().get(item));
+            quantitySpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
                 if (newValue == 0) {
                     shoppingCart.removeItem(item);
-                    listView.getItems().removeIf(hBox -> hBox.getChildren().contains(itemText));
+                    tilePane.getChildren().remove(itemBox);
+                    updateTotalDisplay();
                 } else {
                     shoppingCart.updateQuantity(item, newValue);
+                    updateTotalDisplay();
                 }
             });
 
-            HBox row = new HBox(10, itemText, qauntitySpinner);
-            HBox.setHgrow(itemText, Priority.ALWAYS);
-            listView.getItems().add(row);
+            quantitySpinner.getStyleClass().add("cart-item-spinner");
+            quantitySpinner.setEditable(true);
+
+            itemBox.getChildren().addAll(itemName, itemPrice, quantitySpinner);
+            tilePane.getChildren().add(itemBox);
         }
 
-        layout.getChildren().addAll(listView);
-        cartStage.setScene(scene);
-        cartStage.show();
+        cartLayout.getChildren().add(tilePane);
+        mainContent.setContent(cartLayout);
+        viewCartButton.setText("Back to Catalog");
+        purchaseButton.setVisible(!shoppingCart.getItems().isEmpty());
+    }
+
+    private void showCatalog() {
+        mainContent.setContent(originalContent);
+        viewCartButton.setText("Shopping Cart");
+        purchaseButton.setVisible(false);
     }
 
     @FXML

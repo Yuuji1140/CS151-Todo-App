@@ -51,3 +51,38 @@
 	-fx-border-color: transparent;
     -fx-background-insets: 0;
 }
+
+.list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-pref-width: 500px;
+    -fx-pref-height: 600px;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.item-box {
+    /*-fx-background-color: transparent;*/
+}
+
+.total-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.cart-item-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.cart-item-price {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666;
+}
+
+.cart-item-spinner {
+    -fx-font-size: 10px;
+}

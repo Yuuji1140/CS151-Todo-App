@@ -1,7 +1,11 @@
-package com.wama.frontend;
+package com.wama.frontend.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import com.wama.frontend.AnimSlidingRects;
+import com.wama.frontend.HttpRequest;
+import com.wama.frontend.Main;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;

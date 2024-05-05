@@ -38,7 +38,6 @@ public class ShoppingCart {
             double price = Double.parseDouble(item.get("price"));
             total += price * quantity;
         }
-
         return total;
     }
 }

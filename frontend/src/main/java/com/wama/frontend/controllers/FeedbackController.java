@@ -1,4 +1,6 @@
-package com.wama.frontend;
+package com.wama.frontend.controllers;
+
+import com.wama.frontend.Main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

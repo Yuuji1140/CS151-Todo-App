@@ -1,6 +1,9 @@
-package com.wama.frontend;
+package com.wama.frontend.controllers;
 
 import java.io.IOException;
+
+import com.wama.frontend.AnimSlidingRects;
+import com.wama.frontend.Main;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -9,15 +12,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.util.HashMap;
 
 @SuppressWarnings("unused")
 public class StartUpController

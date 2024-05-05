@@ -1,12 +1,16 @@
-package com.wama.frontend;
-
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+package com.wama.frontend.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.wama.frontend.HttpRequest;
+import com.wama.frontend.LoggedInUser;
+import com.wama.frontend.Main;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 
 public class OrdersController
 {

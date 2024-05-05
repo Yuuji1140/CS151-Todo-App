@@ -1,7 +1,10 @@
-package com.wama.frontend;
+package com.wama.frontend.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import com.wama.frontend.LoggedInUser;
+import com.wama.frontend.Main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +22,7 @@ public class DashboardController
         String textDate = currentDate.format(formatter);
         
 		labelDate.setText(textDate);
-		labelName.setText("Hey, " + user.getName() + "!");
+		labelName.setText("Hey, " + user.getUsername() + "!");
 	}
 	
 	@FXML
