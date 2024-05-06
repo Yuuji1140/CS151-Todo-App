@@ -1,5 +1,6 @@
 package com.wama.backend.endpoints;
 
+import com.wama.DatabaseManager;
 import com.wama.Order;
 
 import java.io.OutputStream;
@@ -16,12 +17,10 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             error("Parameters are null");
             return false;
         }
-        if (parameters.containsKey("customer_id") && parameters.containsKey("order_date")
-                && parameters.containsKey("status") && parameters.containsKey("total"))
-            return !parameters.get("customer_id").isEmpty() && !parameters.get("order_date").isEmpty()
-                    && !parameters.get("status").isEmpty() && !parameters.get("total").isEmpty();
+        if (parameters.containsKey("customer_id") && parameters.containsKey("order_date"))
+            return !parameters.get("customer_id").isEmpty() && !parameters.get("order_date").isEmpty();
 
-        error("Missing customer id, order date, status, or total parameters");
+        error("Parameters are missing.");
         return false;
     }
 
@@ -47,7 +46,6 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Order not found");
             return new HttpResponse(HttpStatus.NOT_FOUND, arguments);
         }
-
     }
 
     public HttpResponse handlePostRequest(Map<String, String> parameters, OutputStream outputStream) {
@@ -72,13 +70,16 @@ public class Orders extends com.wama.LogClass implements Endpoint {
         String id = parameters.get("id");
         String customerId = parameters.get("customer_id");
         String orderDate = parameters.get("order_date");
-        String status = parameters.get("status");
-        double total = Double.parseDouble(parameters.get("total"));
+
+        order = (id != null) ? new Order(id) : new Order(findId(customerId, orderDate));
+
+        String status = (parameters.get("status") != null) ? parameters.get("status") : order.getStatus();
+        Double total = (parameters.get("total") != null) ? Double.parseDouble(parameters.get("total")) : order.getTotal();
 
         order = new Order(id);
         order.updateOrder(customerId, orderDate, status, total);
         if (order != null) {
-            return new HttpResponse(HttpStatus.OK, new HashMap<>());
+            return new HttpResponse(HttpStatus.OK, order.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error updating order");
@@ -98,5 +99,17 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             arguments.put("error", "Error deleting order");
             return new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, arguments);
         }
+    }
+
+    private String findId(String customerId, String orderDate) {
+        ArrayList<HashMap<String, String>> orderRecords = DatabaseManager.selectRecords("Products",
+                new String[] { "id", "customer_id", "order_date" },
+                "customer_id = '" + customerId + "' AND order_date = '" + orderDate + "'");
+        if (orderRecords == null || orderRecords.size() != 1) {
+            return null;
+        }
+
+        return orderRecords.get(0).get("id");
+
     }
 }

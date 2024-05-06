@@ -10,7 +10,7 @@ public class Order extends LogClass {
     private String customerId;
     private Timestamp orderDate;
     private String status;
-    private double total;
+    private Double total;
     private OrderItem[] items;
     /*
      * We can either create an order with just an ID and have it return an order
@@ -25,7 +25,7 @@ public class Order extends LogClass {
             selectOrder();
     }
 
-    private Order(String customerId, Timestamp orderDate, String status, double total) {
+    private Order(String customerId, Timestamp orderDate, String status, Double total) {
         this.id = UUID.randomUUID().toString();
         this.customerId = customerId;
         this.orderDate = orderDate;
@@ -34,16 +34,16 @@ public class Order extends LogClass {
     }
 
     public HashMap<String, String> selectOrder() {
-        String[] columns = { "id", "customer_id", "order_date", "status", "total" };
-        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns,
+        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders",
+                new String[] { "id", "customer_id", "order_date", "status", "total" },
                 "id = '" + id + "'");
         if (result != null && !result.isEmpty()) {
             HashMap<String, String> order = result.get(0);
 
             this.customerId = order.get("customer_id");
-            this.orderDate = Timestamp.valueOf(order.get("order_date"));
+            this.orderDate = (order.get("order_date") != null) ? Timestamp.valueOf(order.get("order_date")) : null;
             this.status = order.get("status");
-            this.total = Double.parseDouble(order.get("total"));
+            this.total = (order.get("total") != null) ? Double.parseDouble(order.get("total")) : null;
             return order;
         } else {
             error("Order not found.");
@@ -51,17 +51,21 @@ public class Order extends LogClass {
         }
     }
 
-    public static Order createOrder(String customerId, String orderDate, String status, double total) {
+    public static Order createOrder(String customerId, String orderDate, String status, Double total) {
         Order newOrder = new Order(customerId, Timestamp.valueOf(orderDate), status, total);
-        newOrder.insertOrder();
+
+        String orderDateString = (orderDate != null) ? orderDate.toString() : null;
+        String totalString = (total != null) ? Double.toString(total) : null;
+
+        newOrder.insertOrder(orderDateString, totalString);
         return newOrder;
     }
 
-    private void insertOrder() {
+    private void insertOrder(String orderDateString, String totalString) {
         try {
             DatabaseManager.insertRecord("Orders",
                     new String[] { "id", "customer_id", "order_date", "status", "total" },
-                    new String[] { id, customerId, orderDate.toString(), status, String.valueOf(total) });
+                    new String[] { id, customerId, orderDateString, status, totalString });
         } catch (Exception e) {
             error("Error creating order: " + e.getMessage(), e);
             deleteOrder();
@@ -70,16 +74,19 @@ public class Order extends LogClass {
     }
 
     public Order updateOrder(String customerId, String orderDate, String status,
-            double total) {
+            Double total) {
         this.customerId = customerId;
         this.orderDate = Timestamp.valueOf(orderDate);
         this.status = status;
         this.total = total;
 
+        String orderDateString = (orderDate != null) ? orderDate.toString() : null;
+        String totalString = (total != null) ? Double.toString(total) : null;
+
         try {
             DatabaseManager.updateRecord("Orders",
                     new String[] { "id", "customer_id", "order_date", "status", "total" },
-                    new String[] { id, customerId, orderDate, status, String.valueOf(total) },
+                    new String[] { id, customerId, orderDateString, status, totalString },
                     "id = '" + id + "'");
         } catch (Exception e) {
             error("Error updating order: " + e.getMessage(), e);

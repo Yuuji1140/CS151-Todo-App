@@ -24,7 +24,7 @@ public class Products extends com.wama.LogClass implements Endpoint {
         if (parameters.containsKey("id"))
             return !parameters.get("id").isEmpty();
 
-        error("Missing product name or id");
+        error("Parameters are missing.");
         return false;
     }
 
@@ -55,17 +55,19 @@ public class Products extends com.wama.LogClass implements Endpoint {
          */
         String name = parameters.get("name");
         String description = parameters.get("description");
-        double price = (parameters.get("price") != null) ? Double.parseDouble(parameters.get("price")) : null;
-        int reorderPoint = (parameters.get("reorder_point") != null) ? Integer.parseInt(parameters.get("reorder_point"))
+        Double price = (parameters.get("price") != null) ? Double.parseDouble(parameters.get("price")) : null;
+        Integer reorderPoint = (parameters.get("reorder_point") != null) ? Integer.parseInt(parameters.get("reorder_point"))
                 : null;
-        int initialStock = (parameters.get("rinitial_stock") != null)
+        Integer initialStock = (parameters.get("rinitial_stock") != null)
                 ? Integer.parseInt(parameters.get("initial_stock"))
                 : null;
         String encodedImg = parameters.get("encoded_image");
 
-        product = product.createProduct(name, description, price, reorderPoint, initialStock, encodedImg);
+        product = Product.createProduct(name, description, price, reorderPoint, initialStock, encodedImg);
         if (product != null) {
-            return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
+            // CREATED status is not being handled in frontend, swap to OK status for now
+            // return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
+            return new HttpResponse(HttpStatus.OK, product.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error creating product");
@@ -98,7 +100,7 @@ public class Products extends com.wama.LogClass implements Endpoint {
         Product updatedProduct = product.updateProduct(name, description, price, reorderPoint, initialStock,
                 encodedImg);
         if (updatedProduct != null) {
-            return new HttpResponse(HttpStatus.OK, new HashMap<>());
+            return new HttpResponse(HttpStatus.OK, product.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error updating product");
@@ -125,15 +127,13 @@ public class Products extends com.wama.LogClass implements Endpoint {
 
     private String findId(String name) {
         ArrayList<HashMap<String, String>> productRecords = DatabaseManager.selectRecords("Products",
-                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
-                        "encoded_image" },
+                new String[] { "id", "name" },
                 "LOWER(name) = LOWER('" + name + "')");
 
         if (productRecords == null || productRecords.size() != 1) {
             return null;
         }
 
-        HashMap<String, String> productRecord = productRecords.get(0);
-        return productRecord.get("id");
+        return productRecords.get(0).get("id");
     }
 }

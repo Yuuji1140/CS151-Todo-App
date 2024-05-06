@@ -40,8 +40,9 @@ public class Product extends LogClass {
     }
 
     public HashMap<String, String> selectProduct() {
-        String[] columns = { "id", "name", "description", "price", "reorder_point", "current_stock", "encoded_image" };
-        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Products", columns,
+        ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Products",
+                new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
+                        "encoded_image" },
                 "id = '" + id + "'");
         if (result != null && !result.isEmpty()) {
             HashMap<String, String> product = result.get(0);
@@ -61,14 +62,19 @@ public class Product extends LogClass {
         }
     }
 
-    public Product createProduct(String name, String description, Double price, Integer reorderPoint,
+    public static Product createProduct(String name, String description, Double price, Integer reorderPoint,
             Integer currentStock, String encodedImg) {
         Product newProduct = new Product(name, description, price, reorderPoint, currentStock, encodedImg);
 
-        String priceString = (price == null) ? null : Double.toString(price);
-        String reorderPointString = (reorderPoint == null) ? null : Integer.toString(reorderPoint);
-        String currentStockString = (reorderPoint == null) ? null : Integer.toString(currentStock);
+        String priceString = (price != null) ? Double.toString(price) : null;
+        String reorderPointString = (reorderPoint != null) ? Integer.toString(reorderPoint) : null;
+        String currentStockString = (reorderPoint != null) ? Integer.toString(currentStock) : null;
 
+        newProduct.insertProduct(priceString, reorderPointString, currentStockString);
+        return newProduct;
+    }
+
+    private void insertProduct(String priceString, String reorderPointString, String currentStockString) {
         try {
             DatabaseManager.insertRecord("Products",
                     new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
@@ -77,10 +83,9 @@ public class Product extends LogClass {
                             encodedImg });
         } catch (Exception e) {
             error("Error creating product: " + e.getMessage(), e);
-            newProduct.deleteProduct();
+            deleteProduct();
             throw new IllegalArgumentException("Failed to create product.");
         }
-        return newProduct;
     }
 
     public Product updateProduct(String name, String description, Double price, Integer reorderPoint,
@@ -92,9 +97,9 @@ public class Product extends LogClass {
         this.currentStock = currentStock;
         this.encodedImg = encodedImg;
 
-        String priceString = (price == null) ? null : Double.toString(price);
-        String reorderPointString = (reorderPoint == null) ? null : Integer.toString(reorderPoint);
-        String currentStockString = (reorderPoint == null) ? null : Integer.toString(currentStock);
+        String priceString = (price != null) ? Double.toString(price) : null;
+        String reorderPointString = (reorderPoint != null) ? Integer.toString(reorderPoint) : null;
+        String currentStockString = (reorderPoint != null) ? Integer.toString(currentStock) : null;
 
         try {
             DatabaseManager.updateRecord("Products",
@@ -125,6 +130,17 @@ public class Product extends LogClass {
                 new String[] { "id", "name", "description", "price", "reorder_point", "current_stock",
                         "encoded_image" },
                 null);
+    }
+
+    public HashMap<String, String> getParameters() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", id);
+        parameters.put("name", name);
+        parameters.put("description", description);
+        parameters.put("reorder_point", Integer.toString(reorderPoint));
+        parameters.put("current_stock", Double.toString(currentStock));
+        parameters.put("encoded_image", encodedImg);
+        return parameters;
     }
 
     public String getId() {

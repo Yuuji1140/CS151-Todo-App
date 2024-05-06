@@ -205,19 +205,28 @@ public class CatalogController {
             orderParameters.put("status", "Processing");
             orderParameters.put("total", Double.toString(shoppingCart.getTotal()));
 
-            String response = HttpRequest.post("/orders", orderParameters);
+            String orderResponse = HttpRequest.post("/orders", orderParameters);
             String pattern = "(\\w+)=([^,}]+)";
             Pattern regex = Pattern.compile(pattern);
-            Matcher matcher = regex.matcher(response);
+            Matcher matcher = regex.matcher(orderResponse);
             while (matcher.find()) {
                 if (!orderParameters.containsKey(matcher.group(1))) {
                     orderParameters.put(matcher.group(1), matcher.group(2));
                 }
             }
+
             ArrayList<Map<String, String>> orderItems = new ArrayList<>();
             for (HashMap<String, String> item : shoppingCart.getItems().keySet()) {
-                Map<String, String> itemData = new HashMap<>();
+                HashMap<String, String> itemParameters = new HashMap<>();
+                if (item.containsKey("id") && item.containsKey("price")) {
+                    itemParameters.put("product_id", item.get("id"));
+                    itemParameters.put("price", item.get("price"));
+                }
+                itemParameters.put("order_id", orderParameters.get("id"));
+                itemParameters.put("quantity", Integer.toString(shoppingCart.getQuantity(item)));
 
+                String orderItemResponse = HttpRequest.post("/orderItems", itemParameters);
+                orderItems.add(itemParameters);
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
