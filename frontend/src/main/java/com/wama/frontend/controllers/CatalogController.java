@@ -57,7 +57,7 @@ public class CatalogController {
     public void initialize() {
     	shoppingCart = ShoppingCart.getInstance();
     	originalContent = mainContent.getContent();
-        catalogUpdater = new UpdaterThread(this::loadProducts, 1000);
+        catalogUpdater = new UpdaterThread(this::loadProducts, 5);
         updateTotalDisplay();
 
         // Run to update images
