@@ -46,6 +46,16 @@ public class DashboardController
     }
 	
 	@FXML
+    void handleProductsButtonAction(ActionEvent event) {
+        Main.switchToSceneProducts();
+    }
+	
+	@FXML
+    void handleShippingButtonAction(ActionEvent event) {
+		Main.switchToSceneShipping();
+    }
+	
+	@FXML
     void handleFeedbackCustomerButtonAction(ActionEvent event) {
         Main.switchToSceneFeedbackCustomer();
     }

@@ -50,4 +50,8 @@ public class ShoppingCart {
         }
         return total;
     }
+
+    public Integer getQuantity(HashMap<String, String> item) {
+        return items.get(item);
+    }
 }

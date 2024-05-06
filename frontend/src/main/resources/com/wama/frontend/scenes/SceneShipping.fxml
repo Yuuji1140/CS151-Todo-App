@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.controllers.ShippingController">
+   <children>
+      <Pane layoutX="14.0" layoutY="14.0" prefHeight="739.0" prefWidth="174.0">
+         <children>
+            <Text fill="#404040" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WaMa">
+               <font>
+                  <Font name="Arial" size="32.0" />
+               </font>
+            </Text>
+            <Button layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleDashboardEmployeeButtonAction" prefHeight="43.0" prefWidth="143.0" text="Dashboard" />
+            <Button layoutX="14.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleProductsButtonAction" prefHeight="43.0" prefWidth="143.0" text="Products" />
+            <Button layoutX="14.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleShippingButtonAction" prefHeight="43.0" prefWidth="143.0" text="Shipping" />
+            <Button layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#handleSignoutButtonAction" prefHeight="46.0" prefWidth="143.0" text="Sign Out" />
+            <Button layoutX="14.0" layoutY="600.0" mnemonicParsing="false" onAction="#handleFeedbackEmployeeButtonAction" prefHeight="46.0" prefWidth="143.0" text="Feedback" />
+         </children>
+      </Pane>
+      <Text layoutX="501.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shipping" />
+   </children>
+</AnchorPane>

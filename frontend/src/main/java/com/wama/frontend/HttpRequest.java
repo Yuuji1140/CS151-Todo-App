@@ -67,7 +67,10 @@ public class HttpRequest {
                 }
                 String responsePayload = response.toString();
                 // Process the response payload as needed
-                System.out.println("Response Payload: " + responsePayload);
+                // Print payload except key 'encoded_image' - just omit the key entirely
+                if (responsePayload.contains("encoded_image")) {
+                    responsePayload = responsePayload.replaceAll("\"encoded_image\":\"[^\"]*\",", "");
+                }
                 return responsePayload;
             }
         } else {

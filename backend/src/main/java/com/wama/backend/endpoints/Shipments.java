@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
-
 public class Shipments extends com.wama.LogClass implements Endpoint {
     @Override
     public boolean validParameters(Map<String, String> parameters) {
@@ -15,28 +14,25 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
             error("Parameters are null");
             return false;
         }
-        String requestType = parameters.get("requestType");
-        if (requestType.equals("POST") || requestType.equals("PUT")) {
-            if (!parameters.containsKey("order_id") || !parameters.containsKey("shipment_date") ||
-                    !parameters.containsKey("status") || !parameters.containsKey("tracking_number")) {
-                error("Parameters are missing for POST or PUT request");
-                return false;
-            }
-        } else if (requestType.equals("DELETE") || requestType.equals("GET")) {
-            if (!parameters.containsKey("id") && !parameters.containsKey("company_id")) {
-                error("Must have id or company_id for DELETE or GET request");
-                return false;
-            }
-        }
-        return true;
+
+        if (parameters.containsKey("id") && parameters.containsKey("customer_id"))
+            return !parameters.get("id").isEmpty() && !parameters.get("customer_id").isEmpty();
+
+        if (parameters.containsKey("order_id") && parameters.containsKey("shipment_date") &&
+                parameters.containsKey("status") && parameters.containsKey("tracking_number"))
+            return !parameters.get("order_id").isEmpty() && !parameters.get("shipment_date").isEmpty() &&
+                    !parameters.get("status").isEmpty() && !parameters.get("tracking_number").isEmpty();
+
+        error("Parameters are missing.");
+        return false;
     }
 
     public HttpResponse handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
         if (parameters.containsKey("id")) {
             return new HttpResponse(HttpStatus.OK,
                     Objects.requireNonNull(getShipmentById(parameters.get("id"))).getParameters());
-        } else if (parameters.containsKey("company_id")) {
-            return new HttpResponse(HttpStatus.OK, getShipmentsByCustomerId(parameters.get("company_id")));
+        } else if (parameters.containsKey("customer_id")) {
+            return new HttpResponse(HttpStatus.OK, getShipmentsByCustomerId(parameters.get("customer_id")));
         } else {
             return new HttpResponse(HttpStatus.OK, getAllShipments());
         }
@@ -50,7 +46,7 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
 
         Shipment shipment = createShipment(orderId, shipmentDate, status, trackingNumber);
         if (shipment != null) {
-            return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
+            return new HttpResponse(HttpStatus.CREATED, shipment.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error creating shipment");
@@ -64,7 +60,7 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
         String shipmentDate = parameters.get("shipment_date");
         String status = parameters.get("status");
         String trackingNumber = parameters.get("tracking_number");
-        
+
         Shipment shipment = updateShipment(id, orderId, shipmentDate, status, trackingNumber);
         if (shipment != null) {
             return new HttpResponse(HttpStatus.OK, new HashMap<>());
@@ -113,7 +109,8 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
         return null;
     }
 
-    private Shipment updateShipment(String id, String orderId, String shipmentDate, String status, String trackingNumber) {
+    private Shipment updateShipment(String id, String orderId, String shipmentDate, String status,
+            String trackingNumber) {
         Timestamp timestamp = Timestamp.valueOf(shipmentDate);
         try {
             DatabaseManager.updateRecord("Shipments",

@@ -9,37 +9,62 @@ import com.wama.frontend.HttpRequest;
 import com.wama.frontend.LoggedInUser;
 import com.wama.frontend.Main;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
 
 public class OrdersController
 {
 	LoggedInUser user = LoggedInUser.getInstance();
 	HashMap<String, HashMap<String, String>> orders;
 	HashMap<String, HashMap<String, String>> shipments;
+	UpdaterThread productsUpdater;
+	UpdaterThread ordersUpdater;
+
+	@FXML
+	private ScrollPane mainContent;
+
+	@FXML
+	private TilePane tilePane;
 
 	public void initialize() throws IOException {
-		loadOrders();
-		loadShipments();
+		//loadOrders();
+		ordersUpdater = new UpdaterThread(this::loadOrders, 5);
+		productsUpdater = new UpdaterThread(this::loadShipments, 5);
 	}
 
 	@FXML
-	private void loadShipments() throws IOException {
-		HashMap<String, String> parameters = new HashMap<>();
-		parameters.put("company_id", user.getCompanyId());
-		String response = HttpRequest.get("/shipments", parameters);
-		this.shipments = parseProductData(response);
-		System.out.println(this.shipments);
+	private void loadShipments(){
+		try {
+			HashMap<String, String> parameters = new HashMap<>();
+			parameters.put("customer_id", user.getCompanyId());
+			String response = HttpRequest.get("/shipments", parameters);
+			this.shipments = parseProductData(response);
+			//System.out.println(this.shipments);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
-	private void loadOrders() throws IOException {
-		HashMap<String, String> parameters = new HashMap<>();
-		parameters.put("id", "all");
-		parameters.put("company_id", user.getCompanyId());
-		String response = HttpRequest.get("/orders", parameters);
-		this.orders = parseProductData(response);
-		//System.out.println(this.orders);
+	private void loadOrders(){
+		try {
+			HashMap<String, String> parameters = new HashMap<>();
+			parameters.put("id", "all");
+			parameters.put("customer_id", user.getCompanyId());
+			String response = HttpRequest.get("/orders", parameters);
+			this.orders = parseProductData(response);
+			displayOrders();
+			//System.out.println(this.orders);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private HashMap<String, HashMap<String, String>> parseProductData(String response) {
@@ -67,6 +92,30 @@ public class OrdersController
 		}
 		return productData;
 	}
+
+	private void displayOrders() {
+		//https://stackoverflow.com/questions/21160754/run-javafx-controller-in-a-separate-thread
+		Platform.runLater(() -> {
+			tilePane.getChildren().clear();
+
+			for (HashMap.Entry<String, HashMap<String, String>> entry : orders.entrySet()) {
+				HashMap<String, String> order = entry.getValue();
+
+				VBox orderBox = new VBox(10);
+				orderBox.getStyleClass().add("order-box");
+				orderBox.setPadding(new Insets(10));
+
+				Text orderId = new Text("Order ID: " + order.get("id"));
+				Text orderDate = new Text("Order Date: " + order.get("order_date"));
+				Text orderTotal = new Text("Total: $" + order.get("total"));
+				Text orderStatus = new Text("Status: " + order.get("status"));
+
+				orderBox.getChildren().addAll(orderId, orderDate, orderTotal, orderStatus);
+				tilePane.getChildren().add(orderBox);
+			}
+		});
+	}
+
 	@FXML
 	void handleDashboardCustomerButtonAction(ActionEvent event) {
 		Main.switchToSceneDashboardCustomer();
