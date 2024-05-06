@@ -110,7 +110,7 @@ public class DatabaseManager extends com.wama.LogClass {
         }
     }
 
-    public static boolean insertRecord(String tableName, String[] columns, String[] values) {
+    public static synchronized boolean insertRecord(String tableName, String[] columns, String[] values) {
         String insertQuery = "INSERT INTO " + tableName + " (" + String.join(", ", columns) + ") VALUES ('" + String.join("', '", values) + "')";
         try (Connection conn = DriverManager.getConnection(DB_URL);
                 Statement stmt = conn.createStatement()) {
@@ -123,7 +123,7 @@ public class DatabaseManager extends com.wama.LogClass {
         }
     }
 
-    public static ArrayList<HashMap<String, String>> selectRecords(String tableName, String[] columns, String condition) {
+    public static synchronized ArrayList<HashMap<String, String>> selectRecords(String tableName, String[] columns, String condition) {
         ArrayList<HashMap<String, String>> returnList = new ArrayList<>();
 
         String selectQuery = "SELECT " + String.join(", ", columns) + " FROM " + tableName;
@@ -153,7 +153,7 @@ public class DatabaseManager extends com.wama.LogClass {
         }
     }
 
-    public static boolean updateRecord(String tableName, String[] columns, String[] values, String condition) {
+    public static synchronized boolean updateRecord(String tableName, String[] columns, String[] values, String condition) {
         String updateQuery = "UPDATE " + tableName + " SET ";
         for (int i = 0; i < columns.length; i++) {
             updateQuery += columns[i] + " = '" + values[i] + "'";
@@ -175,7 +175,7 @@ public class DatabaseManager extends com.wama.LogClass {
         }
     }
 
-    public static boolean deleteRecord(String tableName, String condition) {
+    public static synchronized boolean deleteRecord(String tableName, String condition) {
         String deleteQuery = "DELETE FROM " + tableName;
         if (condition != null && !condition.isEmpty()) {
             deleteQuery += " WHERE " + condition;
@@ -191,7 +191,7 @@ public class DatabaseManager extends com.wama.LogClass {
         }
     }
 
-    public static ArrayList<HashMap<String, String>> getCustomerShipments(String customerId) {
+    public static synchronized ArrayList<HashMap<String, String>> getCustomerShipments(String customerId) {
         String query = "SELECT Shipments.id, Shipments.order_id, Shipments.shipment_date, Shipments.status, Shipments.tracking_number " +
                 "FROM Shipments " +
                 "JOIN Orders ON Shipments.order_id = Orders.id " +
