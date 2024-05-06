@@ -93,7 +93,8 @@ public class CatalogController {
                         try {
                             String response = HttpRequest.put("/products", parameters);
                             System.out.println(response);
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             throw new IllegalArgumentException(e.getMessage());
                         }
                     }
@@ -155,7 +156,8 @@ public class CatalogController {
                     tilePane.getChildren().add(productBox);
                 }
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new IllegalArgumentException(e.getMessage());
             }
         });
@@ -236,7 +238,8 @@ public class CatalogController {
                 String orderItemResponse = HttpRequest.post("/orderItems", itemParameters);
                 orderItems.add(itemParameters);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
 
@@ -281,7 +284,8 @@ public class CatalogController {
                     shoppingCart.removeItem(item);
                     tilePane.getChildren().remove(itemBox);
                     updateTotalDisplay();
-                } else {
+                }
+                else {
                     shoppingCart.updateQuantity(item, newValue);
                     updateTotalDisplay();
                 }
