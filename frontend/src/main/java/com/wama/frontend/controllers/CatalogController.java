@@ -32,7 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class CatalogController {
-    private ShoppingCart shoppingCart = new ShoppingCart();
+	private ShoppingCart shoppingCart;
     private int current_stock;
     private LoggedInUser user = LoggedInUser.getInstance();
 
@@ -53,8 +53,10 @@ public class CatalogController {
     private Node originalContent;
 
     public void initialize() {
-        originalContent = mainContent.getContent();
+    	shoppingCart = ShoppingCart.getInstance();
+    	originalContent = mainContent.getContent();
         loadProducts();
+        updateTotalDisplay();
 
         // Run to update images
         // storeImages();
@@ -255,7 +257,7 @@ public class CatalogController {
         tilePane.setPadding(new Insets(15, 15, 15, 15));
         tilePane.setVgap(29);
         tilePane.setHgap(29);
-        tilePane.setPrefColumns(5); // You can set the number of columns based on your UI requirement
+        tilePane.setPrefColumns(5);
 
         for (HashMap<String, String> item : shoppingCart.getItems().keySet()) {
             VBox itemBox = new VBox(5);
@@ -296,6 +298,7 @@ public class CatalogController {
         mainContent.setContent(originalContent);
         viewCartButton.setText("Shopping Cart");
         purchaseButton.setVisible(false);
+        updateTotalDisplay();
     }
 
     private void showAlert(String title, String content) {
