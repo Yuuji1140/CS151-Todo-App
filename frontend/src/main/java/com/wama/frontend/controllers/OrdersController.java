@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.HashMap;
 
 import com.wama.frontend.HttpRequest;
 import com.wama.frontend.LoggedInUser;
