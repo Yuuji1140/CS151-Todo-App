@@ -4,8 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -24,14 +23,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -176,9 +171,7 @@ public class CatalogController {
             Pattern innerRegex = Pattern.compile(innerPattern);
             Matcher innerMatcher = innerRegex.matcher(details);
             while (innerMatcher.find()) {
-                String key = innerMatcher.group(1);
-                String value = innerMatcher.group(2);
-                detailsMap.put(key, value);
+                detailsMap.put(innerMatcher.group(1), innerMatcher.group(2));
             }
             productData.put(keyValuePairs[0], detailsMap);
         }
@@ -205,22 +198,26 @@ public class CatalogController {
 
         try {
             Map<String, String> orderParameters = new HashMap<>();
-
-            LocalDate currentDate = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String textDate = currentDate.format(formatter);
+            String textDate = (new Timestamp(System.currentTimeMillis())).toString();
 
             orderParameters.put("customer_id", user.getUserId());
             orderParameters.put("order_date", textDate);
-            orderParameters.put("status", "processing");
+            orderParameters.put("status", "Processing");
             orderParameters.put("total", Double.toString(shoppingCart.getTotal()));
 
             String response = HttpRequest.post("/orders", orderParameters);
-
+            String pattern = "(\\w+)=([^,}]+)";
+            Pattern regex = Pattern.compile(pattern);
+            Matcher matcher = regex.matcher(response);
+            while (matcher.find()) {
+                if (!orderParameters.containsKey(matcher.group(1))) {
+                    orderParameters.put(matcher.group(1), matcher.group(2));
+                }
+            }
             ArrayList<Map<String, String>> orderItems = new ArrayList<>();
             for (HashMap<String, String> item : shoppingCart.getItems().keySet()) {
                 Map<String, String> itemData = new HashMap<>();
-                
+
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());

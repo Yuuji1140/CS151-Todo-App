@@ -8,7 +8,6 @@ import java.util.UUID;
 public class Order extends LogClass {
     private final String id;
     private String customerId;
-    private String employeeId;
     private Timestamp orderDate;
     private String status;
     private double total;
@@ -26,24 +25,22 @@ public class Order extends LogClass {
             selectOrder();
     }
 
-    private Order(String customerId, String employeeId, Timestamp orderDate, String status, double total) {
+    private Order(String customerId, Timestamp orderDate, String status, double total) {
         this.id = UUID.randomUUID().toString();
         this.customerId = customerId;
-        this.employeeId = employeeId;
         this.orderDate = orderDate;
         this.status = status;
         this.total = total;
     }
 
     public HashMap<String, String> selectOrder() {
-        String[] columns = { "id", "customer_id", "employee_id", "order_date", "status", "total" };
+        String[] columns = { "id", "customer_id", "order_date", "status", "total" };
         ArrayList<HashMap<String, String>> result = DatabaseManager.selectRecords("Orders", columns,
                 "id = '" + id + "'");
         if (result != null && !result.isEmpty()) {
             HashMap<String, String> order = result.get(0);
 
             this.customerId = order.get("customer_id");
-            this.employeeId = order.get("employee_id");
             this.orderDate = Timestamp.valueOf(order.get("order_date"));
             this.status = order.get("status");
             this.total = Double.parseDouble(order.get("total"));
@@ -54,35 +51,35 @@ public class Order extends LogClass {
         }
     }
 
-    public Order createOrder(String customerId, String employeeId, String orderDate, String status,
-            double total) {
-        Order newOrder = new Order(customerId, employeeId, Timestamp.valueOf(orderDate), status, total);
-        // TODO: Insert the new order into the database
-        try {
-            DatabaseManager.insertRecord("Orders",
-                    new String[] { "id", "customer_id", "employee_id", "order_date", "status", "total" },
-                    new String[] { id, customerId, employeeId, orderDate.toString(), status, String.valueOf(total) });
-        } catch (Exception e) {
-            error("Error creating order: " + e.getMessage(), e);
-            newOrder.deleteOrder();
-            throw new IllegalArgumentException("Failed to create order.");
-        }
-
+    public static Order createOrder(String customerId, String orderDate, String status, double total) {
+        Order newOrder = new Order(customerId, Timestamp.valueOf(orderDate), status, total);
+        newOrder.insertOrder();
         return newOrder;
     }
 
-    public Order updateOrder(String customerId, String employeeId, String orderDate, String status,
+    private void insertOrder() {
+        try {
+            DatabaseManager.insertRecord("Orders",
+                    new String[] { "id", "customer_id", "order_date", "status", "total" },
+                    new String[] { id, customerId, orderDate.toString(), status, String.valueOf(total) });
+        } catch (Exception e) {
+            error("Error creating order: " + e.getMessage(), e);
+            deleteOrder();
+            throw new IllegalArgumentException("Failed to create order.");
+        }
+    }
+
+    public Order updateOrder(String customerId, String orderDate, String status,
             double total) {
         this.customerId = customerId;
-        this.employeeId = employeeId;
         this.orderDate = Timestamp.valueOf(orderDate);
         this.status = status;
         this.total = total;
 
         try {
             DatabaseManager.updateRecord("Orders",
-                    new String[] { "id", "customer_id", "employee_id", "order_date", "status", "total" },
-                    new String[] { id, customerId, employeeId, orderDate, status, String.valueOf(total) },
+                    new String[] { "id", "customer_id", "order_date", "status", "total" },
+                    new String[] { id, customerId, orderDate, status, String.valueOf(total) },
                     "id = '" + id + "'");
         } catch (Exception e) {
             error("Error updating order: " + e.getMessage(), e);
@@ -107,16 +104,22 @@ public class Order extends LogClass {
                 null);
     }
 
+    public HashMap<String, String> getParameters() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", id);
+        parameters.put("customer_id", customerId);
+        parameters.put("order_date", orderDate.toString());
+        parameters.put("status", status);
+        parameters.put("total", Double.toString(total));
+        return parameters;
+    }
+
     public String getId() {
         return id;
     }
 
     public String getCustomerId() {
         return customerId;
-    }
-
-    public String getEmployeeId() {
-        return employeeId;
     }
 
     public Timestamp getOrderDate() {
