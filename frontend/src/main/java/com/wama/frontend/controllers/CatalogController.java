@@ -17,6 +17,7 @@ import com.wama.frontend.LoggedInUser;
 import com.wama.frontend.Main;
 import com.wama.frontend.ShoppingCart;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -51,11 +52,12 @@ public class CatalogController {
     @FXML
     private ScrollPane mainContent;
     private Node originalContent;
+    private UpdaterThread catalogUpdater;
 
     public void initialize() {
     	shoppingCart = ShoppingCart.getInstance();
     	originalContent = mainContent.getContent();
-        loadProducts();
+        catalogUpdater = new UpdaterThread(this::loadProducts, 5);
         updateTotalDisplay();
 
         // Run to update images
@@ -110,50 +112,54 @@ public class CatalogController {
     }
 
     private void loadProducts() {
-        try {
-            /*
-             * "id" is a required parameter for the GET request to the /products endpoint.
-             * add it with the all value
-             */
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("id", "all");
-            String response = HttpRequest.get("/products", parameters);
-            Map<String, HashMap<String, String>> products = parseProductData(response);
+        Platform.runLater(() -> {
+            tilePane.getChildren().clear();
+            try {
+                /*
+                 * "id" is a required parameter for the GET request to the /products endpoint.
+                 * add it with the all value
+                 */
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put("id", "all");
+                String response = HttpRequest.get("/products", parameters);
+                Map<String, HashMap<String, String>> products = parseProductData(response);
 
-            for (int i = 0; i < products.size(); i++) {
-                HashMap<String, String> product = products.get(Integer.toString(i));
-                VBox productBox = new VBox(5);
-                productBox.getStyleClass().add("product-box");
+                for (int i = 0; i < products.size(); i++) {
+                    HashMap<String, String> product = products.get(Integer.toString(i));
+                    VBox productBox = new VBox(5);
+                    productBox.getStyleClass().add("product-box");
 
-                productBox.setOnMouseClicked(event -> handleProductClick(product));
+                    productBox.setOnMouseClicked(event -> handleProductClick(product));
 
-                Text name = new Text(product.get("name"));
-                name.getStyleClass().add("product-name");
+                    Text name = new Text(product.get("name"));
+                    name.getStyleClass().add("product-name");
 
-                Text price = new Text("$" + product.get("price"));
-                price.getStyleClass().add("product-price");
+                    Text price = new Text("$" + product.get("price"));
+                    price.getStyleClass().add("product-price");
 
-                Text description = new Text(product.get("description"));
-                description.getStyleClass().add("product-description");
+                    Text description = new Text(product.get("description"));
+                    description.getStyleClass().add("product-description");
 
-                current_stock = Integer.parseInt(product.get("current_stock"));
-                Text current_stock = new Text(product.get("current_stock"));
-                current_stock.getStyleClass().add("product-stock");
+                    current_stock = Integer.parseInt(product.get("current_stock"));
+                    Text current_stock = new Text(product.get("current_stock"));
+                    current_stock.getStyleClass().add("product-stock");
 
-                ImageView imageView = new ImageView();
-                byte[] decodedBytes = Base64.getDecoder().decode(product.get("encoded_image"));
-                imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
-                // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
-                imageView.setFitHeight(80);
-                imageView.setFitWidth(80);
+                    ImageView imageView = new ImageView();
+                    byte[] decodedBytes = Base64.getDecoder().decode(product.get("encoded_image"));
+                    imageView.setImage(new Image(new ByteArrayInputStream(decodedBytes)));
+                    // imageView.setImage(new Image("/com/wama/frontend/images/icon.png"));
+                    imageView.setFitHeight(80);
+                    imageView.setFitWidth(80);
 
-                productBox.getChildren().addAll(imageView, name, price, description, current_stock);
-                tilePane.getChildren().add(productBox);
+                    productBox.getChildren().addAll(imageView, name, price, description, current_stock);
+                    tilePane.getChildren().add(productBox);
+                }
+
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e.getMessage());
             }
+        });
 
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
     }
 
     private Map<String, HashMap<String, String>> parseProductData(String response) {
