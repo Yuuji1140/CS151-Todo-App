@@ -26,6 +26,11 @@
       </Pane>
       <Pane layoutX="213.0" layoutY="14.0" prefHeight="739.0" prefWidth="796.0">
          <children>
+            <ScrollPane fx:id="mainContent" layoutX="3.0" layoutY="73.0" prefHeight="627.0" prefWidth="786.0" styleClass="scroll-pane">
+               <content>
+                  <TilePane fx:id="tilePane" hgap="10" prefColumns="3" prefHeight="622.0" prefWidth="765.0" styleClass="tile-pane" tileAlignment="BASELINE_LEFT" vgap="10" />
+               </content>
+            </ScrollPane>
          </children>
       </Pane>
    </children>

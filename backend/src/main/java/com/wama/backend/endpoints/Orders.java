@@ -17,8 +17,13 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             error("Parameters are null");
             return false;
         }
-        if (parameters.containsKey("customer_id") && parameters.containsKey("order_date"))
-            return !parameters.get("customer_id").isEmpty() && !parameters.get("order_date").isEmpty();
+
+        if (parameters.containsKey("company_id")) {
+            return !parameters.get("company_id").isEmpty();
+        }
+
+        if (parameters.containsKey("company_id") && parameters.containsKey("order_date"))
+            return !parameters.get("company_id").isEmpty() && !parameters.get("order_date").isEmpty();
 
         error("Parameters are missing.");
         return false;
