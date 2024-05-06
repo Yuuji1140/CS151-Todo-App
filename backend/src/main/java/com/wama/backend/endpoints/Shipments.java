@@ -15,8 +15,11 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
             return false;
         }
 
-        if (parameters.containsKey("id") && parameters.containsKey("customer_id"))
-            return !parameters.get("id").isEmpty() && !parameters.get("customer_id").isEmpty();
+        if (parameters.containsKey("id"))
+            return !parameters.get("id").isEmpty();
+
+        if (parameters.containsKey("customer_id"))
+            return !parameters.get("customer_id").isEmpty();
 
         if (parameters.containsKey("order_id") && parameters.containsKey("shipment_date") &&
                 parameters.containsKey("status") && parameters.containsKey("tracking_number"))

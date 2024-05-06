@@ -14,8 +14,13 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 public class HttpRequest {
-    private static final String BASE_URL = "localhost";
+    private static final String BASE_URL;
     private static final int PORT = 9876;
+
+    static {
+        // Get it from args or set it to localhost
+        BASE_URL = System.getenv("BACKEND_URL") != null ? System.getenv("BACKEND_URL") : "localhost";
+    }
 
     private static String urlString(String endpoint) {
         return "http://" + BASE_URL + ":" + PORT + endpoint;

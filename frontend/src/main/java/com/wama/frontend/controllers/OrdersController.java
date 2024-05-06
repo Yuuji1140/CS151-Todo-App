@@ -100,6 +100,7 @@ public class OrdersController
 
 			for (HashMap.Entry<String, HashMap<String, String>> entry : orders.entrySet()) {
 				HashMap<String, String> order = entry.getValue();
+				// Find the order id in the shipments:
 
 				VBox orderBox = new VBox(10);
 				orderBox.getStyleClass().add("order-box");
@@ -111,6 +112,20 @@ public class OrdersController
 				Text orderStatus = new Text("Status: " + order.get("status"));
 
 				orderBox.getChildren().addAll(orderId, orderDate, orderTotal, orderStatus);
+				if (orderStatus.getText().equalsIgnoreCase("Status: Shipped") ||
+						orderStatus.getText().equalsIgnoreCase("Status: Delivered")) {
+					String trackingNumber;
+					// For each shipment
+					for (HashMap.Entry<String, HashMap<String, String>> shipmentEntry : shipments.entrySet()) {
+						HashMap<String, String> shipment = shipmentEntry.getValue();
+						if (shipment.get("order_id").equals(order.get("id"))) {
+							trackingNumber = shipment.get("tracking_number");
+							Text shipmentText = new Text("Shipment: " + shipment.get("status") + "\nTracking Number: " + trackingNumber);
+							orderBox.getChildren().add(shipmentText);
+						}
+					}
+				}
+
 				tilePane.getChildren().add(orderBox);
 			}
 		});
