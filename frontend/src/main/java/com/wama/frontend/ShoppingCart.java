@@ -3,8 +3,18 @@ package com.wama.frontend;
 import java.util.HashMap;
 
 public class ShoppingCart {
+	private static ShoppingCart instance;
     private final HashMap<HashMap<String, String>, Integer> items = new HashMap<>();
 
+    private ShoppingCart() {}
+    
+    public static ShoppingCart getInstance() {
+        if (instance == null) {
+            instance = new ShoppingCart();
+        }
+        return instance;
+    }
+    
     public void addItem(HashMap<String, String> item) {
         // items.add(item);
         if (items.containsKey(item)) {
