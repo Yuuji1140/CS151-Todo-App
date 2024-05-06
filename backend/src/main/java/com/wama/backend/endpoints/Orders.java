@@ -18,12 +18,11 @@ public class Orders extends com.wama.LogClass implements Endpoint {
             return false;
         }
 
-        if (parameters.containsKey("company_id")) {
-            return !parameters.get("company_id").isEmpty();
-        }
+        if (parameters.containsKey("customer_id"))
+            return !parameters.get("customer_id").isEmpty();
 
-        if (parameters.containsKey("company_id") && parameters.containsKey("order_date"))
-            return !parameters.get("company_id").isEmpty() && !parameters.get("order_date").isEmpty();
+        if (parameters.containsKey("customer_id") && parameters.containsKey("order_date"))
+            return !parameters.get("customer_id").isEmpty() && !parameters.get("order_date").isEmpty();
 
         error("Parameters are missing.");
         return false;
@@ -31,11 +30,11 @@ public class Orders extends com.wama.LogClass implements Endpoint {
 
     public HttpResponse handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
         String id = parameters.get("id");
-        if (id.equalsIgnoreCase("all") && parameters.containsKey("company_id")) {
+        if (id.equalsIgnoreCase("all") && parameters.containsKey("customer_id")) {
             ArrayList<HashMap<String, String>> returnOrders = new ArrayList<>();
             ArrayList<HashMap<String, String>> orders = Order.getAllOrders();
             for (HashMap<String, String> order : orders) {
-                if (order.get("customer_id").equals(parameters.get("company_id"))) {
+                if (order.get("customer_id").equals(parameters.get("customer_id"))) {
                     returnOrders.add(order);
                 }
             }

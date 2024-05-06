@@ -1,7 +1,6 @@
 package com.wama;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 

@@ -57,7 +57,7 @@ public class CatalogController {
     public void initialize() {
     	shoppingCart = ShoppingCart.getInstance();
     	originalContent = mainContent.getContent();
-        catalogUpdater = new UpdaterThread(this::loadProducts, 5);
+        catalogUpdater = new UpdaterThread(this::loadProducts, 1000);
         updateTotalDisplay();
 
         // Run to update images
@@ -208,7 +208,7 @@ public class CatalogController {
             Map<String, String> orderParameters = new HashMap<>();
             String textDate = (new Timestamp(System.currentTimeMillis())).toString();
 
-            orderParameters.put("customer_id", user.getUserId());
+            orderParameters.put("customer_id", user.getCompanyId());
             orderParameters.put("order_date", textDate);
             orderParameters.put("status", "Processing");
             orderParameters.put("total", Double.toString(shoppingCart.getTotal()));

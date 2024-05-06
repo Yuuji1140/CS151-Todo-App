@@ -35,15 +35,15 @@ public class OrdersController
 
 	public void initialize() throws IOException {
 		//loadOrders();
-		ordersUpdater = new UpdaterThread(this::loadOrders, 5);
-		productsUpdater = new UpdaterThread(this::loadShipments, 5);
+		ordersUpdater = new UpdaterThread(this::loadOrders, 1000);
+		productsUpdater = new UpdaterThread(this::loadShipments, 1000);
 	}
 
 	@FXML
 	private void loadShipments(){
 		try {
 			HashMap<String, String> parameters = new HashMap<>();
-			parameters.put("company_id", user.getCompanyId());
+			parameters.put("customer_id", user.getCompanyId());
 			String response = HttpRequest.get("/shipments", parameters);
 			this.shipments = parseProductData(response);
 			//System.out.println(this.shipments);
@@ -57,7 +57,7 @@ public class OrdersController
 		try {
 			HashMap<String, String> parameters = new HashMap<>();
 			parameters.put("id", "all");
-			parameters.put("company_id", user.getCompanyId());
+			parameters.put("customer_id", user.getCompanyId());
 			String response = HttpRequest.get("/orders", parameters);
 			this.orders = parseProductData(response);
 			displayOrders();
