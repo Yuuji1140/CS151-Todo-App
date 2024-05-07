@@ -10,7 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class DashboardController
+public class EmployeeDashboardController
 {
 	@FXML private Label labelDate;
 	@FXML private Label labelName;
@@ -26,23 +26,8 @@ public class DashboardController
 	}
 	
 	@FXML
-    void handleDashboardCustomerButtonAction(ActionEvent event) {
-        Main.switchToSceneDashboardCustomer();
-    }
-	
-	@FXML
     void handleDashboardEmployeeButtonAction(ActionEvent event) {
         Main.switchToSceneDashboardEmployee();
-    }
-	
-	@FXML
-    void handleOrdersButtonAction(ActionEvent event) {
-        Main.switchToSceneOrders();
-    }
-	
-	@FXML
-    void handleCatalogButtonAction(ActionEvent event) {
-		Main.switchToSceneCatalog();
     }
 	
 	@FXML
@@ -56,18 +41,8 @@ public class DashboardController
     }
 	
 	@FXML
-    void handleFeedbackCustomerButtonAction(ActionEvent event) {
-        Main.switchToSceneFeedbackCustomer();
-    }
-	
-	@FXML
     void handleFeedbackEmployeeButtonAction(ActionEvent event) {
         Main.switchToSceneFeedbackEmployee();
-    }
-	
-	@FXML
-    void handleFeedbackCustomerBackButtonAction(ActionEvent event) {
-        Main.switchToSceneDashboardCustomer();
     }
 	
 	@FXML

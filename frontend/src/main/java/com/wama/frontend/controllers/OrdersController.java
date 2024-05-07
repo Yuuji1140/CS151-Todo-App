@@ -18,7 +18,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-
 public class OrdersController
 {
 	LoggedInUser user = LoggedInUser.getInstance();
