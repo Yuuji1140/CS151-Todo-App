@@ -29,6 +29,7 @@ public class UpdaterThread {
                     e.printStackTrace();
                 }
             }
+            stop();
         }).start();
     }
 
