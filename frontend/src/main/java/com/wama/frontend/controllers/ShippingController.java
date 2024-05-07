@@ -39,11 +39,10 @@ public class ShippingController
         UpdaterThread.createNew(this::loadShipments, 5);
     }
 
-    @FXML
     private void loadShipments() {
         try {
             HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("customer_id", user.getCompanyId());
+            parameters.put("id", "all");
             String response = HttpRequest.get("/shipments", parameters);
             this.shipments = parseShipmentData(response);
             displayShipments();

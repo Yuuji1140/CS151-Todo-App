@@ -31,6 +31,12 @@ public class Shipments extends com.wama.LogClass implements Endpoint {
     }
 
     public HttpResponse handleGetRequest(Map<String, String> parameters, OutputStream outputStream) {
+        String id = parameters.get("id");
+
+        if (id.equalsIgnoreCase("all")) {
+            return new HttpResponse(HttpStatus.OK, getAllShipments());
+        }
+        
         if (parameters.containsKey("id")) {
             return new HttpResponse(HttpStatus.OK,
                     Objects.requireNonNull(getShipmentById(parameters.get("id"))).getParameters());
