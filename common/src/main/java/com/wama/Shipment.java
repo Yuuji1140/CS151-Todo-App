@@ -56,6 +56,10 @@ public class Shipment extends LogClass {
     public String getTrackingNumber() {
         return trackingNumber;
     }
+    
+    public void setStatus(String status) {
+		this.status = status;
+	}
 
     public HashMap<String, String> getParameters() {
         HashMap<String, String> shipment = new HashMap<>();
@@ -66,5 +70,4 @@ public class Shipment extends LogClass {
         shipment.put("tracking_number", trackingNumber);
         return shipment;
     }
-
 }
