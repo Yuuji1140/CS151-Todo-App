@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -59,8 +60,13 @@ public class HttpRequest {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
         }
-
-        int responseCode = connection != null ? connection.getResponseCode() : 0;
+        int responseCode;
+        try {
+            responseCode = connection != null ? connection.getResponseCode() : 0;
+        } catch (SocketException e){
+            System.out.println("Error connecting to backend: " + e.getMessage());
+            responseCode = 500;
+        }
 
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (InputStream inputStream = connection.getInputStream();
@@ -107,7 +113,7 @@ public class HttpRequest {
         return sendRequest(endpoint, "PUT", parameters);
     }
 
-    public static String delete(String endpoint) throws IOException {
-        return sendRequest(endpoint, "DELETE", null);
+    public static String delete(String endpoint, Map<String, String> parameters) throws IOException {
+        return sendRequest(endpoint, "DELETE", parameters);
     }
 }

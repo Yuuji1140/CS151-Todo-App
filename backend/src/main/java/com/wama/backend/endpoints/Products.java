@@ -21,6 +21,7 @@ public class Products extends com.wama.LogClass implements Endpoint {
         if (parameters.containsKey("name")) {
             return !parameters.get("name").isEmpty();
         }
+
         if (parameters.containsKey("id"))
             return !parameters.get("id").isEmpty();
 
@@ -58,7 +59,7 @@ public class Products extends com.wama.LogClass implements Endpoint {
         Double price = (parameters.get("price") != null) ? Double.parseDouble(parameters.get("price")) : null;
         Integer reorderPoint = (parameters.get("reorder_point") != null) ? Integer.parseInt(parameters.get("reorder_point"))
                 : null;
-        Integer initialStock = (parameters.get("rinitial_stock") != null)
+        Integer initialStock = (parameters.get("initial_stock") != null)
                 ? Integer.parseInt(parameters.get("initial_stock"))
                 : null;
         String encodedImg = parameters.get("encoded_image");
