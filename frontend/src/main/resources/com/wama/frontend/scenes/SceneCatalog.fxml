@@ -32,7 +32,7 @@
     			</content>
 			</ScrollPane>
 			<Text fx:id="totalText" fill="#535353" layoutY="62.0" styleClass="total-text" text="Total: $0.00" />
-			<Button fx:id="purchaseButton" layoutX="500.0" layoutY="13.0" onAction="#handlePurchase" text="Purchase" visible="false" />
+			<Button fx:id="purchaseButton" layoutX="500.0" layoutY="13.0" onAction="#handlePurchase" text="Purchase" />
             <Button fx:id="viewCartButton" layoutX="626.0" layoutY="13.0" onAction="#handleViewCart" text="Shopping Cart" />
          </children>
       </Pane>

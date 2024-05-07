@@ -54,4 +54,8 @@ public class ShoppingCart {
     public Integer getQuantity(HashMap<String, String> item) {
         return items.get(item);
     }
+    
+    public void clearCart() {
+        items.clear();
+    }
 }

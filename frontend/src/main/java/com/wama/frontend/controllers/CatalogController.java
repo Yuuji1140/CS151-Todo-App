@@ -57,8 +57,8 @@ public class CatalogController {
     public void initialize() {
     	shoppingCart = ShoppingCart.getInstance();
     	originalContent = mainContent.getContent();
-      catalogUpdater = new UpdaterThread(this::loadProducts, 5);
-      updateTotalDisplay();
+    	catalogUpdater = new UpdaterThread(this::loadProducts, 5);
+    	updateTotalDisplay();
 
         // Run to update images
         // storeImages();
@@ -197,12 +197,14 @@ public class CatalogController {
 
         if (totalText != null)
             totalText.setText("Total: $" + String.format("%.2f", total));
+        
+        updateTotalDisplay();
     }
 
     @FXML
     private void handlePurchase(ActionEvent event) {
         if (shoppingCart.getItems().isEmpty()) {
-            showAlert("Error", "Empty shopping cart");
+            showAlert("Error", "Empty shopping cart!");
             return;
         }
 
@@ -220,9 +222,8 @@ public class CatalogController {
             Pattern regex = Pattern.compile(pattern);
             Matcher matcher = regex.matcher(orderResponse);
             while (matcher.find()) {
-                if (!orderParameters.containsKey(matcher.group(1))) {
+                if (!orderParameters.containsKey(matcher.group(1)))
                     orderParameters.put(matcher.group(1), matcher.group(2));
-                }
             }
 
             ArrayList<Map<String, String>> orderItems = new ArrayList<>();
@@ -238,11 +239,16 @@ public class CatalogController {
                 String orderItemResponse = HttpRequest.post("/orderItems", itemParameters);
                 orderItems.add(itemParameters);
             }
+
+            // clear shopping cart after successful order
+            shoppingCart.clearCart();
+            updateTotalDisplay();
+            showAlert("Success", "Your purchase has been processed successfully!");
+            showCatalog(); // redirect user back to catalog
         }
         catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
+            showAlert("Error", "Failed to process order: " + e.getMessage());
         }
-
     }
 
     @FXML
@@ -301,13 +307,12 @@ public class CatalogController {
         cartLayout.getChildren().add(tilePane);
         mainContent.setContent(cartLayout);
         viewCartButton.setText("Back to Catalog");
-        purchaseButton.setVisible(!shoppingCart.getItems().isEmpty());
+        //purchaseButton.setVisible(!shoppingCart.getItems().isEmpty());
     }
 
     private void showCatalog() {
         mainContent.setContent(originalContent);
         viewCartButton.setText("Shopping Cart");
-        purchaseButton.setVisible(false);
         updateTotalDisplay();
     }
 
