@@ -42,6 +42,19 @@
     -fx-cursor: hand;
 }
 
+.order-box {
+    -fx-padding: 5;
+    -fx-border-style: solid inside;
+    -fx-border-width: 1;
+    -fx-border-insets: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: lightgrey;
+}
+
+.order-box:hover {
+    -fx-cursor: hand;
+}
+
 .scroll-pane > .viewport {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
