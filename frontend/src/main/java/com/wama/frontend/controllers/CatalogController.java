@@ -188,6 +188,7 @@ public class CatalogController {
     }
 
     private void handleProductClick(HashMap<String, String> product) {
+        // TODO: Check quantity first
         shoppingCart.addItem(product);
         System.out.println("Added to cart: " + product.get("name") + ", ID: " + product.get("id"));
 
@@ -242,6 +243,7 @@ public class CatalogController {
             // clear shopping cart after successful order
             shoppingCart.clearCart();
             updateTotalDisplay();
+            loadProducts();
             showAlert("Success", "Your purchase has been processed successfully!");
             showCatalog(); // redirect user back to catalog
         }
