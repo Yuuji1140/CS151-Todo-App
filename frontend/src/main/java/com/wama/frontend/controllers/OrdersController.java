@@ -35,8 +35,8 @@ public class OrdersController
 
 	public void initialize() throws IOException {
 		//loadOrders();
-		ordersUpdater = new UpdaterThread(this::loadOrders, 5);
-		productsUpdater = new UpdaterThread(this::loadShipments, 5);
+		UpdaterThread.createNew(this::loadOrders, 5);
+		UpdaterThread.createNew(this::loadShipments, 5);
 	}
 
 	@FXML
