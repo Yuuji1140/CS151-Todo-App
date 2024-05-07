@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.wama.OrderItem;
+import com.wama.Product;
 
 public class OrderItems extends com.wama.LogClass implements Endpoint {
     private OrderItem item;
@@ -45,9 +46,12 @@ public class OrderItems extends com.wama.LogClass implements Endpoint {
         String productId = parameters.get("product_id");
         Integer quantity = Integer.parseInt(parameters.get("quantity"));
         Double price = Double.parseDouble(parameters.get("price"));
-        
+
         item = OrderItem.createOrderItem(orderId, productId, quantity, price);
-        if (item != null) {
+        Product product = new Product(productId);
+        Product updatedProduct = product.updateProduct(product.getName(), product.getDescription(), product.getPrice(),
+                product.getReorderPoint(), product.getCurrentStock() - quantity, product.getEncodedImg());
+        if (item != null && updatedProduct != null) {
             // CREATED status is not being handled in frontend, swap to OK status for now
             // return new HttpResponse(HttpStatus.CREATED, new HashMap<>());
             return new HttpResponse(HttpStatus.OK, item.getParameters());
@@ -66,9 +70,9 @@ public class OrderItems extends com.wama.LogClass implements Endpoint {
         Double price = Double.parseDouble(parameters.get("price"));
 
         item = new OrderItem(id);
-        item.updateOrderItem(orderId, productId, quantity, price);
+        OrderItem updatedItem = item.updateOrderItem(orderId, productId, quantity, price);
         if (item != null) {
-            return new HttpResponse(HttpStatus.OK, item.getParameters());
+            return new HttpResponse(HttpStatus.OK, updatedItem.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error updating order");

@@ -100,7 +100,7 @@ public class Products extends com.wama.LogClass implements Endpoint {
         Product updatedProduct = product.updateProduct(name, description, price, reorderPoint, initialStock,
                 encodedImg);
         if (updatedProduct != null) {
-            return new HttpResponse(HttpStatus.OK, product.getParameters());
+            return new HttpResponse(HttpStatus.OK, updatedProduct.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error updating product");

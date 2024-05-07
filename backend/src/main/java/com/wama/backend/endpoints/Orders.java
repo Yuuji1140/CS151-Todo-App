@@ -81,9 +81,9 @@ public class Orders extends com.wama.LogClass implements Endpoint {
         Double total = (parameters.get("total") != null) ? Double.parseDouble(parameters.get("total")) : order.getTotal();
 
         order = new Order(id);
-        order.updateOrder(customerId, orderDate, status, total);
+        Order updatedOrder = order.updateOrder(customerId, orderDate, status, total);
         if (order != null) {
-            return new HttpResponse(HttpStatus.OK, order.getParameters());
+            return new HttpResponse(HttpStatus.OK, updatedOrder.getParameters());
         } else {
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("error", "Error updating order");
