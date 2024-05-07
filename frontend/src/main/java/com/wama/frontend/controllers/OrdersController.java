@@ -13,10 +13,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class OrdersController
 {
@@ -93,41 +97,51 @@ public class OrdersController
 	}
 
 	private void displayOrders() {
-		//https://stackoverflow.com/questions/21160754/run-javafx-controller-in-a-separate-thread
-		Platform.runLater(() -> {
-			tilePane.getChildren().clear();
+	    Platform.runLater(() -> {
+	        tilePane.getChildren().clear();
+	        
+	        for (HashMap.Entry<String, HashMap<String, String>> entry : orders.entrySet()) {
+	            HashMap<String, String> order = entry.getValue();
 
-			for (HashMap.Entry<String, HashMap<String, String>> entry : orders.entrySet()) {
-				HashMap<String, String> order = entry.getValue();
-				// Find the order id in the shipments:
+	            VBox orderBox = new VBox(10);
+	            orderBox.getStyleClass().add("order-box");
+	            orderBox.setPadding(new Insets(10));
 
-				VBox orderBox = new VBox(10);
-				orderBox.getStyleClass().add("order-box");
-				orderBox.setPadding(new Insets(10));
+	            Text orderId = new Text("Order ID: " + order.get("id"));
+	            Text orderDate = new Text("Order Date: " + order.get("order_date"));
+	            Text orderTotal = new Text("Total: $" + order.get("total"));
+	            Text orderStatus = new Text("Status: " + order.get("status"));
+	            Button detailsButton = new Button("View Details");
 
-				Text orderId = new Text("Order ID: " + order.get("id"));
-				Text orderDate = new Text("Order Date: " + order.get("order_date"));
-				Text orderTotal = new Text("Total: $" + order.get("total"));
-				Text orderStatus = new Text("Status: " + order.get("status"));
+	            orderBox.getChildren().addAll(orderId, orderDate, orderTotal, orderStatus, detailsButton);
+	            
+	            detailsButton.setOnAction(event -> showOrderDetails(order));
 
-				orderBox.getChildren().addAll(orderId, orderDate, orderTotal, orderStatus);
-				if (orderStatus.getText().equalsIgnoreCase("Status: Shipped") ||
-						orderStatus.getText().equalsIgnoreCase("Status: Delivered")) {
-					String trackingNumber;
-					// For each shipment
-					for (HashMap.Entry<String, HashMap<String, String>> shipmentEntry : shipments.entrySet()) {
-						HashMap<String, String> shipment = shipmentEntry.getValue();
-						if (shipment.get("order_id").equals(order.get("id"))) {
-							trackingNumber = shipment.get("tracking_number");
-							Text shipmentText = new Text("Shipment: " + shipment.get("status") + "\nTracking Number: " + trackingNumber);
-							orderBox.getChildren().add(shipmentText);
-						}
-					}
-				}
+	            tilePane.getChildren().add(orderBox);
+	        }
+	    });
+	}
 
-				tilePane.getChildren().add(orderBox);
-			}
-		});
+	private void showOrderDetails(HashMap<String, String> order) {
+	    Stage detailsStage = new Stage();
+	    VBox detailsLayout = new VBox(10);
+	    detailsLayout.setPadding(new Insets(10));
+
+	    Text itemHeader = new Text("Items in Order:");
+	    detailsLayout.getChildren().add(itemHeader);
+
+	    if (order.containsKey("items")) {
+	        String[] items = order.get("items").split(";");
+	        for (String item : items) {
+	            Text itemDetail = new Text(item);
+	            detailsLayout.getChildren().add(itemDetail);
+	        }
+	    }
+
+	    Scene detailsScene = new Scene(detailsLayout, 400, 200);
+	    detailsStage.setScene(detailsScene);
+	    detailsStage.initModality(Modality.APPLICATION_MODAL);
+	    detailsStage.show();
 	}
 
 	@FXML

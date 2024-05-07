@@ -29,28 +29,30 @@
             <Line endX="475.20001220703125" endY="-35.99999237060547" layoutX="-87.0" layoutY="36.0" startX="474.99993896484375" startY="78.0" stroke="#aeaeae" />
             <Line endX="475.20001220703125" endY="-35.99999237060547" layoutX="-281.0" layoutY="36.0" startX="474.99993896484375" startY="78.0" stroke="#aeaeae" />
             <Line endX="475.20001220703125" endY="-35.99999237060547" layoutX="105.0" layoutY="36.0" startX="474.99993896484375" startY="78.0" stroke="#aeaeae" />
-            <Text fill="#717171" layoutX="40.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Orders to Ship">
+            <Text fill="#717171" layoutX="31.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Processing Orders">
                <font>
                   <Font name="Arial" size="16.0" />
                </font>
             </Text>
-            <Text fill="#717171" layoutX="235.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Overdue Orders">
+            <Text fill="#717171" layoutX="235.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shipped Orders">
                <font>
                   <Font name="Arial" size="16.0" />
                </font>
             </Text>
-            <Text fill="#717171" layoutX="471.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="???">
-               <font>
-                  <Font name="Arial" size="16.0" />
-               </font>
-            </Text>
-            <Text fill="#717171" layoutX="660.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="???">
-               <font>
-                  <Font name="Arial" size="16.0" />
-               </font>
-            </Text>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff01f" height="13.0" layoutX="204.0" layoutY="65.0" stroke="TRANSPARENT" strokeType="INSIDE" width="14.0" />
             <Circle fill="#00c41d" layoutX="17.0" layoutY="71.0" radius="7.0" stroke="TRANSPARENT" strokeType="INSIDE" />
+            <Text fill="#717171" layoutX="429.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Overdue Orders">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Text fill="#717171" layoutX="614.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cancelled Orders">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e48100" height="13.0" layoutX="396.0" layoutY="65.0" stroke="TRANSPARENT" strokeType="INSIDE" width="14.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d41900" height="13.0" layoutX="591.0" layoutY="65.0" stroke="TRANSPARENT" strokeType="INSIDE" width="14.0" />
+            <Circle fill="#eae60a" layoutX="210.0" layoutY="72.0" radius="7.0" stroke="TRANSPARENT" strokeType="INSIDE" />
          </children>
       </Pane>
       <Pane layoutX="245.0" layoutY="205.0" prefHeight="547.0" prefWidth="762.0">

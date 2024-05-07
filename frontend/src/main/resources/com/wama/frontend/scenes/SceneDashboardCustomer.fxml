@@ -13,9 +13,9 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wama.frontend.controllers.CustomerDashboardController">
    <children>
-      <Pane layoutX="725.0" layoutY="14.0" prefHeight="282.0" prefWidth="286.0">
+      <Pane layoutX="725.0" layoutY="86.0" prefHeight="210.0" prefWidth="286.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="282.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="286.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="210.0" layoutX="-1.0" layoutY="-1.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="288.0" />
             <Text fill="#595959" layoutX="90.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recent Activity">
                <font>
                   <Font name="Arial" size="16.0" />
@@ -23,14 +23,14 @@
             </Text>
          </children>
       </Pane>
-      <Pane layoutX="725.0" layoutY="308.0" prefHeight="292.0" prefWidth="286.0">
+      <Pane layoutX="725.0" layoutY="308.0" prefHeight="448.0" prefWidth="286.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="292.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="286.0" />
-         </children>
-      </Pane>
-      <Pane layoutX="725.0" layoutY="613.0" prefHeight="141.0" prefWidth="286.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="142.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="286.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="448.0" layoutX="-1.0" layoutY="-1.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="288.0" />
+            <Text fill="#595959" layoutX="98.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Order Status">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="739.0" prefWidth="174.0">
@@ -47,9 +47,14 @@
             <Button layoutX="18.0" layoutY="650.0" mnemonicParsing="false" onAction="#handleSignoutButtonAction" prefHeight="43.0" prefWidth="143.0" text="Sign Out" />
          </children>
       </Pane>
-      <Pane layoutX="206.0" layoutY="110.0" prefHeight="186.0" prefWidth="502.0">
+      <Pane layoutX="206.0" layoutY="88.0" prefHeight="208.0" prefWidth="502.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="186.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="502.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fafafa" height="208.0" layoutX="-1.0" layoutY="-1.0" stroke="#f4f4f4" strokeLineCap="ROUND" strokeWidth="2.0" width="504.0" />
+            <Text fill="#595959" layoutX="231.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="News">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
       <Pane layoutX="206.0" layoutY="306.0" prefHeight="448.0" prefWidth="502.0">
