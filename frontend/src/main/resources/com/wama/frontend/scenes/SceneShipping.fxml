@@ -31,6 +31,5 @@
             </TilePane>
          </content>
       </ScrollPane>
-      <Text layoutX="501.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shipping" />
    </children>
 </AnchorPane>

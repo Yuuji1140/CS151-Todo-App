@@ -48,7 +48,7 @@ public class LoginController
         AnimSlidingRects.generateRectangles(animationPane, 3, 1000, 335, -100);
         AnimSlidingRects.generateRectangles(animationPane, 3, 1000, 485, -100);
         
-        //fadeInEffect(animationPane, 3500);
+        fadeInEffect(animationPane, 3500);
     }
 	
 	@FXML

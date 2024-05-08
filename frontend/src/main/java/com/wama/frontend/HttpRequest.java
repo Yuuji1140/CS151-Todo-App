@@ -20,7 +20,7 @@ public class HttpRequest {
 
     static {
         // Get it from args or set it to localhost
-        BASE_URL = System.getenv("BACKEND_URL") != null ? System.getenv("BACKEND_URL") : "localhost";
+        BASE_URL = System.getenv("BACKEND_URL") != null ? System.getenv("BACKEND_URL") : "100.117.50.41";
     }
 
     private static String urlString(String endpoint) {
