@@ -2,7 +2,7 @@
 
 # Team #6:
 - Trevor Mathisen
-  - Proposal: Brainstormed ideas for TODO app and this one. Wrote initial draft, added lots of todo's. Reviewd teammate contributions, provided feedback.
+  - Proposal: Brainstormed ideas for TODO app and this one. Wrote initial draft, added lots of todo's. Reviewed teammate contributions, provided feedback.
   - Presentation: Formed two diagrams, gave feedback for others. Helped with forming the slides, worked with team to brainstorm and put together the flow of the demo. Presented slides.
   - Code: Focused on backend and linking frontend to backend. Refactored code as needed during integrations. Helped with general debugging for overall project and acted as team lead/project manager/product owner.
 - Viet Nguyen
@@ -10,9 +10,9 @@
   - Presentation: 
   - Code: 
 - Hike Yegiyan
-    - Proposal:
-    - Presentation:
-    - Code: 
+    - Proposal: Brainstormed ideas, created diagrams, worked on proposal, provided feedback, and eventually decided on and mapped out our Warehouse Manager application.
+    - Presentation: Collaborated on the flow of the demo, gave feedback for the slides, and demonstrated the program and its frontend usage in-class during presentation.
+    - Code: Focused mostly on the frontend work and bit a of linkage with the backend. Created the styling, most of the scenes, and eye-candy for the login, signup, and welcome pages. Helped debug in various places.
 
 # Problem/Issue to Resolve:
 Managing inventory, orders, and shipments in a warehouse setting can be complex and time-consuming. Most current solutions are expensive, complex, or lack the necessary features for efficient warehouse management. We aim to create a user-friendly, scalable, and efficient Java GUI application that allows employees to manage inventory, process orders, and track shipments while enabling customers to view their inventory, create orders, and monitor shipments. The application's UI will be designed with simplicity and ease of use in mind, ensuring all functionalities are accessible within a few clicks. We will keep a consistent layout with intuitive navigation and clear feedback on user actions.
