@@ -6,9 +6,9 @@
   - Presentation: Formed two diagrams, gave feedback for others. Helped with forming the slides, worked with team to brainstorm and put together the flow of the demo. Presented slides.
   - Code: Focused on backend and linking frontend to backend. Refactored code as needed during integrations. Helped with general debugging for overall project and acted as team lead/project manager/product owner.
 - Viet Nguyen
-  - Proposal: 
-  - Presentation: 
-  - Code: 
+  - Proposal: Brainstormed ideas, created diagrams, worked on proposal, and provided feedback 
+  - Presentation: Collaborated with demo flow, provide slide feedbacks, demonstrated the program's frontend during presentation
+  - Code: Focused on database linkage with the backend, and linking frontend with backend. Helped debug data parsing issues between the two ends.
 - Hike Yegiyan
     - Proposal: Brainstormed ideas, created diagrams, worked on proposal, provided feedback, and eventually decided on and mapped out our Warehouse Manager application.
     - Presentation: Collaborated on the flow of the demo, gave feedback for the slides, and demonstrated the program and its frontend usage in-class during presentation.
